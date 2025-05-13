@@ -7,7 +7,7 @@ package service;
 
 /**
  *
- * @author Benedetta
+ * @author Gruppo6
  */
 public class ResultsCalculator {
     

@@ -11,7 +11,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Benedetta
+ * @author Gruppo6
  */
 public class Player extends User{
     private String username;

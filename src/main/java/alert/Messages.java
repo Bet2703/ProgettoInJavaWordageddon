@@ -7,7 +7,7 @@ package alert;
 
 /**
  *
- * @author Benedetta
+ * @author Gruppo6
  */
 public class Messages {
     

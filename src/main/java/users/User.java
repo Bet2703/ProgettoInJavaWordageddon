@@ -9,7 +9,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Benedetta
+ * @author Gruppo6
  */
 public abstract class User {
     private final String username;

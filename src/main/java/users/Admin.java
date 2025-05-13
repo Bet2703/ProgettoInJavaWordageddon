@@ -7,7 +7,7 @@ package users;
 
 /**
  *
- * @author Benedetta
+ * @author Gruppo6
  */
 public class Admin extends User{
     

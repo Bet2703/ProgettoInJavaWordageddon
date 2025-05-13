@@ -7,7 +7,7 @@ package controller;
 
 /**
  *
- * @author Benedetta
+ * @author Gruppo6
  */
 public class AdminController {
     
