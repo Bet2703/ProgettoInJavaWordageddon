@@ -1,0 +1,85 @@
+Analisi dei Requisiti
+
+Funzionali
+1. mostrare i documenti
+2. impostare difficoltà
+3. sottomissione delle domande
+4. salvare/ mostrare punteggio 
+5. registrazione utente (utente base e amministratore)
+6. grafica
+
+Funzionali(aggiuntive)
+classifica, statistiche, supporto, salvataggio, styling
+
+ 
+Non funzionale
+1. fornire domande diverse e creative ma che siano parte delle seguenti categorie:
+frequenza assoluta             -           confronto             -                     esclusione
+
+
+casi d'uso
+registrazione utente
+login
+selezione difficoltà
+visualizza documenti
+caricare documenti
+risposta
+visualizzare risultati personali
+visualizzare classifica
+gestione stopwords
+gestione utenti
+gestione difficoltà (amministratore)
+
+(aggiuntiva)
+recuperore sessione di gioco
+
+
+
+
+
+
+
+
+
+PROGETTAZIONE
+
+
+PACKAGE UTENTI
+- utente interfaccia 
+- amministratore e utente base che IMPLEMENTANO utente
+
+PACKAGE CONTROLLER
+controller pagina login
+controller pagina  difficoltà
+visualizzatore testi
+visualizzatore domande
+controller pagina admin
+controller pagina risultati attuale <-> 
+
+(aggiuntiva) controller pagina classifica  (pagine diverse ma collegate da tasti)
+
+
+PACKAGE AVVISI
+messaggi (con Alert)
+
+PACKAGE SERVIZI
+login
+impostazioni_difficoltà
+question_generator              (la parola scelta random?)
+gestione utenti (collegato al controller pagina admin)
+calcola_risultato
+(aggiuntiva) statistiche
+
+
+
+
+
+
+
+
+
+struttura dati ???
+
+
+
+
