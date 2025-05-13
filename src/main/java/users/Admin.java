@@ -9,6 +9,20 @@ package users;
  *
  * @author Benedetta
  */
-public class Admin {
+public class Admin extends User{
     
+    private boolean isAdmin;
+    
+    public Admin(String username, String password, boolean isAdmin) {
+        super(username, password);
+        this.isAdmin = isAdmin;
+    }
+
+    public boolean isIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
 }
