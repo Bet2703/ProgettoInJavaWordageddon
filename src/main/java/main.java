@@ -6,7 +6,7 @@
 
 /**
  *
- * @author Benedetta
+ * @author Gruppo6
  */
 public class main {
     
