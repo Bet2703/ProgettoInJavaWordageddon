@@ -19,7 +19,7 @@
                     </effect>
                    <children>
                        <!-- Titolo dell'app -->
-                       <Label style="-fx-font-size: 24px; -fx-text-fill: #333; -fx-font-weight: bold;" text="Wordagayddon" />
+                       <Label style="-fx-font-size: 24px; -fx-text-fill: #333; -fx-font-weight: bold;" text="Wordageddon" />
                        <!-- Input Fields -->
                        <TextField fx:id="usernameField" promptText="Username" style="-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);" />
                        <PasswordField fx:id="passwordField" promptText="Password" style="-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);" />
