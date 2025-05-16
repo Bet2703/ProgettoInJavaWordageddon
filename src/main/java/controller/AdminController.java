@@ -5,10 +5,28 @@
  */
 package controller;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+
 /**
  *
  * @author Gruppo6
  */
 public class AdminController {
+
+    @FXML
+    private Button btnLoadDocs;
+    @FXML
+    private ListView<?> documentsList;
+    @FXML
+    private Label messageLabel;
+
+    @FXML
+    private void onLoadDocuments(ActionEvent event) {
+    }
+
     
 }

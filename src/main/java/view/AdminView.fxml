@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AdminView.fxml - Caricamento Documenti -->
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.AdminController"
+            prefWidth="600" prefHeight="400"
+            style="-fx-background-color: linear-gradient(to bottom, #8e44ad, #3498db);">
+    <children>
+        <VBox alignment="TOP_CENTER" spacing="20"
+              AnchorPane.topAnchor="20" AnchorPane.leftAnchor="50"
+              AnchorPane.rightAnchor="50" AnchorPane.bottomAnchor="20"
+              style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 10;">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Label text="Pannello Amministratore" 
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+            <!-- Pulsante di caricamento file -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="btnLoadDocs"
+                        text="Carica Documenti"
+                        onAction="#onLoadDocuments"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 6;"
+                        prefWidth="140" prefHeight="35"/>
+                <TextField fx:id="selectedFileField" promptText="Nessun file selezionato"
+                           editable="false" prefWidth="300" />
+            </HBox>
+
+            <!-- Lista dei documenti caricati -->
+            <Label text="Documenti caricati:" 
+                   style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;"/>
+            <ListView fx:id="documentsList" prefHeight="180" />
+
+            <!-- Messaggi di stato -->
+            <Label fx:id="messageLabel" wrapText="true"
+                   style="-fx-font-size: 14px; -fx-text-fill: #c0392b;"/>
+        </VBox>
+    </children>
+</AnchorPane>
