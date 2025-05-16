@@ -7,6 +7,7 @@ package service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 /**
  *
@@ -14,13 +15,13 @@ import java.sql.SQLException;
  */
 public class DatabaseManagement {
     
-    private static final String URL="jbdc:sqlite:./wordageddon.db";
+    private static final String URL="jdbc:sqlite:./wordageddon.db";
     private static Connection connection = null;
     
     public static Connection getConnection(){
         if(connection == null){
             try{
-                Class.forName("org.sqlite.JBDC");
+                Class.forName("org.sqlite.JDBC");
                 connection = DriverManager.getConnection(URL);
                 System.out.println("Connessione al database riuscita");
             }catch(ClassNotFoundException | SQLException e){
@@ -40,4 +41,30 @@ public class DatabaseManagement {
             }
         } 
     }
+    
+    /*NEL MAIN
+        Connection conn = DatabaseManagement.getConnection();
+        if(conn != null){
+            System.out.println("connesso");
+        }
+    */
+       
+    /*public static void inserisciUtente(String username, String password) {
+        String sql = "INSERT INTO User (username, password, is_admin) VALUES (?, ?, 0)";
+
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+
+            int righeInserite = pstmt.executeUpdate();
+            if (righeInserite > 0) {
+                System.out.println("Utente inserito correttamente.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Errore durante l'inserimento dell'utente: " + e.getMessage());
+        }
+    }*/
 }
