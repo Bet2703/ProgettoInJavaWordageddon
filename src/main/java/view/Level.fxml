@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- LevelsView.fxml - Difficulty Selection -->
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.LevelsController"
+            prefWidth="600" prefHeight="400"
+            style="-fx-background-color: linear-gradient(to bottom, #1abc9c, #16a085);">
+    <!-- ToggleGroup for difficulty options -->
+
+
+    <children>
+        <VBox spacing="20" alignment="CENTER"
+              AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+              AnchorPane.leftAnchor="100" AnchorPane.rightAnchor="100"
+              style="-fx-background-color: #ffffffcc; -fx-background-radius: 12;">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+            <effect>
+                <DropShadow radius="8" spread="0.2" offsetY="3" color="#00000033"/>
+            </effect>
+
+            <Label text="Seleziona il livello di difficoltà"
+                   style="-fx-font-size: 22px; -fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
+
+            <VBox spacing="10" alignment="CENTER_LEFT">
+                <children>
+                    <RadioButton fx:id="rbEasy" text="Facile" toggleGroup="$levelGroup"
+                                 style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;"/>
+                    <RadioButton fx:id="rbMedium" text="Medio" toggleGroup="$levelGroup"
+                                 style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;"/>
+                    <RadioButton fx:id="rbHard" text="Difficile" toggleGroup="$levelGroup"
+                                 style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;"/>
+                </children>
+            </VBox>
+
+            <HBox spacing="15" alignment="CENTER">
+                <children>
+                    <Button fx:id="btnStart" text="Avvia Gioco"
+                            onAction="#onStartGame"
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 6;"
+                            prefWidth="120" prefHeight="35"/>
+                    <Button fx:id="btnBack" text="Indietro"
+                            onAction="#onBack"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 6;"
+                            prefWidth="120" prefHeight="35"/>
+                </children>
+            </HBox>
+
+            <Label fx:id="messageLabel" textFill="#c0392b" wrapText="true"
+                   style="-fx-font-size: 14px;"/>
+        </VBox>
+    </children>
+</AnchorPane>

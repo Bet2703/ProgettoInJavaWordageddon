@@ -38,7 +38,7 @@ public class QuestionsController {
     @FXML
     private void onSubmitAnswer(ActionEvent event) {
     }
-
+ 
     @FXML
     private void onSkipQuestion(ActionEvent event) {
     }
