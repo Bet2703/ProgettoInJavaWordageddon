@@ -4,15 +4,30 @@
  * and open the template in the editor.
  */
 package service;
+
 import java.sql.*;
 import users.Player;
 import users.Role;
+
 /**
- *
+ * Provides login functionality by verifying user credentials against the database.
+ * Connects to a local SQLite database to retrieve user data and instantiate a {@link Player} if authentication succeeds.
+ * 
+ * <p>Database: {@code wordageddon.db} <br>
+ * Table: {@code users} with columns {@code username}, {@code password}, {@code role}</p>
+ * 
  * @author Gruppo6
  */
 public class Login {
-     public static Player login(String inputUsername, String inputPassword) {
+
+    /**
+     * Attempts to log in a user by checking the provided username and password against the database.
+     *
+     * @param inputUsername the username entered by the user
+     * @param inputPassword the password entered by the user
+     * @return a {@link Player} object if the login is successful; {@code null} otherwise
+     */
+    public static Player login(String inputUsername, String inputPassword) {
         String url = "jdbc:sqlite:wordageddon.db"; // Percorso relativo al DB
         String sql = "SELECT username, password, role FROM users WHERE username = ? AND password = ?";
 
