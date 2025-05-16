@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
 import java.net.URL;
@@ -14,12 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import service.UsersManagement;
 
-/**
- * FXML Controller class
- *
- * @author andre
- */
 public class UserManagementViewController implements Initializable {
 
     @FXML
@@ -39,24 +30,53 @@ public class UserManagementViewController implements Initializable {
     @FXML
     private Label lblStatus;
 
-    /**
-     * Initializes the controller class.
-     */
+    private UsersManagement usersManagement;
+    private int userId = 1; // Simulazione: userId corrente (in un'app vera, da sessione)
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        usersManagement = new UsersManagement();
+        lblStatus.setText("");
+    }
 
     @FXML
     private void onSaveProfile(ActionEvent event) {
+        String username = tfUsername.getText();
+        String password = pfPassword.getText();
+        String confirmPassword = pfConfirm.getText();
+
+        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            lblStatus.setText("⚠️ Tutti i campi devono essere compilati.");
+            return;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            lblStatus.setText("❌ Le password non coincidono.");
+            return;
+        }
+
+        // Per ora, supponiamo che l'email non venga usata: passiamo username e password
+        boolean updated = usersManagement.updateUser(userId, username, password);
+        if (updated) {
+            lblStatus.setText("✅ Profilo aggiornato con successo!");
+        } else {
+            lblStatus.setText("❌ Errore durante l'aggiornamento.");
+        }
     }
 
     @FXML
     private void onCancel(ActionEvent event) {
+        // Ripristina i campi vuoti o da DB
+        tfUsername.clear();
+        pfPassword.clear();
+        pfConfirm.clear();
+        lblStatus.setText("Modifiche annullate.");
     }
 
     @FXML
     private void onExportCsv(ActionEvent event) {
+        // TODO: esportazione CSV se necessaria
+        lblStatus.setText("⚙️ Funzione di esportazione non implementata.");
     }
-    
 }
+
