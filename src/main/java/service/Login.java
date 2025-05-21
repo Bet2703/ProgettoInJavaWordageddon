@@ -31,7 +31,7 @@ public class Login {
         String url = "jdbc:sqlite:wordageddon.db"; // Percorso relativo al DB
         String sql = "SELECT username, password, role FROM users WHERE username = ? AND password = ?";
 
-        try (Connection conn = DriverManager.getConnection(url);
+        try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, inputUsername);
