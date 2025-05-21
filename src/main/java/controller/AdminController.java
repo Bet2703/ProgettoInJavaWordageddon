@@ -26,6 +26,7 @@ public class AdminController {
 
     @FXML
     private void onLoadDocuments(ActionEvent event) {
+        //chiama loadToDB di DocumentsManagement
     }
 
     
