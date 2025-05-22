@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 
 /**
  * Controller per la schermata di selezione del livello di difficoltà.
@@ -57,7 +58,19 @@ public class LevelsController {
      */
     @FXML
     private Label messageLabel;
+    
+    private ToggleGroup difficultyGroup;
 
+    @FXML
+    public void initialize() {
+        // Crea il ToggleGroup e assegna i RadioButton al gruppo
+        difficultyGroup = new ToggleGroup();
+
+        rbEasy.setToggleGroup(difficultyGroup);
+        rbMedium.setToggleGroup(difficultyGroup);
+        rbHard.setToggleGroup(difficultyGroup);
+    }
+    
     /**
      * Metodo invocato quando l'utente preme il pulsante "Start".
      * Deve avviare il gioco utilizzando il livello selezionato.
@@ -66,6 +79,18 @@ public class LevelsController {
      */
     @FXML
     private void onStartGame(ActionEvent event) {
+        RadioButton selected = (RadioButton) difficultyGroup.getSelectedToggle();
+
+        if (selected == null) {
+            messageLabel.setText("Seleziona un livello di difficoltà per iniziare.");
+            return;
+        }
+
+        String difficulty = selected.getText();
+        messageLabel.setText("Hai selezionato il livello: " + difficulty);
+        
+        //------------ CONTINUARE--------------------
+        // Avvia il gioco con la difficoltà scelta...
     }
 
     /**
