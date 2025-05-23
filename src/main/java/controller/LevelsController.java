@@ -1,16 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Controller per la schermata di selezione del livello di difficoltà.
@@ -23,39 +25,16 @@ import javafx.scene.control.ToggleGroup;
  */
 public class LevelsController {
 
-    /**
-     * Opzione di livello "Facile".
-     */
     @FXML
     private RadioButton rbEasy;
-
-    /**
-     * Opzione di livello "Medio".
-     */
     @FXML
     private RadioButton rbMedium;
-
-    /**
-     * Opzione di livello "Difficile".
-     */
     @FXML
     private RadioButton rbHard;
-
-    /**
-     * Pulsante per avviare il gioco con il livello selezionato.
-     */
     @FXML
     private Button btnStart;
-
-    /**
-     * Pulsante per tornare alla schermata precedente.
-     */
     @FXML
     private Button btnBack;
-
-    /**
-     * Etichetta per mostrare messaggi all'utente (es. errori o conferme).
-     */
     @FXML
     private Label messageLabel;
     
@@ -73,7 +52,7 @@ public class LevelsController {
     
     /**
      * Metodo invocato quando l'utente preme il pulsante "Start".
-     * Deve avviare il gioco utilizzando il livello selezionato.
+     * Avvia il gioco con il livello selezionato e passa alla schermata del quiz.
      * 
      * @param event l'evento generato dal click sul pulsante
      */
@@ -89,17 +68,52 @@ public class LevelsController {
         String difficulty = selected.getText();
         messageLabel.setText("Hai selezionato il livello: " + difficulty);
         
-        //------------ CONTINUARE--------------------
-        // Avvia il gioco con la difficoltà scelta...
+        try {
+            // Carica la vista del quiz
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/quizView.fxml"));
+            Parent quizView = loader.load();
+            
+            // Ottiene lo stage corrente
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            
+            // Imposta la nuova scena
+            Scene scene = new Scene(quizView);
+            stage.setScene(scene);
+            stage.show();
+            
+            // Se necessario, puoi passare la difficoltà al controller del quiz:
+            // QuizController quizController = loader.getController();
+            // quizController.setDifficulty(difficulty);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            messageLabel.setText("Errore nel caricamento del quiz.");
+        }
     }
 
     /**
      * Metodo invocato quando l'utente preme il pulsante "Back".
-     * Deve riportare l'utente alla schermata precedente.
+     * Torna alla schermata di login.
      * 
      * @param event l'evento generato dal click sul pulsante
      */
     @FXML
     private void onBack(ActionEvent event) {
+        try {
+            // Carica la vista del login
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+            Parent loginView = loader.load();
+            
+            // Ottiene lo stage corrente
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            
+            // Imposta la nuova scena
+            Scene scene = new Scene(loginView);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            messageLabel.setText("Errore nel tornare alla schermata di login.");
+        }
     }
 }
