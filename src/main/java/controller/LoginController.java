@@ -14,8 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import service.Login;
 import users.Player;
+import users.Role;
 
-public class LoginController {
+    public class LoginController {
 
     @FXML
     private VBox card;
@@ -81,7 +82,23 @@ private void onLogin(ActionEvent event) {
 
     @FXML
     private void onRegister(ActionEvent event) {
-        // TODO: Implementa schermata di registrazione se prevista
-        messageLabel.setText("Funzionalità di registrazione non ancora disponibile.");
+
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            messageLabel.setText("Campi username e password obbligatori.");
+            return;
+        }
+
+        if(Login.isUsernameTaken(username)) {
+            messageLabel.setText("Username già esistente. Scegline un altro.");
+            return;
+        }
+
+        else {
+            Login.userRegister(username, password, Role.BASE);
+            messageLabel.setText("Utente registrato con successo!");
+        }
     }
 }

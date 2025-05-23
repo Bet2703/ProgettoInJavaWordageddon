@@ -52,9 +52,62 @@ public class Login {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore di connessione o query: " + e.getMessage());
+            System.out.println("Errore di connessione o query su login: " + e.getMessage());
         }
 
         return null;
+    }
+
+    /**
+     * Checks if the provided username is already taken in the database.
+     *
+     * @param inputUsername the username entered by the user
+     * @return a boolean indicating whether the username is already taken or not
+     */
+    public static boolean isUsernameTaken(String inputUsername) {
+        String url = "jdbc:sqlite:wordageddon.db"; // Percorso relativo al DB
+        String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, inputUsername);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Errore di connessione o query su controllo username: " + e.getMessage());
+        }
+        return false;
+    }
+
+
+    /**
+     * Registers a new user in the database after checking if username is already taken.
+     *
+     * @param inputUsername the username entered by the user
+     * @param inputPassword the password entered by the user
+     * @param role the role of the user (either {@link Role#BASE} or {@link Role#ADMIN})
+     * @return a boolean indicating whether the username is already taken or not
+     */
+    public static void userRegister(String inputUsername, String inputPassword, Role role) {
+        String url = "jdbc:sqlite:wordageddon.db"; // Percorso relativo al DB
+        String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+
+        try(Connection conn = DriverManager.getConnection(url);
+            PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setString(1, inputUsername);
+            stmt.setString(2, inputPassword);
+            stmt.setString(3, role.toString());
+
+            stmt.executeUpdate();
+            System.out.println("Registrazione avvenuta con successo.");
+        }
+        catch(SQLException e)
+        {
+            System.out.println("Errore di connessione o query su registrazione: " + e.getMessage());
+        }
     }
 }
