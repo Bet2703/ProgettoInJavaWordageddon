@@ -51,7 +51,7 @@ private void onLogin(ActionEvent event) {
 
             switch (player.getRole()) {
                 case BASE:
-                    loader = new FXMLLoader(getClass().getResource("/view/Level.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/view/UserManagementView.fxml"));
                     root = loader.load();
                     break;
                 case ADMIN:

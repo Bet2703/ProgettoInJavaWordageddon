@@ -78,5 +78,9 @@ public class UserManagementViewController implements Initializable {
         // TODO: esportazione CSV se necessaria
         lblStatus.setText("⚙️ Funzione di esportazione non implementata.");
     }
+
+    @FXML
+    private void onPlayGame(ActionEvent event) {
+    }
 }
 
