@@ -10,6 +10,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.stage.FileChooser;
+import service.DocumentsManagement;
+import service.Levels;
+
+import java.io.File;
 
 /**
  *
@@ -26,8 +31,17 @@ public class AdminController {
 
     @FXML
     private void onLoadDocuments(ActionEvent event) {
-        //chiama loadToDB di DocumentsManagement
-    }
 
-    
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleziona documento di testo");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File di testo", "*.txt"));
+
+        File file = fileChooser.showOpenDialog(btnLoadDocs.getScene().getWindow());
+
+        if (file!=null){
+
+            DocumentsManagement.loadToDB(file, Levels.Difficulty.EASY);
+
+        }
+    }
 }
