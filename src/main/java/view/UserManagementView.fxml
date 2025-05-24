@@ -21,8 +21,8 @@
     <children>
         <VBox spacing="20" alignment="TOP_CENTER"
               AnchorPane.topAnchor="20" AnchorPane.leftAnchor="40"
-              AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="20"
-              style="-fx-background-color: white; -fx-background-radius: 12;">
+              AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="80" 
+              style="-fx-background-color: white; -fx-background-radius: 12;"><!-- Modificato per lasciare spazio al bottone Gioca -->
             <padding>
                 <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>
@@ -72,5 +72,12 @@
 
             <Label fx:id="lblStatus" wrapText="true" style="-fx-text-fill: #c0392b;" />
         </VBox>
+        
+        <!-- Bottone Gioca posizionato in basso al centro -->
+        <Button text="Gioca" onAction="#onPlayGame"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 5;"
+                prefWidth="120" prefHeight="40"
+                AnchorPane.bottomAnchor="20"
+                AnchorPane.leftAnchor="240"/> <!-- Posizionato al centro (600/2 - 120/2 = 240) -->
     </children>
 </AnchorPane>
