@@ -5,6 +5,8 @@
  */
 package service;
 
+import javafx.scene.chart.XYChart;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
@@ -47,17 +49,15 @@ public class DocumentsManagement {
 
         Map<String, Integer> words = textFiltering(line);
 
-        String URL="jdbc:sqlite:./wordageddon.db";
-
         String findIDQuery = "SELECT id FROM documents WHERE title = ?";
 
         String insertQuery = "INSERT INTO words (id_document, word, frequency) VALUES (?, ?, ?) ";
 
-        try (Connection con = DriverManager.getConnection(URL)) {
+        try (Connection conn = DatabaseManagement.getConnection()) {
 
             // Recuperiamo id tramite il titolo del testo
             int documentId = -1;
-            try (PreparedStatement selectStmt = con.prepareStatement(findIDQuery)) {
+            try (PreparedStatement selectStmt = conn.prepareStatement(findIDQuery)) {
                 selectStmt.setString(1, fileName);
                 ResultSet rs = selectStmt.executeQuery();
                 if (rs.next()) {
@@ -69,8 +69,9 @@ public class DocumentsManagement {
             }
 
             // Inseriamo le parole nel database
-            con.setAutoCommit(false); // Avvia la transazione
-            try (PreparedStatement insertStmt = con.prepareStatement(insertQuery)) {
+            conn.setAutoCommit(false); // Avvia la transazione
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                int id=0;
                 for (Map.Entry<String, Integer> entry : words.entrySet()) {
                     insertStmt.setInt(1, documentId);
                     insertStmt.setString(2, entry.getKey());
@@ -79,7 +80,7 @@ public class DocumentsManagement {
                 }
                 insertStmt.executeBatch();
             }
-            con.commit(); // Termina la transazione
+            conn.commit(); // Termina la transazione
 
             System.out.println("Parole inserite/aggiornate con successo.");
         } catch (SQLException e) {
@@ -88,8 +89,6 @@ public class DocumentsManagement {
     }
 
     public static void loadToDB(File fileName, Levels.Difficulty difficulty) {
-
-        String URL="jdbc:sqlite:./wordageddon.db";
 
         //Controllo sull'esistenza del file
         if (fileName == null) {
@@ -105,9 +104,9 @@ public class DocumentsManagement {
         //Query per inserimento nel database
         String sql = "INSERT INTO documents (text, title, difficulty) VALUES (?, ?, ?)";
 
-        try(Connection con = DriverManager.getConnection(URL);
+        try(Connection conn = DatabaseManagement.getConnection();
             BufferedReader br = new BufferedReader(new FileReader(fileName));
-            PreparedStatement pstmt = con.prepareStatement(sql)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             //Lettura del File
             StringBuilder contentBuilder = new StringBuilder();
@@ -134,11 +133,12 @@ public class DocumentsManagement {
         } catch (IOException e) {
             System.err.println("Errore di I/O: " + e.getMessage());
         } catch (SQLException e) {
-            System.err.println("Errore SQL: " + e.getMessage());
+            System.err.println("Errore SQL: ");
+            e.printStackTrace();
         }
     }
 
-    //Metodo per ricavare il titolo dal nome del file
+    //Metodo per ricavare il titolo dal nome del file senza estensione
     public static String getBaseName(String filename) {
         int index = filename.lastIndexOf('.');
         if (index == -1) {
@@ -147,5 +147,4 @@ public class DocumentsManagement {
             return filename.substring(0, index);
         }
     }
-
 }

@@ -27,12 +27,12 @@ public class Login {
      * @param inputPassword the password entered by the user
      * @return a {@link Player} object if the login is successful; {@code null} otherwise
      */
+
     public static Player login(String inputUsername, String inputPassword) {
-        String url = "jdbc:sqlite:wordageddon.db"; // Percorso relativo al DB
         String sql = "SELECT username, password, role FROM users WHERE username = ? AND password = ?";
 
-        try (Connection conn = DatabaseManagement.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try(Connection conn = DatabaseManagement.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);) {
 
             pstmt.setString(1, inputUsername);
             pstmt.setString(2, inputPassword);
@@ -65,14 +65,13 @@ public class Login {
      * @return a boolean indicating whether the username is already taken or not
      */
     public static boolean isUsernameTaken(String inputUsername) {
-        String url = "jdbc:sqlite:wordageddon.db"; // Percorso relativo al DB
         String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
 
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(Connection conn = DatabaseManagement.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, inputUsername);
-            ResultSet rs = stmt.executeQuery();
+            pstmt.setString(1, inputUsername);
+            ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
@@ -89,15 +88,14 @@ public class Login {
      * @param inputUsername the username entered by the user
      * @param inputPassword the password entered by the user
      * @param role the role of the user (either {@link Role#BASE} or {@link Role#ADMIN})
-     * @return a boolean indicating whether the username is already taken or not
      */
     public static void userRegister(String inputUsername, String inputPassword, Role role) {
         String url = "jdbc:sqlite:wordageddon.db"; // Percorso relativo al DB
         String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+        try(Connection conn = DatabaseManagement.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql);){
 
-        try(Connection conn = DriverManager.getConnection(url);
-            PreparedStatement stmt = conn.prepareStatement(sql))
-        {
+
             stmt.setString(1, inputUsername);
             stmt.setString(2, inputPassword);
             stmt.setString(3, role.toString());
