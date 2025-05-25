@@ -63,6 +63,7 @@ public class AdminController {
         File file = fileChooser.showOpenDialog(btnLoadDocs.getScene().getWindow());
 
         if (file!=null){
+            selectedFileField.setText(file.getName());
             Toggle selectedToggle = difficultyGroup.getSelectedToggle();
             if (selectedToggle == easyRadio) {
             DocumentsManagement.loadToDB(file, Levels.Difficulty.EASY);
