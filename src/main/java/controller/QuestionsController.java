@@ -51,6 +51,19 @@ public class QuestionsController {
      */
     @FXML
     private RadioButton optionD;
+    
+    private ToggleGroup answerGroup;
+
+    @FXML
+    public void initialize() {
+        // Crea il ToggleGroup e assegna i RadioButton al gruppo
+        answerGroup = new ToggleGroup();
+
+        optionA.setToggleGroup(answerGroup);
+        optionB.setToggleGroup(answerGroup);
+        optionC.setToggleGroup(answerGroup);
+        optionD.setToggleGroup(answerGroup);
+    }
 
     /**
      * Button used to submit the selected answer.
