@@ -7,18 +7,21 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import service.DocumentsManagement;
 import service.Levels;
 
 import java.io.File;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -29,7 +32,7 @@ public class AdminController {
     @FXML
     private Button btnLoadDocs;
     @FXML
-    private ListView<?> documentsList;
+    private ListView<String> documentsList;
     @FXML
     private Label messageLabel;
     @FXML
@@ -45,35 +48,84 @@ public class AdminController {
 
     @FXML
     public void initialize() {
-        // Crea il ToggleGroup e assegna i RadioButton al gruppo
-        difficultyGroup = new ToggleGroup();
 
-        easyRadio.setToggleGroup(difficultyGroup);
-        mediumRadio.setToggleGroup(difficultyGroup);
-        hardRadio.setToggleGroup(difficultyGroup);
+        //Popola la lista dei documenti caricati
+        loadDocumentTitles();
+
     }
-    
+
     @FXML
-    private void onLoadDocuments(ActionEvent event) {
+    private void onLoadDocuments() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LoadDocumentView.fxml"));
+            Parent root = loader.load();
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleziona documento di testo");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File di testo", "*.txt"));
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Carica Documento");
+            dialogStage.setScene(new Scene(root));
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
 
-        File file = fileChooser.showOpenDialog(btnLoadDocs.getScene().getWindow());
+            LoadDocumentDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
 
-        if (file!=null){
-            selectedFileField.setText(file.getName());
-            Toggle selectedToggle = difficultyGroup.getSelectedToggle();
-            if (selectedToggle == easyRadio) {
-            DocumentsManagement.loadToDB(file, Levels.Difficulty.EASY);
-            } else if (selectedToggle == mediumRadio) {
-            DocumentsManagement.loadToDB(file, Levels.Difficulty.MEDIUM);
-            } else if (selectedToggle == hardRadio) {
-            DocumentsManagement.loadToDB(file, Levels.Difficulty.HARD);
-            } else {
-                System.out.println("Nessuna difficoltà selezionata");
-            }
-        }  
+            dialogStage.showAndWait();
+
+            // Dopo la chiusura, aggiorna la lista dei documenti
+            loadDocumentTitles();
+
+        } catch (IOException e) {
+            System.err.println("Errore durante il caricamento della schermata: " + e.getMessage());
+        }
     }
+
+    @FXML
+    private void onDeleteDocument() {
+        String selectedTitle = documentsList.getSelectionModel().getSelectedItem();
+
+        if (selectedTitle == null) {
+            messageLabel.setText("Seleziona un documento da cancellare.");
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Conferma cancellazione");
+        alert.setHeaderText(null);
+        alert.setContentText("Sei sicuro di voler cancellare \"" + selectedTitle + "\"?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            DocumentsManagement.deleteFromDB(selectedTitle);
+        }
+
+        // Dopo la cancellazione, aggiorna la lista dei documenti
+        loadDocumentTitles();
+    }
+
+    @FXML
+    private void onBackToLogin(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            messageLabel.setText("Errore nel caricamento della schermata di login.");
+        }
+    }
+
+
+    public void loadDocumentTitles() {
+        List<String> titles = DocumentsManagement.getAllDocumentTitles();
+
+        documentsList.getItems().clear();
+        documentsList.getItems().addAll(titles);
+    }
+
 }
+
+

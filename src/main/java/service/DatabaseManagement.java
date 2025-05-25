@@ -39,6 +39,12 @@ public class DatabaseManagement {
         return connection;
     }
 
+
+    /**
+     * Closes the connection with the database wordageddon.db
+     *
+     */
+
     public static void closeConnection() {
         if (connection != null) {
             try {

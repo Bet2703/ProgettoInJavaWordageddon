@@ -133,7 +133,48 @@ public class DocumentsManagement {
         } catch (IOException e) {
             System.err.println("Errore di I/O: " + e.getMessage());
         } catch (SQLException e) {
-            System.err.println("Errore SQL: ");
+            System.err.println("Errore SQL: " + e.getMessage());
+        }
+    }
+
+    //Metodo per cancellare dal Database
+    public static void deleteFromDB(String title) {
+        String selectIdSql = "SELECT id FROM documents WHERE title = ?";
+        String deleteWordsSql = "DELETE FROM words WHERE id_document = ?";
+        String deleteDocumentSql = "DELETE FROM documents WHERE id = ?";
+
+        try (Connection conn = DatabaseManagement.getConnection()) {
+            conn.setAutoCommit(false); // Inizio transazione
+
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectIdSql)) {
+                selectStmt.setString(1, title);
+                ResultSet rs = selectStmt.executeQuery();
+
+                if (rs.next()) {
+                    int documentId = rs.getInt("id");
+
+                    try (PreparedStatement deleteWordsStmt = conn.prepareStatement(deleteWordsSql);
+                         PreparedStatement deleteDocStmt = conn.prepareStatement(deleteDocumentSql)) {
+
+                        deleteWordsStmt.setInt(1, documentId);
+                        deleteWordsStmt.executeUpdate();
+
+                        deleteDocStmt.setInt(1, documentId);
+                        deleteDocStmt.executeUpdate();
+
+                        conn.commit();
+
+                        System.out.println("Documento e Parole cancellate con successo dal DB.");
+                    }
+                } else {
+                    System.err.println("Documento non trovato: " + title);
+                }
+            } catch (SQLException e) {
+                conn.rollback(); // Rollback in caso di errore
+                e.printStackTrace();
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -147,4 +188,25 @@ public class DocumentsManagement {
             return filename.substring(0, index);
         }
     }
+
+    //Ricava il titolo di tutti i documenti presenti nel database
+    public static List<String> getAllDocumentTitles() {
+        List<String> titles = new ArrayList<>();
+        String query = "SELECT title FROM documents";
+
+        try (Connection conn = DatabaseManagement.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) { //Serve per eseguire una query SQL e ottenere i risultati sotto forma di oggetto ResultSet.
+
+            while (rs.next()) {
+                titles.add(rs.getString("title"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Errore SQL: " + e.getMessage());
+        }
+
+        return titles;
+    }
+
 }
