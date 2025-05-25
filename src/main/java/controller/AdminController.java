@@ -15,6 +15,10 @@ import service.DocumentsManagement;
 import service.Levels;
 
 import java.io.File;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 
 /**
  *
@@ -28,7 +32,27 @@ public class AdminController {
     private ListView<?> documentsList;
     @FXML
     private Label messageLabel;
+    @FXML
+    private TextField selectedFileField;
+    @FXML
+    private RadioButton easyRadio;
+    @FXML
+    private RadioButton mediumRadio;
+    @FXML
+    private RadioButton hardRadio;
 
+    private ToggleGroup difficultyGroup;
+
+    @FXML
+    public void initialize() {
+        // Crea il ToggleGroup e assegna i RadioButton al gruppo
+        difficultyGroup = new ToggleGroup();
+
+        easyRadio.setToggleGroup(difficultyGroup);
+        mediumRadio.setToggleGroup(difficultyGroup);
+        hardRadio.setToggleGroup(difficultyGroup);
+    }
+    
     @FXML
     private void onLoadDocuments(ActionEvent event) {
 
@@ -39,9 +63,16 @@ public class AdminController {
         File file = fileChooser.showOpenDialog(btnLoadDocs.getScene().getWindow());
 
         if (file!=null){
-
+            Toggle selectedToggle = difficultyGroup.getSelectedToggle();
+            if (selectedToggle == easyRadio) {
             DocumentsManagement.loadToDB(file, Levels.Difficulty.EASY);
-
-        }
+            } else if (selectedToggle == mediumRadio) {
+            DocumentsManagement.loadToDB(file, Levels.Difficulty.MEDIUM);
+            } else if (selectedToggle == hardRadio) {
+            DocumentsManagement.loadToDB(file, Levels.Difficulty.HARD);
+            } else {
+                System.out.println("Nessuna difficoltà selezionata");
+            }
+        }  
     }
 }
