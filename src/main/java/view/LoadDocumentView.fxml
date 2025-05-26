@@ -1,31 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- LoadDocumentDialog.fxml -->
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
-<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.LoadDocumentDialogController"
-      style="-fx-background-color: white; -fx-padding: 20;">
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.LoadDocumentDialogController"
+            prefWidth="500" prefHeight="300"
+            style="-fx-background-color: linear-gradient(to bottom, #8e44ad, #3498db);">
 
-    <Label text="Seleziona documento e difficoltà" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    <children>
+        <VBox alignment="CENTER" spacing="20" 
+              AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20" 
+              AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20"
+              style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 10;">
+            <padding>
+                <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+            </padding>
 
-    <HBox spacing="10">
-        <Button fx:id="chooseFileBtn" text="Scegli file" onAction="#onChooseFile"/>
-        <Label fx:id="fileNameLabel" text="Nessun file selezionato"/>
-    </HBox>
+            <Label text="Seleziona documento e difficoltà" 
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
 
-    <VBox spacing="5" alignment="CENTER_LEFT">
-        <Label text="Difficoltà:"/>
-        <HBox spacing="10">
-            <RadioButton fx:id="easyRadio" text="Easy"/>
-            <RadioButton fx:id="mediumRadio" text="Medium"/>
-            <RadioButton fx:id="hardRadio" text="Hard"/>
-        </HBox>
-    </VBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="chooseFileBtn" text="Scegli file" onAction="#onChooseFile"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 6;"
+                        prefWidth="120" prefHeight="35"/>
+                <Label fx:id="fileNameLabel" text="Nessun file selezionato"
+                       style="-fx-text-fill: #2c3e50;"/>
+            </HBox>
 
-    <HBox spacing="20" alignment="CENTER">
-        <Button text="OK" onAction="#onConfirm"/>
-        <Button text="Cancella" onAction="#onCancel"/>
-    </HBox>
+            <VBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Difficoltà:" style="-fx-text-fill: #2c3e50;"/>
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="easyRadio" text="Easy" 
+                                style="-fx-text-fill: #2c3e50;"/>
+                    <RadioButton fx:id="mediumRadio" text="Medium" 
+                                style="-fx-text-fill: #2c3e50;"/>
+                    <RadioButton fx:id="hardRadio" text="Hard" 
+                                style="-fx-text-fill: #2c3e50;"/>
+                </HBox>
+            </VBox>
 
-</VBox>
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="OK" onAction="#onConfirm"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 6;"
+                        prefWidth="100" prefHeight="35"/>
+                <Button text="Cancella" onAction="#onCancel"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 6;"
+                        prefWidth="100" prefHeight="35"/>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
