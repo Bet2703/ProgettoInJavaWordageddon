@@ -27,26 +27,9 @@ public class LoadDocumentDialogController {
     @FXML
     private void onChooseFile() {
         FileChooser fileChooser = new FileChooser();
-
-        // Imposta il filtro per accettare solo file .txt
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-            "File di testo (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-
         selectedFile = fileChooser.showOpenDialog(dialogStage);
         if (selectedFile != null) {
-            // Verifica aggiuntiva sull'estensione
-            if (selectedFile.getName().toLowerCase().endsWith(".txt")) {
-                fileNameLabel.setText(selectedFile.getName());
-            } else {
-                // Mostra un alert se il file non è .txt
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Tipo file non valido");
-                alert.setHeaderText(null);
-                alert.setContentText("Seleziona solo file con estensione .txt");
-                alert.showAndWait();
-                selectedFile = null;  // Resetta la selezione
-            }
+            fileNameLabel.setText(selectedFile.getName());
         }
     }
 

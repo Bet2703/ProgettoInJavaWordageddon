@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.DocumentReadController"
+            prefWidth="600" prefHeight="400">
+    <VBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+        <Label text="Leggi il documento" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        <TextArea fx:id="documentTextArea" wrapText="true" editable="false" prefHeight="300"/>
+        <Label fx:id="timerLabel" style="-fx-font-size: 16px; -fx-text-fill: red;"/>
+    </VBox>
+</AnchorPane>
