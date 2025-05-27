@@ -1,62 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- AdminView.fxml - Caricamento Documenti -->
+<!-- AdminView.fxml - Pannello Amministratore Colorato -->
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.AdminController"
             prefWidth="800" prefHeight="400"
-            style="-fx-background-color: linear-gradient(to bottom, #8e44ad, #3498db);">
-
+            style="-fx-background-color: linear-gradient(to bottom right, #ff9a9e, #fad0c4);">
     <children>
-        <HBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <HBox spacing="20" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+              AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
 
-            <!-- Barra laterale sinistra -->
+            <!-- Barra laterale sinistra colorata -->
             <VBox spacing="20" alignment="TOP_CENTER"
                   prefWidth="180"
-                  style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 10;">
+                  style="-fx-background-color: linear-gradient(to bottom, #ffecd2, #fcb69f); -fx-background-radius: 10;">
                 <padding>
-                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                    <Insets top="20" right="10" bottom="20" left="10"/>
                 </padding>
 
                 <Button fx:id="btnLoadDocs"
                         text="Carica Documento"
                         onAction="#onLoadDocuments"
-                        prefWidth="140" prefHeight="35"
-                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 6;"/>
+                        prefWidth="160" prefHeight="40"
+                        style="-fx-background-color: #ff7e5f; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
 
                 <Button fx:id="btnDeleteDoc"
                         text="Cancella Documento"
                         onAction="#onDeleteDocument"
-                        prefWidth="140" prefHeight="35"
-                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 6;"/>
+                        prefWidth="160" prefHeight="40"
+                        style="-fx-background-color: #feb47b; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
 
                 <Button fx:id="btnBack"
                         text="Indietro"
                         onAction="#onBackToLogin"
-                        prefWidth="140" prefHeight="35"
-                        style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 6;"/>
+                        prefWidth="160" prefHeight="40"
+                        style="-fx-background-color: #86a8e7; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
             </VBox>
 
-            <!-- Contenuto principale -->
-            <VBox alignment="TOP_CENTER" spacing="20"
-                  VBox.vgrow="ALWAYS"
-                  style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 10;"
-                  maxWidth="Infinity">
+            <!-- Contenuto principale colorato -->
+            <VBox alignment="TOP_CENTER" spacing="15"
+                  AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10"
+                  AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="10"
+                  style="-fx-background-color: linear-gradient(to bottom, #cfd9df, #e2ebf0); -fx-background-radius: 10;"
+                  VBox.vgrow="ALWAYS">
                 <padding>
-                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
 
                 <Label text="Pannello Amministratore"
-                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #34495e;"/>
 
                 <Label text="Documenti caricati:"
-                       style="-fx-font-size: 16px; -fx-text-fill: #2c3e50;"/>
-                <ListView fx:id="documentsList" prefHeight="180"/>
+                       style="-fx-font-size: 18px; -fx-text-fill: #34495e;"/>
+
+                <ListView fx:id="documentsList" prefHeight="200"
+                          style="-fx-control-inner-background: white; -fx-background-radius: 5;"/>
 
                 <Label fx:id="messageLabel" wrapText="true"
-                       style="-fx-font-size: 14px; -fx-text-fill: #c0392b;"/>
+                       style="-fx-font-size: 16px; -fx-text-fill: #e74c3c;"/>
             </VBox>
 
         </HBox>
