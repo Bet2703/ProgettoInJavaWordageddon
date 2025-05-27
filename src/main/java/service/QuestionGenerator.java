@@ -40,6 +40,29 @@ public class QuestionGenerator {
         return words;
     }
 
+    /*public static List<Word> getWords(int id_document) {
+        List<Word> words = new ArrayList<>();
+        String sql = "SELECT word, frequency FROM words WHERE id_document = ?";
+
+        try (Connection conn = DatabaseManagement.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id_document);  // Imposta il parametro della query
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String word = rs.getString("word");
+                    int frequency = rs.getInt("frequency");
+                    words.add(new Word(word, frequency));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Errore di connessione o query su words: " + e.getMessage());
+        }
+
+        return words;
+    }*/
+    
     /* Esempio di utilizzo per domande future
     *
     * List<Word> allWords = getWords();

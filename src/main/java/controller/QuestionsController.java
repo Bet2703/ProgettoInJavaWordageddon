@@ -107,7 +107,7 @@ public class QuestionsController {
 
 
     private void loadNextQuestion() {
-        wordList = service.QuestionGenerator.getWords();
+        wordList = service.QuestionGenerator.getWords(/*documentId*/);
 
         if (wordList.size() < 4) {
             feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
