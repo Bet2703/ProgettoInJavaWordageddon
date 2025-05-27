@@ -40,6 +40,8 @@ public class LevelsController {
     
     private ToggleGroup difficultyGroup;
 
+    private static String selectedDifficulty;
+    
     @FXML
     public void initialize() {
         // Crea il ToggleGroup e assegna i RadioButton al gruppo
@@ -58,21 +60,31 @@ public class LevelsController {
      */
     @FXML
     private void onStartGame(ActionEvent event) {
-        RadioButton selected = (RadioButton) difficultyGroup.getSelectedToggle();
+       RadioButton selected = (RadioButton) difficultyGroup.getSelectedToggle();
 
         if (selected == null) {
             messageLabel.setText("Seleziona un livello di difficoltà per iniziare.");
             return;
         }
 
-        String difficulty = selected.getText();
+        String difficulty = selected.getText();  // Prende direttamente il testo dal RadioButton selezionato
         messageLabel.setText("Hai selezionato il livello: " + difficulty);
+        
+        if(difficulty.equals("Facile")){
+            selectedDifficulty = "EASY";
+        }
+        if(difficulty.equals("Difficile")){
+            selectedDifficulty = "HARD";
+        }
+        if(difficulty.equals("Medio")){
+            selectedDifficulty = "MEDIUM";
+        }
         
         try {
             // Carica la vista del quiz
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/quizView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DocumentReadView.fxml"));
             Parent quizView = loader.load();
-            
+                        
             // Ottiene lo stage corrente
             Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             
@@ -80,7 +92,7 @@ public class LevelsController {
             Scene scene = new Scene(quizView);
             stage.setScene(scene);
             stage.show();
-            
+
             // Se necessario, puoi passare la difficoltà al controller del quiz:
             // QuizController quizController = loader.getController();
             // quizController.setDifficulty(difficulty);
@@ -115,5 +127,9 @@ public class LevelsController {
             e.printStackTrace();
             messageLabel.setText("Errore nel tornare alla schermata di login.");
         }
+    }
+    
+    public static String getDifficulty() {
+        return selectedDifficulty;
     }
 }

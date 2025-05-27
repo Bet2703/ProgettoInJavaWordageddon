@@ -100,7 +100,8 @@ public class UserManagementViewController implements Initializable {
 
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DocumentReadView.fxml"));
+            //FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DocumentReadView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Level.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             Stage stage = new Stage();

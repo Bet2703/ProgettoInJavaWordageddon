@@ -26,14 +26,18 @@ public class DocumentReadController {
     private Timeline timeline;
     private int secondsLeft = 30; // Imposta il tempo limite di lettura
 
+    private String difficulty;
+    
+    
+    
     @FXML
-    public void initialize() {
-        String text = fetchRandomDocumentByDifficulty("EASY");
+    public void initialize(){
+        difficulty = LevelsController.getDifficulty();
+        String text = fetchRandomDocumentByDifficulty(difficulty);
         documentTextArea.setText(text);
-
         startTimer();
     }
-
+    
     private void startTimer() {
         timerLabel.setText("Tempo restante: " + secondsLeft + "s");
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {

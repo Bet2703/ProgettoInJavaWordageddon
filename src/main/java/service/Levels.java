@@ -30,6 +30,9 @@ public class Levels {
      */
     public static int getNumberOfQuestions(Difficulty difficulty) {
         // es: EASY -> 5, MEDIUM -> 10, HARD -> 15
+        if(difficulty.equals(Difficulty.EASY)) return 5;
+        if(difficulty.equals(Difficulty.MEDIUM)) return 15;
+        if(difficulty.equals(Difficulty.HARD)) return 15;
         return 0;
     }
 
