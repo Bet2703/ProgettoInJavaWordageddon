@@ -108,12 +108,16 @@ public class QuestionsController {
 
     private void loadNextQuestion() {
         wordList = service.QuestionGenerator.getWords(/*documentId*/);
-
+       
         if (wordList.size() < 4) {
             feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
             return;
         }
 
+
+//-------------------il calcolo della risposta corretta è da spostare e personalizzare nel "case" della domanda--------------------        
+           
+        
         // Ordina le parole per frequenza decrescente e seleziona la più frequente
         wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
         correctWord = wordList.get(0);
@@ -130,14 +134,46 @@ public class QuestionsController {
 
         List<Word> options = new ArrayList<>(choices);
         Collections.shuffle(options);
-
-        // Imposta la domanda e le opzioni
-        questionLabel.setText("Qual è la parola più frequente?");
-        optionA.setText(options.get(0).getText());
-        optionB.setText(options.get(1).getText());
-        optionC.setText(options.get(2).getText());
-        optionD.setText(options.get(3).getText());
-
+        
+        Random randomDomanda = new Random();
+        int domanda = randomDomanda.nextInt((4) + 1);
+        
+        switch(domanda){
+            case 1: {
+                // Imposta la domanda e le opzioni
+                questionLabel.setText("1. Qual è la parola più frequente?");
+                optionA.setText(options.get(0).getText());
+                optionB.setText(options.get(1).getText());
+                optionC.setText(options.get(2).getText());
+                optionD.setText(options.get(3).getText());
+                break;
+            }
+            case 2:{
+                questionLabel.setText("2. Qual è la parola più frequente?");
+                optionA.setText(options.get(0).getText());
+                optionB.setText(options.get(1).getText());
+                optionC.setText(options.get(2).getText());
+                optionD.setText(options.get(3).getText());
+                break;
+            }
+            case 3: {
+                questionLabel.setText("3. Qual è la parola più frequente?");
+                optionA.setText(options.get(0).getText());
+                optionB.setText(options.get(1).getText());
+                optionC.setText(options.get(2).getText());
+                optionD.setText(options.get(3).getText());
+                break;
+            }
+            case 4: {
+                questionLabel.setText("4. Qual è la parola più frequente?");
+                optionA.setText(options.get(0).getText());
+                optionB.setText(options.get(1).getText());
+                optionC.setText(options.get(2).getText());
+                optionD.setText(options.get(3).getText());
+                break;
+            }
+                
+        }
         feedbackLabel.setText("");
         answerGroup.selectToggle(null);
     }
