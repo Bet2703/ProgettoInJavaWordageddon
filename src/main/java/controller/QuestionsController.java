@@ -5,12 +5,14 @@
  */
 package controller;
 
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.util.Duration;
 import service.Word;
 
 import java.util.*;
@@ -88,6 +90,10 @@ public class QuestionsController {
 
     private int documentId;
 
+    public int getDocumentId(){
+        return documentId;
+    }
+
     public void setDocumentId(int id) {
         this.documentId = id;
     }
@@ -107,7 +113,7 @@ public class QuestionsController {
 
 
     private void loadNextQuestion() {
-        wordList = service.QuestionGenerator.getWords(/*documentId*/);
+        wordList = service.QuestionGenerator.getWords(documentId);
        
         if (wordList.size() < 4) {
             feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
@@ -183,7 +189,7 @@ public class QuestionsController {
      * Handles the event triggered when the user clicks the "Submit" button.
      * This method should validate the selected answer and display feedback.
      * 
-     * @param event the ActionEvent triggered by clicking the submit button
+     * @param event the ActionEvent triggered by clicking the "INVIA" button
      */
     @FXML
     private void onSubmitAnswer(ActionEvent event) {
@@ -203,7 +209,10 @@ public class QuestionsController {
             feedbackLabel.setText("Risposta sbagliata. La parola corretta era: " + correctWord.getText());
         }
 
-        loadNextQuestion();
+        // Attende 2 secondi prima di caricare la prossima domanda
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> loadNextQuestion());
+        pause.play();
     }
 
     /**

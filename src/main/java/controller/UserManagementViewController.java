@@ -103,8 +103,12 @@ public class UserManagementViewController implements Initializable {
             //FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DocumentReadView.fxml"));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Level.fxml"));
             Parent root = loader.load();
+
+            // Ottieni lo stage attuale a partire da un qualsiasi nodo (es. il pulsante premuto)
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+
+            // Sostituisci la scena
             Scene scene = new Scene(root);
-            Stage stage = new Stage();
             stage.setScene(scene);
             stage.show();
 

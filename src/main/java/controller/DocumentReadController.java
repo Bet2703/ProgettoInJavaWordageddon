@@ -66,6 +66,7 @@ public class DocumentReadController {
 
             QuestionsController controller = loader.getController();
             controller.setDocumentId(documentId);
+            System.out.println(controller.getDocumentId());
 
             // Chiudi la finestra attuale (quella di lettura documento)
             Stage currentStage = (Stage) documentTextArea.getScene().getWindow();
@@ -79,7 +80,7 @@ public class DocumentReadController {
 
     private String fetchRandomDocumentByDifficulty(String difficulty) {
         String content = "";
-        String query = "SELECT text FROM documents WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1";
+        String query = "SELECT id, text FROM documents WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1";
 
         try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -89,7 +90,8 @@ public class DocumentReadController {
 
             if (rs.next()) {
                 content = rs.getString("text");
-                System.out.println("Documento letto: " + content);
+                documentId = rs.getInt("id"); // IMPOSTA l'ID del documento selezionato
+                System.out.println("Documento letto: " + content + " (ID: " + documentId + ")");
             }
         } catch (SQLException e) {
             System.err.println("Errore nella connessione/query col database " + e.getMessage());

@@ -3,17 +3,13 @@ package service;
 import java.sql.*;
 
 public class UsersManagement {
-    private static final String URL = "jdbc:sqlite:wordageddon.db";
-
-    public Connection connect() throws SQLException {
-        return DriverManager.getConnection(URL);
-    }
 
     // Metodo per aggiornare i dati dell'utente
     public boolean updateUser(int userId, String newUsername, String newPassword) {
         String sql = "UPDATE users SET username = ?, password = ? WHERE id = ?";
 
-        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, newUsername);
             pstmt.setString(2, newPassword);
             pstmt.setInt(3, userId);
@@ -26,11 +22,12 @@ public class UsersManagement {
     }
 
     // Metodo per eliminare l'utente
-    public boolean deleteUser(int userId) {
-        String sql = "DELETE FROM users WHERE id = ?";
+    public boolean deleteUser(String username) {
+        String sql = "DELETE FROM users WHERE username = ?";
 
-        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, userId);
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -39,12 +36,13 @@ public class UsersManagement {
         }
     }
 
-    // Metodo per ottenere i dati dell'utente (opzionale)
-    public void getUser(int userId) {
-        String sql = "SELECT * FROM users WHERE id = ?";
+    // Metodo per ottenere i dati dell'utente (opzionale/test)
+    public void getUser(String username) {
+        String sql = "SELECT * FROM users WHERE username = ?";
 
-        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, userId);
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {

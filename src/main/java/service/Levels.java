@@ -29,11 +29,16 @@ public class Levels {
      * @return il numero di domande da porre
      */
     public static int getNumberOfQuestions(Difficulty difficulty) {
-        // es: EASY -> 5, MEDIUM -> 10, HARD -> 15
-        if(difficulty.equals(Difficulty.EASY)) return 5;
-        if(difficulty.equals(Difficulty.MEDIUM)) return 15;
-        if(difficulty.equals(Difficulty.HARD)) return 15;
-        return 0;
+        switch (difficulty) {
+            case EASY:
+                return 5;
+            case MEDIUM:
+                return 10;
+            case HARD:
+                return 15;
+            default:
+                return 0;
+        }
     }
 
     /**
@@ -43,7 +48,16 @@ public class Levels {
      * @return tempo massimo per ogni domanda
      */
     public static int getTimeLimitPerQuestion(Difficulty difficulty) {
-        return 0;
+        switch (difficulty) {
+            case EASY:
+                return 40;  // 30 secondi per domanda
+            case MEDIUM:
+                return 30;
+            case HARD:
+                return 15;
+            default:
+                return 0;
+        }
     }
 
     /**
@@ -53,7 +67,16 @@ public class Levels {
      * @return il punteggio massimo per risposta
      */
     public static int getMaxScorePerQuestion(Difficulty difficulty) {
-        return 0;
+        switch (difficulty) {
+            case EASY:
+                return 10;
+            case MEDIUM:
+                return 20;
+            case HARD:
+                return 30;
+            default:
+                return 0;
+        }
     }
 
     /**
@@ -73,6 +96,11 @@ public class Levels {
      * @return {@code true} se è un livello valido, altrimenti {@code false}
      */
     public static boolean isValidDifficulty(String difficulty) {
-        return false;
+        try {
+            Difficulty.valueOf(difficulty.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return false;
+        }
     }
 }

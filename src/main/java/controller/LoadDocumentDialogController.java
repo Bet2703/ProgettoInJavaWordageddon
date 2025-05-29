@@ -16,17 +16,26 @@ public class LoadDocumentDialogController {
     private File selectedFile;
     private Stage dialogStage;
 
-    public void setDialogStage(Stage stage) {
-        this.dialogStage = stage;
-        ToggleGroup group = new ToggleGroup();
+    private ToggleGroup group;
+
+    @FXML
+    public void initialize() {
+        group = new ToggleGroup();
         easyRadio.setToggleGroup(group);
         mediumRadio.setToggleGroup(group);
         hardRadio.setToggleGroup(group);
     }
 
+    public void setDialogStage(Stage stage) {
+        this.dialogStage = stage;
+    }
+
     @FXML
     private void onChooseFile() {
         FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(txtFilter);
+
         selectedFile = fileChooser.showOpenDialog(dialogStage);
         if (selectedFile != null) {
             fileNameLabel.setText(selectedFile.getName());
@@ -38,6 +47,7 @@ public class LoadDocumentDialogController {
         if (selectedFile != null && getSelectedDifficulty() != null) {
             // Passa file e difficoltà al metodo di caricamento documenti
             DocumentsManagement.loadToDB(selectedFile, getSelectedDifficulty());
+            new Alert(Alert.AlertType.INFORMATION, "Documento caricato con successo!").showAndWait();
             dialogStage.close();
         } else {
             new Alert(Alert.AlertType.WARNING, "Seleziona file e difficoltà.").showAndWait();

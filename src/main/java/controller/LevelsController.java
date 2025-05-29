@@ -69,15 +69,20 @@ public class LevelsController {
 
         String difficulty = selected.getText();  // Prende direttamente il testo dal RadioButton selezionato
         messageLabel.setText("Hai selezionato il livello: " + difficulty);
-        
-        if(difficulty.equals("Facile")){
-            selectedDifficulty = "EASY";
-        }
-        if(difficulty.equals("Difficile")){
-            selectedDifficulty = "HARD";
-        }
-        if(difficulty.equals("Medio")){
-            selectedDifficulty = "MEDIUM";
+
+        switch (difficulty) {
+            case "Facile":
+                selectedDifficulty = "EASY";
+                break;
+            case "Medio":
+                selectedDifficulty = "MEDIUM";
+                break;
+            case "Difficile":
+                selectedDifficulty = "HARD";
+                break;
+            default:
+                selectedDifficulty = "EASY"; // fallback
+                break;
         }
         
         try {
