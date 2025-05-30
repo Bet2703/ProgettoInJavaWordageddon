@@ -22,6 +22,10 @@ public class Word {
         return frequency;
     }
 
+    public String getFrequencyString() {
+        return Integer.toString(frequency);
+    }
+
     @Override
     public String toString() {
         return text + " (" + frequency + ")";

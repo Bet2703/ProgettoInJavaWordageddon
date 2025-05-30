@@ -16,7 +16,7 @@ import service.Login;
 import users.Player;
 import users.Role;
 
-    public class LoginController {
+public class LoginController {
 
     @FXML
     private VBox card;
@@ -32,53 +32,49 @@ import users.Role;
     private Label messageLabel;
 
     @FXML
-private void onLogin(ActionEvent event) {
-    String username = usernameField.getText();
-    String password = passwordField.getText();
+    private void onLogin(ActionEvent event) {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
 
-    if (username.isEmpty() || password.isEmpty()) {
-        messageLabel.setText("Inserisci username e password.");
-        return;
+        if (username.isEmpty() || password.isEmpty()) {
+            messageLabel.setText("Inserisci username e password.");
+            return;
+        }
+
+        Player player = Login.login(username, password);
+
+        if (player != null) {
+            try {
+                loadViewForRole(player.getRole());
+            } catch (IOException | IllegalArgumentException e) {
+                e.printStackTrace();
+                messageLabel.setText("Errore durante il caricamento della schermata.");
+            }
+        } else {
+            messageLabel.setText("Username o password errati.");
+        }
     }
 
-    Player player = Login.login(username, password);
-
-    if (player != null) {
-        messageLabel.setText("Accesso riuscito! Benvenuto " + player.getUsername());
-
-        try {
+    private void loadViewForRole(Role role) throws IOException {
             FXMLLoader loader;
             Parent root;
 
-            switch (player.getRole()) {
+            switch (role) {
                 case BASE:
                     loader = new FXMLLoader(getClass().getResource("/view/UserManagementView.fxml"));
-                    root = loader.load();
                     break;
                 case ADMIN:
                     loader = new FXMLLoader(getClass().getResource("/view/AdminView.fxml"));
-                    root = loader.load();
                     break;
                 default:
-                    messageLabel.setText("Ruolo utente non riconosciuto.");
-                    return;
+                    throw new IllegalArgumentException("Ruolo utente non riconosciuto.");
             }
 
-            // Mostra la nuova scena
+            root = loader.load();
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            messageLabel.setText("Errore durante il caricamento della schermata.");
-        }
-
-    } else {
-        messageLabel.setText("Username o password errati.");
     }
-}
 
     @FXML
     private void onRegister(ActionEvent event) {
@@ -100,5 +96,8 @@ private void onLogin(ActionEvent event) {
             Login.userRegister(username, password, Role.BASE);
             messageLabel.setText("Utente registrato con successo!");
         }
+        usernameField.clear();
+        passwordField.clear();
     }
+
 }

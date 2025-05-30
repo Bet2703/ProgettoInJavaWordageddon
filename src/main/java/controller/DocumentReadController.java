@@ -66,7 +66,8 @@ public class DocumentReadController {
 
             QuestionsController controller = loader.getController();
             controller.setDocumentId(documentId);
-            System.out.println(controller.getDocumentId());
+            controller.startGame(documentId);
+            System.out.println("L'id del Testo nel DB e': " + controller.getDocumentId());
 
             // Chiudi la finestra attuale (quella di lettura documento)
             Stage currentStage = (Stage) documentTextArea.getScene().getWindow();
