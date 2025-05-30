@@ -14,6 +14,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.util.Duration;
 import service.Word;
+import service.GameSessionManagement;
 
 import java.util.*;
 
@@ -90,39 +91,63 @@ public class QuestionsController {
 
     private int documentId;
 
-    public int getDocumentId(){
-        return documentId;
-    }
+    private final service.GameSessionManagement session = service.GameSessionManagement.getInstance();
 
-    public void setDocumentId(int id) {
-        this.documentId = id;
-    }
+    private int maxQuestions;
 
     @FXML
     public void initialize() {
-        // Crea il ToggleGroup e assegna i RadioButton al gruppo
         answerGroup = new ToggleGroup();
-
         optionA.setToggleGroup(answerGroup);
         optionB.setToggleGroup(answerGroup);
         optionC.setToggleGroup(answerGroup);
         optionD.setToggleGroup(answerGroup);
 
-        loadNextQuestion();
+    }
+
+    public void startGame(int documentId) {
+        wordList = service.QuestionGenerator.getWords(documentId);
+
+        if (wordList == null) {
+            feedbackLabel.setText("Documento non valido o insufficiente.");
+            disableInteraction();
+            return;
+        }
+
+        String difficulty = LevelsController.getDifficulty();
+        session.startSession(session.getCurrentPlayer(), documentId, difficulty);
+        maxQuestions = session.getMaxQuestions();
+
+
+        loadNextQuestion(maxQuestions);
+    }
+
+    private void disableInteraction() {
+        submitButton.setDisable(true);
+        skipButton.setDisable(true);
+        optionA.setDisable(true);
+        optionB.setDisable(true);
+        optionC.setDisable(true);
+        optionD.setDisable(true);
     }
 
 
-    private void loadNextQuestion() {
+    private void loadNextQuestion(int maxQuestions) {
+
+        if (session.getQuestionsAnswered() >= maxQuestions) {
+            feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
+            session.saveSession();
+            System.out.println(session.toString());
+            disableInteraction();
+            return;
+        }
+
         wordList = service.QuestionGenerator.getWords(documentId);
        
         if (wordList.size() < 4) {
             feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
             return;
         }
-
-
-//-------------------il calcolo della risposta corretta è da spostare e personalizzare nel "case" della domanda--------------------        
-           
         
         // Ordina le parole per frequenza decrescente e seleziona la più frequente
         wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
@@ -140,14 +165,13 @@ public class QuestionsController {
 
         List<Word> options = new ArrayList<>(choices);
         Collections.shuffle(options);
-        
-        Random randomDomanda = new Random();
-        int domanda = randomDomanda.nextInt((4) + 1);
+
+        int domanda = random.nextInt(4) + 1;
         
         switch(domanda){
             case 1: {
                 // Imposta la domanda e le opzioni
-                questionLabel.setText("1. Qual è la parola più frequente?");
+                questionLabel.setText("Qual è la parola più frequente nel testo?");
                 optionA.setText(options.get(0).getText());
                 optionB.setText(options.get(1).getText());
                 optionC.setText(options.get(2).getText());
@@ -155,15 +179,15 @@ public class QuestionsController {
                 break;
             }
             case 2:{
-                questionLabel.setText("2. Qual è la parola più frequente?");
-                optionA.setText(options.get(0).getText());
-                optionB.setText(options.get(1).getText());
-                optionC.setText(options.get(2).getText());
-                optionD.setText(options.get(3).getText());
+                questionLabel.setText("Quante volte appare la parola " + correctWord.getText() + " nella testo?");
+                optionA.setText(options.get(0).getFrequencyString());
+                optionB.setText(options.get(1).getFrequencyString());
+                optionC.setText(options.get(2).getFrequencyString());
+                optionD.setText(options.get(3).getFrequencyString());
                 break;
             }
             case 3: {
-                questionLabel.setText("3. Qual è la parola più frequente?");
+                questionLabel.setText("Qual è la parola più frequente?");
                 optionA.setText(options.get(0).getText());
                 optionB.setText(options.get(1).getText());
                 optionC.setText(options.get(2).getText());
@@ -171,7 +195,7 @@ public class QuestionsController {
                 break;
             }
             case 4: {
-                questionLabel.setText("4. Qual è la parola più frequente?");
+                questionLabel.setText("Qual è la parola più frequente?");
                 optionA.setText(options.get(0).getText());
                 optionB.setText(options.get(1).getText());
                 optionC.setText(options.get(2).getText());
@@ -201,7 +225,11 @@ public class QuestionsController {
         }
 
         String selectedText = selected.getText();
-        if (selectedText.equals(correctWord.getText())) {
+        boolean isCorrect = selectedText.equals(correctWord.getText());
+
+        session.recordAnswer(isCorrect);
+
+        if (isCorrect) {
             feedbackLabel.setStyle("-fx-text-fill: green;");
             feedbackLabel.setText("Risposta corretta!");
         } else {
@@ -211,7 +239,7 @@ public class QuestionsController {
 
         // Attende 2 secondi prima di caricare la prossima domanda
         PauseTransition pause = new PauseTransition(Duration.seconds(2));
-        pause.setOnFinished(e -> loadNextQuestion());
+        pause.setOnFinished(e -> loadNextQuestion(maxQuestions));
         pause.play();
     }
 
@@ -223,7 +251,19 @@ public class QuestionsController {
      */
     @FXML
     private void onSkipQuestion(ActionEvent event) {
-        loadNextQuestion();
+        loadNextQuestion(maxQuestions);
+    }
+
+    public void setMaxQuestion(int maxQuestions){
+        //Da implementare
+    }
+
+    public int getDocumentId(){
+        return documentId;
+    }
+
+    public void setDocumentId(int id) {
+        this.documentId = id;
     }
 
 }
