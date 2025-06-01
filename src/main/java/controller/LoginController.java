@@ -31,6 +31,12 @@ public class LoginController {
     @FXML
     private Label messageLabel;
 
+    /**
+     * Invoked when the user clicks the login button.
+     * Checks if the username and password are valid and logs the user in.
+     * If successful, loads the corresponding view.
+     * @param event the event that triggered the method call
+     */
     @FXML
     private void onLogin(ActionEvent event) {
         String username = usernameField.getText();
@@ -55,6 +61,13 @@ public class LoginController {
         }
     }
 
+    /**
+     * Loads the corresponding view for the given role.
+     *
+     * @param role the role of the user to be loaded
+     *
+     * @throws IOException if an error occurs during the loading of the view
+     */
     private void loadViewForRole(Role role) throws IOException {
             FXMLLoader loader;
             Parent root;
@@ -76,6 +89,12 @@ public class LoginController {
             stage.show();
     }
 
+    /**
+     * Invoked when the user clicks the register button.
+     * Checks if the username and password are valid and registers the user.
+     *
+     * @param event the event that triggered the method call
+     */
     @FXML
     private void onRegister(ActionEvent event) {
 

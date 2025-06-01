@@ -14,7 +14,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.util.Duration;
 import service.Word;
-import service.GameSessionManagement;
 
 import java.util.*;
 
@@ -76,7 +75,9 @@ public class QuestionsController {
     @FXML
     private RadioButton optionD;
 
-
+    /**
+     * ToggleGroup used to manage the answer options.
+     */
     private ToggleGroup answerGroup;
 
     /**
@@ -89,12 +90,24 @@ public class QuestionsController {
      */
     private Word correctWord;
 
+    /**
+     * ID of the document to be used for the quiz.
+     */
     private int documentId;
 
+    /**
+     * Instance of the GameSessionManagement class to manage the game session.
+     */
     private final service.GameSessionManagement session = service.GameSessionManagement.getInstance();
 
+    /**
+     * Maximum number of questions to be asked in the quiz.
+     */
     private int maxQuestions;
 
+    /**
+     * Initializes the controller class.
+     */
     @FXML
     public void initialize() {
         answerGroup = new ToggleGroup();
@@ -105,6 +118,12 @@ public class QuestionsController {
 
     }
 
+    /**
+     * Starts the quiz by loading the first question and preparing the UI for the user to answer it.
+     *
+     * @param documentId the ID of the document to be used for the quiz
+     */
+    @FXML
     public void startGame(int documentId) {
         wordList = service.QuestionGenerator.getWords(documentId);
 
@@ -122,6 +141,11 @@ public class QuestionsController {
         loadNextQuestion(maxQuestions);
     }
 
+    /**
+     * Disables the user interaction with the UI.
+     * This method should be called when the quiz is over.
+     */
+    @FXML
     private void disableInteraction() {
         submitButton.setDisable(true);
         skipButton.setDisable(true);
@@ -131,7 +155,11 @@ public class QuestionsController {
         optionD.setDisable(true);
     }
 
-
+    /**
+     * Loads the next question and prepares the UI for the user to answer it.
+     *
+     * @param maxQuestions the maximum number of questions to be asked
+     */
     private void loadNextQuestion(int maxQuestions) {
 
         if (session.getQuestionsAnswered() >= maxQuestions) {
@@ -143,7 +171,7 @@ public class QuestionsController {
         }
 
         wordList = service.QuestionGenerator.getWords(documentId);
-       
+
         if (wordList.size() < 4) {
             feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
             return;
@@ -176,6 +204,7 @@ public class QuestionsController {
                 optionB.setText(options.get(1).getText());
                 optionC.setText(options.get(2).getText());
                 optionD.setText(options.get(3).getText());
+
                 break;
             }
             case 2:{
@@ -187,7 +216,8 @@ public class QuestionsController {
                 break;
             }
             case 3: {
-                questionLabel.setText("Qual è la parola più frequente?");
+                questionLabel.setText("Quale parola ha la frequenza più bassa?");
+                correctWord = options.get(0);
                 optionA.setText(options.get(0).getText());
                 optionB.setText(options.get(1).getText());
                 optionC.setText(options.get(2).getText());
@@ -195,11 +225,11 @@ public class QuestionsController {
                 break;
             }
             case 4: {
-                questionLabel.setText("Qual è la parola più frequente?");
-                optionA.setText(options.get(0).getText());
-                optionB.setText(options.get(1).getText());
-                optionC.setText(options.get(2).getText());
-                optionD.setText(options.get(3).getText());
+                questionLabel.setText("Qual è la lunghezza della parola \"" + correctWord.getText() + "\"?");
+                optionA.setText(String.valueOf(correctWord.getText().length()));
+                optionB.setText(String.valueOf(options.get(1).getText().length()));
+                optionC.setText(String.valueOf(options.get(2).getText().length()));
+                optionD.setText(String.valueOf(options.get(3).getText().length()));
                 break;
             }
                 
@@ -207,7 +237,6 @@ public class QuestionsController {
         feedbackLabel.setText("");
         answerGroup.selectToggle(null);
     }
-
 
     /**
      * Handles the event triggered when the user clicks the "Submit" button.
@@ -258,12 +287,20 @@ public class QuestionsController {
         //Da implementare
     }
 
+    /**
+     * Returns the ID of the document associated with the quiz.
+     * @return
+     */
     public int getDocumentId(){
         return documentId;
     }
 
+    /**
+     * Sets the ID of the document associated with the quiz.
+     * @param id
+     */
+    @FXML
     public void setDocumentId(int id) {
         this.documentId = id;
     }
-
 }

@@ -17,19 +17,39 @@ import java.sql.*;
 
 public class DocumentReadController {
 
+    /**
+     * The document text area.
+     */
     @FXML
     private TextArea documentTextArea;
+
+    /**
+     * The timer label.
+     */
     @FXML
     private Label timerLabel;
 
+    /**
+     * The document id.
+     */
     private int documentId;
+
+    /**
+     * The timeline. Used to schedule the timer.
+     */
     private Timeline timeline;
+
+    /**
+     * The seconds left. Used to schedule the timer.
+     */
     private int secondsLeft = 30; // Imposta il tempo limite di lettura
 
     private String difficulty;
-    
-    
-    
+
+
+    /**
+     * Initializes the controller class.
+     */
     @FXML
     public void initialize(){
         difficulty = LevelsController.getDifficulty();
@@ -37,7 +57,10 @@ public class DocumentReadController {
         documentTextArea.setText(text);
         startTimer();
     }
-    
+
+    /**
+     * Starts the reading timer.
+     */
     private void startTimer() {
         timerLabel.setText("Tempo restante: " + secondsLeft + "s");
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
@@ -55,6 +78,9 @@ public class DocumentReadController {
         timeline.play();
     }
 
+    /**
+     * Stops the reading timer and goes to the questions view.
+     */
     private void goToQuestionsView() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/quizView.fxml"));
@@ -79,6 +105,13 @@ public class DocumentReadController {
         }
     }
 
+    /**
+     * Fetch a random document by difficulty.
+     *
+     * @param difficulty the difficulty of the document to fetch
+     *
+     * @return the document text as a String
+     */
     private String fetchRandomDocumentByDifficulty(String difficulty) {
         String content = "";
         String query = "SELECT id, text FROM documents WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1";

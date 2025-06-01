@@ -41,7 +41,7 @@ public class LevelsController {
     private ToggleGroup difficultyGroup;
 
     private static String selectedDifficulty;
-    
+
     @FXML
     public void initialize() {
         // Crea il ToggleGroup e assegna i RadioButton al gruppo
@@ -84,7 +84,6 @@ public class LevelsController {
                 selectedDifficulty = "EASY"; // fallback
                 break;
         }
-        
         try {
             // Carica la vista del quiz
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DocumentReadView.fxml"));
@@ -133,7 +132,13 @@ public class LevelsController {
             messageLabel.setText("Errore nel tornare alla schermata di login.");
         }
     }
-    
+
+    /**
+     * Returns the selected difficulty.
+     * Used by the QuizController to pass the difficulty to the quiz.
+     *
+     * @return
+     */
     public static String getDifficulty() {
         return selectedDifficulty;
     }

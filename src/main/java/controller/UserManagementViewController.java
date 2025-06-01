@@ -1,7 +1,10 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import service.GameSession;
 import service.UsersManagement;
 
 public class UserManagementViewController implements Initializable {
@@ -38,12 +42,28 @@ public class UserManagementViewController implements Initializable {
     private UsersManagement usersManagement;
     private int userId = 1; // Simulazione: userId corrente (in un'app vera, da sessione)
 
+    /**
+     * Initializes the controller class.
+     *
+     * @param url
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param rb
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         usersManagement = new UsersManagement();
         lblStatus.setText("");
     }
 
+    /**
+     * Updates the user profile with the new values entered in the fields
+     *
+     * @param event the event that triggered the method call
+     */
     @FXML
     private void onSaveProfile(ActionEvent event) {
         String username = tfUsername.getText();
@@ -69,6 +89,11 @@ public class UserManagementViewController implements Initializable {
         }
     }
 
+    /**
+     * Cancels the profile update and restores the fields to their original values
+     *
+     * @param event
+     */
     @FXML
     private void onCancel(ActionEvent event) {
         // Ripristina i campi vuoti o da DB
@@ -81,17 +106,41 @@ public class UserManagementViewController implements Initializable {
     /**
      * Exports the user sessions with results in a CSV file
      *
-     * @param event
+     * @param event the event that triggered the method call
      */
-
     @FXML
     private void onExportCsv(ActionEvent event) {
-        // TODO: esportazione CSV se necessaria
-        lblStatus.setText("Funzione di esportazione non implementata.");
+        String username = service.GameSessionManagement.getInstance().getUsername();
+        List<GameSession> sessions = usersManagement.getSessionsByUsername(username);
+
+        if (sessions.isEmpty()) {
+            lblStatus.setText("Nessuna sessione trovata per l'esportazione.");
+            return;
+        }
+
+        File file = new File("sessioni_" + username + ".csv");
+
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.println("DocumentID,Difficulty,Score,Timestamp");
+
+            for (GameSession s : sessions) {
+                writer.printf("%d,%s,%d,%s%n",
+                        s.getDocumentId(),
+                        s.getDifficulty(),
+                        s.getScore(),
+                        s.getTimestamp());
+            }
+
+            lblStatus.setText("Sessioni esportate in " + file.getAbsolutePath());
+
+        } catch (IOException e) {
+            lblStatus.setText("Errore durante l'esportazione.");
+            e.printStackTrace();
+        }
     }
 
     /**
-     * Let the player start the game by going to the reading section
+     * Let the player start the game by going to the difficulty selection view
      *
      * @param event
      */
@@ -100,7 +149,6 @@ public class UserManagementViewController implements Initializable {
 
         try {
 
-            //FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DocumentReadView.fxml"));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Level.fxml"));
             Parent root = loader.load();
 
