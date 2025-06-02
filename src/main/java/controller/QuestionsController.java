@@ -208,7 +208,7 @@ public class QuestionsController {
                 break;
             }
             case 2:{
-                questionLabel.setText("Quante volte appare la parola " + correctWord.getText() + " nella testo?");
+                questionLabel.setText("Quante volte appare la parola " + correctWord.getText() + " nel testo?");
                 optionA.setText(options.get(0).getFrequencyString());
                 optionB.setText(options.get(1).getFrequencyString());
                 optionC.setText(options.get(2).getFrequencyString());
@@ -263,7 +263,7 @@ public class QuestionsController {
             feedbackLabel.setText("Risposta corretta!");
         } else {
             feedbackLabel.setStyle("-fx-text-fill: red;");
-            feedbackLabel.setText("Risposta sbagliata. La parola corretta era: " + correctWord.getText());
+            feedbackLabel.setText("Risposta sbagliata. La risposta corretta era: " + correctWord.getText());
         }
 
         // Attende 2 secondi prima di caricare la prossima domanda
