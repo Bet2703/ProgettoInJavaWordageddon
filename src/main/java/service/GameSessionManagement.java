@@ -103,7 +103,7 @@ public class GameSessionManagement {
      * Method that saves the session data to the database.
      */
     public void saveSession() {
-        String sql = "INSERT INTO sessions (username, score, timestamp, difficulty, document_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO sessions (username, score, timestamp, difficulty, id_document) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
