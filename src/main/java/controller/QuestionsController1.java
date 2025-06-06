@@ -88,7 +88,7 @@ public class QuestionsController1 {
     /**
      * To store the correct word
      */
-    private Object correctAnswer;
+    private Word correctWord;
 
     /**
      * ID of the document to be used for the quiz.
@@ -177,23 +177,27 @@ public class QuestionsController1 {
             return;
         }
         
+        // Ordina le parole per frequenza decrescente e seleziona la più frequente
+        wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
+        correctWord = wordList.get(0);
+
+        // Seleziona 3 parole errate casuali + quella corretta
+        Set<Word> choices = new HashSet<>();
+        choices.add(correctWord);
         Random random = new Random();
-        List<Word> options = new ArrayList<>();
+
+        while (choices.size() < 4) {
+            Word randomWord = wordList.get(random.nextInt(wordList.size()));
+            choices.add(randomWord);
+        }
+
+        List<Word> options = new ArrayList<>(choices);
+        Collections.shuffle(options);
 
         int domanda = random.nextInt(4) + 1;
         
         switch(domanda){
             case 1: {
-                // Ordina le parole per frequenza decrescente e seleziona la più frequente
-                wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
-                correctAnswer = wordList.get(0).getText(); //parola più frequente
-                
-                options.add((Word)correctAnswer);
-                while (options.size() < 4){
-                    Word randomWord = wordList.get(random.nextInt(wordList.size()));
-                    options.add(randomWord);
-                }
-                Collections.shuffle(options);
                 // Imposta la domanda e le opzioni
                 questionLabel.setText("Qual è la parola più frequente nel testo?");
                 optionA.setText(options.get(0).getText());
@@ -204,16 +208,7 @@ public class QuestionsController1 {
                 break;
             }
             case 2:{
-                Word selectedWord = wordList.get(random.nextInt(wordList.size()));
-                correctAnswer = selectedWord.getFrequencyString(); //frequenza di una parola random
-                
-                options.add((Word)correctAnswer);
-                while (options.size() < 4){
-                    Word randomWord = wordList.get(random.nextInt(wordList.size()));
-                    options.add(randomWord);
-                }
-                Collections.shuffle(options);
-                questionLabel.setText("Quante volte appare la parola " + selectedWord.getText() + " nel testo?");
+                questionLabel.setText("Quante volte appare la parola " + correctWord.getText() + " nel testo?");
                 optionA.setText(options.get(0).getFrequencyString());
                 optionB.setText(options.get(1).getFrequencyString());
                 optionC.setText(options.get(2).getFrequencyString());
@@ -221,18 +216,8 @@ public class QuestionsController1 {
                 break;
             }
             case 3: {
-                // Ordina le parole per frequenza decrescente e seleziona la più frequente
-                wordList.sort(Comparator.comparingInt(Word::getFrequency));
-                correctAnswer = wordList.get(0).getText(); //parola meno frequente
-                
-                options.add((Word)correctAnswer);
-                while (options.size() < 4){
-                    Word randomWord = wordList.get(random.nextInt(wordList.size()));
-                    options.add(randomWord);
-                }
-                Collections.shuffle(options);
                 questionLabel.setText("Quale parola ha la frequenza più bassa?");
-                correctAnswer = options.get(0);
+                correctWord = options.get(0);
                 optionA.setText(options.get(0).getText());
                 optionB.setText(options.get(1).getText());
                 optionC.setText(options.get(2).getText());
@@ -240,17 +225,8 @@ public class QuestionsController1 {
                 break;
             }
             case 4: {
-                Word selectedWord = wordList.get(random.nextInt(wordList.size()));
-                correctAnswer = selectedWord.toString().length(); //calcolo la lunghezza di una parola random
-                
-                options.add((Word)correctAnswer);
-                while (options.size() < 4){
-                    Word randomWord = wordList.get(random.nextInt(wordList.size()));
-                    options.add(randomWord);
-                }
-                Collections.shuffle(options);
-                questionLabel.setText("Qual è la lunghezza della parola \"" + selectedWord.getText() + "\"?");
-                optionA.setText(String.valueOf(correctAnswer.toString().length()));
+                questionLabel.setText("Qual è la lunghezza della parola \"" + correctWord.getText() + "\"?");
+                optionA.setText(String.valueOf(correctWord.getText().length()));
                 optionB.setText(String.valueOf(options.get(1).getText().length()));
                 optionC.setText(String.valueOf(options.get(2).getText().length()));
                 optionD.setText(String.valueOf(options.get(3).getText().length()));
@@ -278,7 +254,7 @@ public class QuestionsController1 {
         }
 
         String selectedText = selected.getText();
-        boolean isCorrect = selectedText.equals(correctAnswer);
+        boolean isCorrect = selectedText.equals(correctWord.getText());
 
         session.recordAnswer(isCorrect);
 
@@ -287,7 +263,7 @@ public class QuestionsController1 {
             feedbackLabel.setText("Risposta corretta!");
         } else {
             feedbackLabel.setStyle("-fx-text-fill: red;");
-            feedbackLabel.setText("Risposta sbagliata. La risposta corretta era: " + correctAnswer);
+            feedbackLabel.setText("Risposta sbagliata. La risposta corretta era: " + correctWord.getText());
         }
 
         // Attende 2 secondi prima di caricare la prossima domanda

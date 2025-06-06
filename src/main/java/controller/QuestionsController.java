@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
 import javafx.animation.PauseTransition;
@@ -27,7 +22,7 @@ import java.util.*;
  */
 public class QuestionsController {
 
-    /**
+/**
      * Label used to display the question text.
      */
     @FXML
@@ -86,10 +81,9 @@ public class QuestionsController {
     private List<Word> wordList;
 
     /**
-     * To store the correct word
+     * To store the correct answer in text
      */
-    private Word correctWord;
-
+    private String correctAnswerText;
     /**
      * ID of the document to be used for the quiz.
      */
@@ -115,9 +109,8 @@ public class QuestionsController {
         optionB.setToggleGroup(answerGroup);
         optionC.setToggleGroup(answerGroup);
         optionD.setToggleGroup(answerGroup);
-
     }
-
+    
     /**
      * Starts the quiz by loading the first question and preparing the UI for the user to answer it.
      *
@@ -125,6 +118,7 @@ public class QuestionsController {
      */
     @FXML
     public void startGame(int documentId) {
+        this.documentId = documentId;
         wordList = service.QuestionGenerator.getWords(documentId);
 
         if (wordList == null) {
@@ -136,16 +130,13 @@ public class QuestionsController {
         String difficulty = LevelsController.getDifficulty();
         session.startSession(session.getCurrentPlayer(), documentId, difficulty);
         maxQuestions = session.getMaxQuestions();
-
-
         loadNextQuestion(maxQuestions);
     }
-
+    
     /**
      * Disables the user interaction with the UI.
      * This method should be called when the quiz is over.
      */
-    @FXML
     private void disableInteraction() {
         submitButton.setDisable(true);
         skipButton.setDisable(true);
@@ -154,14 +145,13 @@ public class QuestionsController {
         optionC.setDisable(true);
         optionD.setDisable(true);
     }
-
+    
     /**
      * Loads the next question and prepares the UI for the user to answer it.
      *
      * @param maxQuestions the maximum number of questions to be asked
      */
     private void loadNextQuestion(int maxQuestions) {
-
         if (session.getQuestionsAnswered() >= maxQuestions) {
             feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
             session.saveSession();
@@ -171,71 +161,96 @@ public class QuestionsController {
         }
 
         wordList = service.QuestionGenerator.getWords(documentId);
-
         if (wordList.size() < 4) {
             feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
             return;
         }
-        
-        // Ordina le parole per frequenza decrescente e seleziona la più frequente
-        wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
-        correctWord = wordList.get(0);
 
-        // Seleziona 3 parole errate casuali + quella corretta
-        Set<Word> choices = new HashSet<>();
-        choices.add(correctWord);
         Random random = new Random();
-
-        while (choices.size() < 4) {
-            Word randomWord = wordList.get(random.nextInt(wordList.size()));
-            choices.add(randomWord);
-        }
-
-        List<Word> options = new ArrayList<>(choices);
-        Collections.shuffle(options);
-
         int domanda = random.nextInt(4) + 1;
-        
-        switch(domanda){
-            case 1: {
-                // Imposta la domanda e le opzioni
-                questionLabel.setText("Qual è la parola più frequente nel testo?");
-                optionA.setText(options.get(0).getText());
-                optionB.setText(options.get(1).getText());
-                optionC.setText(options.get(2).getText());
-                optionD.setText(options.get(3).getText());
-
-                break;
-            }
-            case 2:{
-                questionLabel.setText("Quante volte appare la parola " + correctWord.getText() + " nel testo?");
-                optionA.setText(options.get(0).getFrequencyString());
-                optionB.setText(options.get(1).getFrequencyString());
-                optionC.setText(options.get(2).getFrequencyString());
-                optionD.setText(options.get(3).getFrequencyString());
-                break;
-            }
-            case 3: {
-                questionLabel.setText("Quale parola ha la frequenza più bassa?");
-                correctWord = options.get(0);
-                optionA.setText(options.get(0).getText());
-                optionB.setText(options.get(1).getText());
-                optionC.setText(options.get(2).getText());
-                optionD.setText(options.get(3).getText());
-                break;
-            }
-            case 4: {
-                questionLabel.setText("Qual è la lunghezza della parola \"" + correctWord.getText() + "\"?");
-                optionA.setText(String.valueOf(correctWord.getText().length()));
-                optionB.setText(String.valueOf(options.get(1).getText().length()));
-                optionC.setText(String.valueOf(options.get(2).getText().length()));
-                optionD.setText(String.valueOf(options.get(3).getText().length()));
-                break;
-            }
-                
-        }
         feedbackLabel.setText("");
         answerGroup.selectToggle(null);
+
+        switch (domanda) {
+            case (1): { // Più frequente
+                wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
+                Word correctWord = wordList.get(0);
+                correctAnswerText = correctWord.getText();
+
+                Set<String> options = new LinkedHashSet<>();
+                options.add(correctAnswerText);
+                while (options.size() < 4) {
+                    options.add(wordList.get(random.nextInt(wordList.size())).getText());
+                }
+
+                List<String> shuffled = new ArrayList<>(options);
+                Collections.shuffle(shuffled);
+                questionLabel.setText("Qual è la parola più frequente nel testo?");
+                setOptions(shuffled);
+            }
+
+            case (2): { // Frequenza di una parola random
+                Word selectedWord = wordList.get(random.nextInt(wordList.size()));
+                correctAnswerText = selectedWord.getFrequencyString();
+
+                Set<String> options = new LinkedHashSet<>();
+                options.add(correctAnswerText);
+                while (options.size() < 4) {
+                    String freq = String.valueOf(wordList.get(random.nextInt(wordList.size())).getFrequency());
+                    options.add(freq);
+                }
+
+                List<String> shuffled = new ArrayList<>(options);
+                Collections.shuffle(shuffled);
+                questionLabel.setText("Quante volte appare la parola \"" + selectedWord.getText() + "\" nel testo?");
+                setOptions(shuffled);
+            }
+
+            case (3): { // Meno frequente
+                wordList.sort(Comparator.comparingInt(Word::getFrequency));
+                Word correctWord = wordList.get(0);
+                correctAnswerText = correctWord.getText();
+
+                Set<String> options = new LinkedHashSet<>();
+                options.add(correctAnswerText);
+                while (options.size() < 4) {
+                    options.add(wordList.get(random.nextInt(wordList.size())).getText());
+                }
+
+                List<String> shuffled = new ArrayList<>(options);
+                Collections.shuffle(shuffled);
+                questionLabel.setText("Quale parola ha la frequenza più bassa?");
+                setOptions(shuffled);
+            }
+
+            case (4): { // Lunghezza parola
+                Word selectedWord = wordList.get(random.nextInt(wordList.size()));
+                correctAnswerText = String.valueOf(selectedWord.getText().length());
+
+                Set<String> options = new LinkedHashSet<>();
+                options.add(correctAnswerText);
+                while (options.size() < 4) {
+                    String len = String.valueOf(wordList.get(random.nextInt(wordList.size())).getText().length());
+                    options.add(len);
+                }
+
+                List<String> shuffled = new ArrayList<>(options);
+                Collections.shuffle(shuffled);
+                questionLabel.setText("Qual è la lunghezza della parola \"" + selectedWord.getText() + "\"?");
+                setOptions(shuffled);
+            }
+        }
+    }
+
+    /**
+     * Set the answers for the question
+     * @param options 
+     */
+    private void setOptions(List<String> options) {
+        optionA.setText(options.get(0));
+        optionB.setText(options.get(1));
+        optionC.setText(options.get(2));
+        optionD.setText(options.get(3));
     }
 
     /**
@@ -247,15 +262,13 @@ public class QuestionsController {
     @FXML
     private void onSubmitAnswer(ActionEvent event) {
         RadioButton selected = (RadioButton) answerGroup.getSelectedToggle();
-
         if (selected == null) {
             feedbackLabel.setText("Seleziona una risposta prima di inviare.");
             return;
         }
 
         String selectedText = selected.getText();
-        boolean isCorrect = selectedText.equals(correctWord.getText());
-
+        boolean isCorrect = selectedText.equals(correctAnswerText);
         session.recordAnswer(isCorrect);
 
         if (isCorrect) {
@@ -263,10 +276,9 @@ public class QuestionsController {
             feedbackLabel.setText("Risposta corretta!");
         } else {
             feedbackLabel.setStyle("-fx-text-fill: red;");
-            feedbackLabel.setText("Risposta sbagliata. La risposta corretta era: " + correctWord.getText());
+            feedbackLabel.setText("Risposta sbagliata. La risposta corretta era: " + correctAnswerText);
         }
 
-        // Attende 2 secondi prima di caricare la prossima domanda
         PauseTransition pause = new PauseTransition(Duration.seconds(2));
         pause.setOnFinished(e -> loadNextQuestion(maxQuestions));
         pause.play();
@@ -283,15 +295,11 @@ public class QuestionsController {
         loadNextQuestion(maxQuestions);
     }
 
-    public void setMaxQuestion(int maxQuestions){
-        //Da implementare
+    public void setMaxQuestion(int maxQuestions) {
+        this.maxQuestions = maxQuestions;
     }
 
-    /**
-     * Returns the ID of the document associated with the quiz.
-     * @return
-     */
-    public int getDocumentId(){
+    public int getDocumentId() {
         return documentId;
     }
 
