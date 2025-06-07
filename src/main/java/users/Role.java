@@ -1,14 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
- */
-// @author Gruppo6
 package users;
+
 /**
- * @enum Rolew
- * @brief Enum defining user roles: Admin or Player.
+ * Represents the possible roles a user can have within the system.
+ * This enumeration is primarily used to distinguish between different
+ * user types, such as administrative users and regular users.
+ *
+ * The roles are:
+ * - ADMIN: Represents a user with administrative privileges.
+ * - BASE: Represents a regular user without administrative privileges.
  */
 
-public enum Role {
-    ADMIN, BASE;
-}
+public enum Role { ADMIN, BASE; }

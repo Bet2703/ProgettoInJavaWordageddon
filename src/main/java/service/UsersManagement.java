@@ -4,16 +4,22 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages operations related to user data stored in the database.
+ * Provides methods for updating, deleting, and retrieving user information,
+ * as well as retrieving associated game sessions for a user.
+ *
+ * @author Gruppo6
+ */
 public class UsersManagement {
 
     /**
-     * Method that updates the username and password of the user with the given ID.
+     * Updates the user information in the database with the provided username and password for the specified user ID.
      *
-     * @param userId the ID of the user whose data is to be updated; must be greater than zero and must exist in the database.
-     * @param newUsername the new username of the user; must not be {@code null} or empty.
-     * @param newPassword the new password of the user; must not be {@code null} or empty.
-     *
-     * @return {@code true} if the user data was successfully updated; {@code false} otherwise, e.g. if the user does not exist in the database.
+     * @param userId the unique identifier of the user whose information is to be updated
+     * @param newUsername the new username to be set for the user; must not be null or empty
+     * @param newPassword the new password to be set for the user; must not be null or empty
+     * @return true if the user information was successfully updated in the database, false otherwise
      */
     public boolean updateUser(int userId, String newUsername, String newPassword) {
         String sql = "UPDATE users SET username = ?, password = ? WHERE id = ?";
@@ -32,10 +38,10 @@ public class UsersManagement {
     }
 
     /**
-     * Method that deletes the user data from the database based on the given username.
+     * Deletes a user from the database based on the provided username.
      *
-     * @param username the username of the user whose data is to be deleted; must not be {@code null} or empty
-     * @return {@code true} if the user data was successfully deleted; {@code false} otherwise, e.g. if the user does not exist in the database
+     * @param username the username of the user to be deleted; must not be null or empty
+     * @return true if the user was successfully deleted from the database, false otherwise
      */
     public boolean deleteUser(String username) {
         String sql = "DELETE FROM users WHERE username = ?";
@@ -52,9 +58,11 @@ public class UsersManagement {
     }
 
     /**
-     *  Method that retrieves the user data from the database based on the given username.
+     * Retrieves and prints the user details from the database based on the provided username.
+     * The method connects to the database, executes a query to fetch user data,
+     * and displays the user's ID, username, and password if the user exists.
      *
-     * @param username the username of the user whose data is to be retrieved; must not be {@code null} or empty
+     * @param username the username of the user whose details are to be retrieved; must not be null or empty
      */
     public void getUser(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
@@ -75,15 +83,18 @@ public class UsersManagement {
     }
 
     /**
-     * Returns a list of {@link GameSession} objects for the given username.
+     * Retrieves a list of game sessions associated with the specified username.
+     * The game sessions are fetched from the database and include details such
+     * as score, timestamp, difficulty, and document ID.
      *
-     * @param username the username of the user whose sessions are to be retrieved; must not be {@code null} or empty
-     * @return a list of {@link GameSession} objects for the given username; an empty list if no sessions are found
+     * @param username the username for which the game sessions are to be retrieved; must not be null or empty
+     * @return a list of {@link GameSession} objects representing the game sessions associated with the given username;
+     *         an empty list if no sessions are found or if an error occurs during the retrieval process
      */
     public List<GameSession> getSessionsByUsername(String username) {
         List<GameSession> sessions = new ArrayList<>();
 
-        String query = "SELECT score, timestamp, difficulty, document_id FROM sessions WHERE username = ?";
+        String query = "SELECT score, timestamp, difficulty, id_document FROM sessions WHERE username = ?";
 
         try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -93,7 +104,7 @@ public class UsersManagement {
 
             while (rs.next()) {
                 GameSession session = new GameSession(
-                        rs.getInt("document_id"),
+                        rs.getInt("id_document"),
                         rs.getString("difficulty"),
                         rs.getInt("score"),
                         rs.getString("timestamp")

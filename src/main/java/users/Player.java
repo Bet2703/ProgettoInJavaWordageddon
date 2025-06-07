@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package users;
 
 import java.util.ArrayList;
@@ -10,9 +5,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a player of the game, extending the base User class.
- * A Player has a role (Admin or Player), a username, password, and a list of personal scores.
- * 
+ * Represents a Player within the system, extending the User class.
+ * The Player class includes additional attributes and behaviors specific
+ * to a player, such as their role and personal scores.
+ *
  * @author Gruppo6
  */
 public class Player extends User {
@@ -21,11 +17,13 @@ public class Player extends User {
     private List<Integer> personalScore;
 
     /**
-     * Constructs a new Player with the specified username, password, and role.
-     * 
+     * Constructs a Player object with the specified username, password, and role.
+     * Extends the User class and initializes the player's specific attributes, including
+     * their role and an empty list to store their personal scores.
+     *
      * @param username the username of the player
      * @param password the password of the player
-     * @param role the role assigned to the player (Admin or Player)
+     * @param role the role of the player, specified as a {@link Role} enum
      */
     public Player(String username, String password, Role role) {
         super(username, password);
@@ -34,27 +32,29 @@ public class Player extends User {
     }
 
     /**
-     * Returns the player's role.
-     * 
-     * @return the role (Admin or Player)
+     * Retrieves the role assigned to this player.
+     *
+     * @return the role of the player as a {@link Role} enum
      */
     public Role getRole() {
         return role;
     }
 
     /**
-     * Returns a list of player's integer scores.
-     * 
-     * @return a list of integer scores
+     * Retrieves the personal score list for the player.
+     *
+     * @return a list of integers representing the player's personal scores
      */
     public List<Integer> getPersonalScore() {
         return this.personalScore;
     }
 
     /**
-     * Generates a hash code for the player based on the username.
-     * 
-     * @return the hash code
+     * Computes the hash code for the Player instance based on the username.
+     * This method overrides the hashCode method from the User class
+     * to include the specific implementation for Player objects.
+     *
+     * @return the hash code value for this Player object
      */
     @Override
     public int hashCode() {
@@ -64,10 +64,11 @@ public class Player extends User {
     }
 
     /**
-     * Compares this player with another object for equality based on username.
-     * 
-     * @param obj the object to compare with
-     * @return true if the usernames match, false otherwise
+     * Compares this Player instance to another object for equality.
+     * The equality is defined based on the username of the Player.
+     *
+     * @param obj the object to compare with this Player instance
+     * @return true if the specified object is equal to this Player, false otherwise
      */
     @Override
     public boolean equals(Object obj) {
@@ -82,9 +83,10 @@ public class Player extends User {
     }
 
     /**
-     * Returns a string representation of the player including username, password, and role.
-     * 
-     * @return a formatted string with player details
+     * Returns a string representation of the Player object.
+     * The string includes the username, password, and role of the player.
+     *
+     * @return a string containing the player's username, password, and role
      */
     @Override
     public String toString() {

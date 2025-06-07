@@ -5,26 +5,52 @@
  */
 package service;
 
-import users.Player;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 /**
+ * Provides functionality for managing an SQLite database connection.
+ * Facilitates establishing and closing a connection to the database file {@code wordageddon.db}.
  *
- * @author Benedetta
+ * @author Gruppo6
  */
 public class DatabaseManagement {
-    
+
+    /**
+     * The URL representing the database connection string for an SQLite database.
+     * This constant is used to specify the path of the SQLite database file "wordageddon.db".
+     * The value is set to use a relative path in conjunction with the JDBC SQLite driver.
+     *
+     * Format: jdbc:sqlite:<relative_path_to_db_file>
+     *
+     * Example Value: "jdbc:sqlite:./wordageddon.db"
+     */
     private static final String URL="jdbc:sqlite:./wordageddon.db";
+
+    /**
+     * Represents the single shared connection instance used for interactions
+     * with the SQLite database {@code wordageddon.db}. This variable is initialized
+     * and managed within the {@code DatabaseManagement} class.
+     *
+     * The {@code connection} is lazy-initialized and reused throughout the application lifecycle,
+     * ensuring efficient resource utilization and avoiding multiple instances per database connection.
+     *
+     * It is set to {@code null} initially and should only be accessed or modified
+     * through the appropriate methods within the {@code DatabaseManagement} class,
+     * such as {@link DatabaseManagement#getConnection()} and {@link DatabaseManagement#closeConnection()}.
+     */
     private static Connection connection = null;
 
     /**
-     * Creates a connection with the database wordageddon.db
+     * Establishes a connection to the SQLite database specified by the {@code URL}.
+     * If the connection object is null or already closed, it initializes a new connection.
+     * The connection is managed as a singleton to ensure efficient resource usage.
      *
-     * @return a {@link Connection} object if the connection is successful; {@code null} otherwise
+     * @return a {@link Connection} object representing the connection to the database,
+     *         or {@code null} if an error occurred during the connection process.
      */
-
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
@@ -39,12 +65,14 @@ public class DatabaseManagement {
         return connection;
     }
 
-
     /**
-     * Closes the connection with the database wordageddon.db
+     * Closes the active connection to the SQLite database if it exists and is open.
+     * This method ensures that any established connection to the database is properly closed,
+     * releasing associated resources.
      *
+     * If the connection is already closed or null, the method does nothing.
+     * If an error occurs during the closure, it logs the error message to the standard error stream.
      */
-
     public static void closeConnection() {
         if (connection != null) {
             try {
@@ -57,30 +85,4 @@ public class DatabaseManagement {
             }
         }
     }
-
-    /*NEL MAIN
-        Connection conn = DatabaseManagement.getConnection();
-        if(conn != null){
-            System.out.println("connesso");
-        }
-    */
-       
-    /*public static void inserisciUtente(String username, String password) {
-        String sql = "INSERT INTO User (username, password, is_admin) VALUES (?, ?, 0)";
-
-        try (Connection conn = DatabaseManagement.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-
-            int righeInserite = pstmt.executeUpdate();
-            if (righeInserite > 0) {
-                System.out.println("Utente inserito correttamente.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Errore durante l'inserimento dell'utente: " + e.getMessage());
-        }
-    }*/
 }

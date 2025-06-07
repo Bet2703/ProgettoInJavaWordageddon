@@ -1,4 +1,4 @@
-    package controller;
+package controller;
 
 import java.io.IOException;
 import javafx.event.ActionEvent;
@@ -16,26 +16,55 @@ import service.Login;
 import users.Player;
 import users.Role;
 
+/**
+ * The LoginController class is responsible for managing user login
+ * and registration interactions within the application. It handles
+ * input validation, authentication, and UI transitions based on
+ * user roles. The class is associated with an FXML view.
+ *
+ * @author Gruppo6
+ */
 public class LoginController {
 
-    @FXML
-    private VBox card;
+    /**
+     * The `usernameField` variable represents a text input field in the login form.
+     * This field is used to collect the username input from*/
     @FXML
     private TextField usernameField;
+
+    /**
+     * Represents a PasswordField that captures user input for passwords.
+     * This component is used to securely input and display obfuscated
+     * characters to protect sensitive information like user passwords.
+     * Connected to the GUI through FXML in the LoginController.
+     */
     @FXML
     private PasswordField passwordField;
+
+    /**
+     * The button component used for initiating the login action.
+     * This button triggers the login process when clicked, validating the entered
+     * username and password and directing the user to the appropriate view upon success.
+     */
     @FXML
     private Button loginButton;
-    @FXML
-    private Button registerButton;
+
+    /**
+     * Label component used to display messages to the user.
+     * This label is updated programmatically to provide feedback, error notifications,
+     * or other contextual information within the context of the LoginController.
+     */
     @FXML
     private Label messageLabel;
 
     /**
-     * Invoked when the user clicks the login button.
-     * Checks if the username and password are valid and logs the user in.
-     * If successful, loads the corresponding view.
-     * @param event the event that triggered the method call
+     * Handles the login process when the login button is clicked.
+     * Validates user inputs, attempts authentication, and loads the appropriate
+     * UI based on the user's role if authentication is successful.
+     * Displays error messages for invalid credentials, missing fields,
+     * or issues during view loading.
+     *
+     * @param event the action event that triggered this method
      */
     @FXML
     private void onLogin(ActionEvent event) {
@@ -63,11 +92,17 @@ public class LoginController {
     }
 
     /**
-     * Loads the corresponding view for the given role.
+     * Loads the appropriate view based on the user's role and sets it as the current scene.
      *
-     * @param role the role of the user to be loaded
+     * The method distinguishes between the `BASE` and `ADMIN` roles to load the respective FXML file.
+     * An `IllegalArgumentException` is thrown if the role is not recognized. After loading the FXML file,
+     * the method updates the scene of the current stage and displays it. It also handles possible I/O
+     * errors during the loading process.
      *
-     * @throws IOException if an error occurs during the loading of the view
+     * @param role the role of the user, used to determine which view to load. Accepted values are
+     *             `Role.BASE` and `Role.ADMIN`.
+     *
+     * @throws IOException if an error occurs while loading the FXML file for the specified role.
      */
     private void loadViewForRole(Role role) throws IOException {
             FXMLLoader loader;
@@ -91,10 +126,11 @@ public class LoginController {
     }
 
     /**
-     * Invoked when the user clicks the register button.
-     * Checks if the username and password are valid and registers the user.
+     * Handles the user registration process when the register button is clicked.
+     * Validates the input fields, checks for already existing usernames,
+     * registers the user if the input is valid, and updates the UI with appropriate messages.
      *
-     * @param event the event that triggered the method call
+     * @param event the action event that triggered this method
      */
     @FXML
     private void onRegister(ActionEvent event) {

@@ -20,38 +20,75 @@ import javafx.stage.Stage;
 import service.GameSession;
 import service.UsersManagement;
 
+/**
+ * The UserManagementViewController class is responsible for managing the user interface for
+ * user profile updates, session exports, and navigation within the application, such as
+ * transitioning to the game level scene. It implements the Initializable interface to
+ * initialize and manage UI components and application logic.
+ *
+ * @author Gruppo6
+ */
 public class UserManagementViewController implements Initializable {
 
+    /**
+     * Represents the input field for the username in the User Management view.
+     * This field is bound to the FXML file and allows the user to enter their username.
+     * It is used in various operations such as user profile validation and management.
+     */
     @FXML
     private TextField tfUsername;
+
+    /**
+     * A PasswordField component in the FXML view, representing the input field for the user's password.
+     * This field is used for securely capturing and handling user-entered passwords without displaying visible text.
+     */
     @FXML
     private PasswordField pfPassword;
+
+    /**
+     * Represents a password confirmation input field in the User Management View.
+     * This field is used to capture the confirmation of the new password entered by the user.
+     * It is typically validated against the main password field to ensure the values match
+     * before saving the profile changes.
+     */
     @FXML
     private PasswordField pfConfirm;
-    @FXML
-    private Label lblBestScore;
-    @FXML
-    private Button btnSave;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnExportCsv;
+
+    /**
+     * Represents the label component in the UserManagementViewController used to display status messages to the user.
+     * This label serves as a feedback mechanism, providing information such as success, error, or other
+     * contextual messages related to user management tasks.
+     */
     @FXML
     private Label lblStatus;
 
+    /**
+     * Manages operations related to user accounts, such as updating,
+     * deleting, and retrieving user information, as well as managing
+     * user sessions and profiles.
+     *
+     * This variable serves as a reference to the {@code UsersManagement} service
+     * which provides functionalities to interact with the user database and handle
+     * user-specific actions required by the controller.
+     */
     private UsersManagement usersManagement;
+
+    /**
+     * Represents the unique identifier of the current user within the system.
+     * This variable is used to track and identify the user interacting with the application.
+     * In a real-world scenario, the user ID would typically be retrieved from a session or
+     * authentication service to ensure it corresponds to the logged-in user.
+     */
     private int userId = 1; // Simulazione: userId corrente (in un'app vera, da sessione)
 
     /**
-     * Initializes the controller class.
+     * Initializes the UserManagementViewController by setting up the required components.
+     * This method is automatically called after the FXML file has been loaded.
+     * It creates a new instance of {@link UsersManagement} and resets the status label.
      *
-     * @param url
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
+     * @param url the location used to resolve relative paths for the root object, or {@code null} if the location is not known.
      *
-     * @param rb
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param rb the resource bundle used to localize the root object, or {@code null} if the resource bundle is not specified.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -60,9 +97,12 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Updates the user profile with the new values entered in the fields
+     * Handles the event of saving the user's profile changes.
+     * Validates the input fields for username, password, and confirm password.
+     * Displays error messages for invalid input or mismatched passwords.
+     * Updates the user's profile data using the usersManagement service.
      *
-     * @param event the event that triggered the method call
+     * @param event the ActionEvent that triggered the method call.
      */
     @FXML
     private void onSaveProfile(ActionEvent event) {
@@ -80,7 +120,6 @@ public class UserManagementViewController implements Initializable {
             return;
         }
 
-        // Per ora, supponiamo che l'email non venga usata: passiamo username e password
         boolean updated = usersManagement.updateUser(userId, username, password);
         if (updated) {
             lblStatus.setText("Profilo aggiornato con successo!");
@@ -90,9 +129,11 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Cancels the profile update and restores the fields to their original values
+     * Handles the action of cancelling the changes made in the user input fields.
+     * This method clears the input fields for username, password, and confirm password,
+     * and resets the status label with a message indicating that the changes have been canceled.
      *
-     * @param event
+     * @param event the ActionEvent that triggered the method call.
      */
     @FXML
     private void onCancel(ActionEvent event) {
@@ -104,9 +145,11 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Exports the user sessions with results in a CSV file
+     * Exports the game sessions of the currently logged-in user to a CSV file.
+     * The method retrieves user sessions, writes the session details to a CSV file,
+     * and updates the status label to indicate success or failure.
      *
-     * @param event the event that triggered the method call
+     * @param event the ActionEvent that triggered the export operation.
      */
     @FXML
     private void onExportCsv(ActionEvent event) {
@@ -140,9 +183,13 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Let the player start the game by going to the difficulty selection view
+     * Handles the action of starting the game.
+     * This method transitions the user from the current scene to the game level scene.
+     * It loads the Level.fxml file, sets up the new scene, and displays it on the current stage.
+     * Logs an error message if the loading process fails due to an I/O exception.
      *
-     * @param event
+     * @param event the ActionEvent that triggered this method. Typically, it is tied to a user action,
+     * such as clicking a button to play the game.
      */
     @FXML
     private void onPlayGame(ActionEvent event) {

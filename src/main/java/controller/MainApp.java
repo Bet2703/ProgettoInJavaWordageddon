@@ -7,12 +7,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
+ * The MainApp class serves as the entry point for the JavaFX application.
+ * It extends the Application class and is responsible for initializing
+ * and displaying the primary stage of the application.
  *
  * @author Gruppo6
- */
-
-/**
- * App Main class.
  */
 public class MainApp extends Application {
 
@@ -29,23 +28,20 @@ public class MainApp extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Carica il file Login.fxml dalla cartella view
+
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/view/Login.fxml"));
         Parent root = loader.load();
 
-
-        // Imposta titolo e scena
         primaryStage.setTitle("Login");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
     /**
-     * Main method.
+     * The main method serves as the entry point for the Java application.
+     * It initializes and launches the JavaFX application by invoking the `launch` method.
      *
-     * @param args
+     * @param args the command-line arguments passed to the application.
      */
-    public static void main(String[] args) {
-        launch(args); // Avvia l'applicazione JavaFX
-    }
+    public static void main(String[] args) {launch(args);}
 }

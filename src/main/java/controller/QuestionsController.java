@@ -1,106 +1,200 @@
 package controller;
 
 import javafx.animation.PauseTransition;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.animation.Timeline;
 import service.Word;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
- * Controller class for managing the user interface where questions are presented.
- * Handles answer selection, submission, skipping, and displaying feedback.
- * 
- * This controller is associated with a JavaFX FXML layout.
- * 
+ * The QuestionsController class is responsible for managing the quiz interface,
+ * handling user interactions, and coordinating the state and behavior of the quiz application.
+ * It provides functionality for starting the quiz, managing the timer, handling
+ * user input, and displaying feedback.
+ * This controller is associated with a JavaFX FXML layout
+ *
  * @author Gruppo6
  */
 public class QuestionsController {
 
-/**
-     * Label used to display the question text.
+    /**
+     * Represents a label in the UI that displays the question
+     * currently being presented to the user during the quiz.
+     * The text of this label is updated dynamically to reflect
+     * the content of the active question.
      */
     @FXML
     private Label questionLabel;
 
     /**
-     * Button used to submit the selected answer.
+     * Represents the "Submit" button in the user interface of the quiz.
+     * This button allows the user to submit their selected answer for evaluation.
+     * When clicked, it triggers the {@link #onSubmitAnswer()} method,
+     * which validates the user's response and provides feedback.
+     * Usage: The button is part of the quiz view and interacts with event handlers
+     * to process the user's answer during the quiz flow.
      */
     @FXML
     private Button submitButton;
 
     /**
-     * Button used to skip the current question.
+     * Represents the button in the UI that allows the user to skip the current question.
+     * When clicked, it triggers the action to move to the next question without evaluation.
+     * This button provides users with the option to bypass any question they do not wish to answer.
+     * It is wired to its corresponding event handler method in the controller.
      */
     @FXML
     private Button skipButton;
 
     /**
-     * Label used to show feedback to the user after submitting an answer.
+     * The `feedbackLabel` is a UI component used to display feedback to the user
+     * during the quiz process. This label provides textual information, such as
+     * whether an answer was correct, incorrect, or if an action cannot be performed.
+     * It is primarily updated based on user interactions and quiz progression logic.
      */
     @FXML
     private Label feedbackLabel;
 
+
     /**
-     * Radio button for answer option A.
+     * Represents the label in the user interface that displays the remaining time
+     * or countdown during the quiz session.
+     * This label is updated dynamically based on the quiz's timer functionality
+     * and is part of the UI managed by the QuestionsController.
+     */
+    @FXML
+    private Label timerLabel;
+
+    /**
+     * Represents a radio button in the quiz interface that allows the user
+     * to select the first option (option A) as their answer.
+     * This component is linked to the corresponding UI element in the FXML file.
+     * It is part of the group of selectable options for a quiz question and
+     * managed by the QuestionsController class.
      */
     @FXML
     private RadioButton optionA;
 
     /**
-     * Radio button for answer option B.
+     * Represents a RadioButton in the quiz interface labeled as option B.
+     * It is intended to allow users to select this option as their answer
+     * during the quiz. This RadioButton is part of a group of options
+     * displayed to the user as possible answers to a question.
+     * This field is annotated with @FXML, indicating that it is linked to an
+     * element defined in the associated FXML file and managed by the JavaFX framework.
      */
     @FXML
     private RadioButton optionB;
 
     /**
-     * Radio button for answer option C.
+     * Represents the third selectable option in a multiple-choice question.
+     * This radio button allows the user to select "Option C" as their answer.
+     * Used in the quiz interface managed by the controller.
      */
     @FXML
     private RadioButton optionC;
 
     /**
-     * Radio button for answer option D.
+     * Represents the fourth answer option in a multiple-choice question for the quiz interface.
+     * This radio button allows the user to select option D as their chosen answer.
+     * This component is part of the user interface managed by the `QuestionsController` and
+     * interacts with the answer group to allow only one option to be selected at a time.
+     * The radio button is initialized alongside other UI components and is enabled or disabled
+     * depending on the state of the quiz.
      */
     @FXML
     private RadioButton optionD;
 
     /**
-     * ToggleGroup used to manage the answer options.
+     * Represents a ToggleGroup used for managing the mutual exclusivity of a group
+     * of toggle buttons (e.g., RadioButtons) for answer selection in the quiz interface.
+     * This ensures that only one answer option can be selected at a time.
      */
     private ToggleGroup answerGroup;
 
+
     /**
-     * List of words to use taken from the DB
+     *
      */
     private List<Word> wordList;
 
     /**
-     * To store the correct answer in text
+     * Represents the text of the correct answer for the current question.
+     * This variable is used to store and compare the correct answer against
+     * the user's selected answer during the quiz.
      */
     private String correctAnswerText;
+
     /**
-     * ID of the document to be used for the quiz.
+     * Represents the unique identifier for a specific document used in the context
+     * of quiz management or document-related operations within the application.
+     * This variable is primarily used to associate actions, such as loading or
+     * processing, with the correct document based on its assigned ID. The document
+     * ID is expected to be a unique integer value provided by the system or user.
      */
     private int documentId;
 
     /**
-     * Instance of the GameSessionManagement class to manage the game session.
+     * Manages the current state of the game session.
+     * This field holds a reference to the singleton instance of {@code GameSessionManagement},
+     * responsible for coordinating the overall game session's lifecycle, retrieving session data,
+     * and maintaining session-specific details.
+     * The {@code session} instance is used across various methods in the {@code QuestionsController}
+     * class to manage and interact with the game session, such as retrieving the session's current
+     * state and applying session-specific configurations for the quiz.
      */
     private final service.GameSessionManagement session = service.GameSessionManagement.getInstance();
 
+
     /**
-     * Maximum number of questions to be asked in the quiz.
+     * Represents the maximum number of questions that will be displayed or asked
+     * during the quiz session. This value limits the total questions a user can
+     * encounter in a single session of the quiz.
      */
     private int maxQuestions;
 
     /**
-     * Initializes the controller class.
+     * A {@link PauseTransition} instance used to manage the timing of individual questions in the quiz.
+     * This timer is responsible for controlling the duration allotted for answering each question and can trigger specific actions when the time expires.
+     */
+    private PauseTransition questionTimer;
+
+    /**
+     * Represents the duration of time allowed for answering a single question in the quiz.
+     * This variable is used to control the timeout interval, ensuring the user has a limited amount of time to respond to each question.
+     */
+    private Duration questionTimeout;
+
+    /**
+     * Represents a JavaFX Timeline used for managing and animating
+     * the countdown timer during the quiz. This Timeline is responsible
+     **/
+    private Timeline countdownTimeline;
+
+    /**
+     * Holds the remaining time in seconds for the current quiz or question.
+     * This variable is primarily used to track and manage the countdown timer that
+     * limits the time a user can take to answer a question or complete the quiz.
+     * It is dynamically updated to reflect the remaining duration in real-time.
+     */
+    private int remainingTimeSeconds;
+
+    /**
+     * Initializes the controller's components and settings.
+     * This method sets up the `ToggleGroup` for the answer options (optionA, optionB, optionC, optionD)
+     * to ensure that only one option can be selected at a time.
+     * It is automatically called during the loading of the FXML file.
      */
     @FXML
     public void initialize() {
@@ -110,11 +204,15 @@ public class QuestionsController {
         optionC.setToggleGroup(answerGroup);
         optionD.setToggleGroup(answerGroup);
     }
-    
+
     /**
-     * Starts the quiz by loading the first question and preparing the UI for the user to answer it.
+     * Starts the game by initializing the necessary configurations for the session
+     * and loading the first question. It retrieves the words based on the provided
+     * document ID and determines the difficulty level to set the question timeout.
+     * If the document ID is invalid or there are not enough words, it provides
+     * appropriate feedback to the user.
      *
-     * @param documentId the ID of the document to be used for the quiz
+     * @param documentId the ID of the document used to load the words for the game
      */
     @FXML
     public void startGame(int documentId) {
@@ -135,12 +233,30 @@ public class QuestionsController {
         String difficulty = LevelsController.getDifficulty();
         session.startSession(session.getCurrentPlayer(), documentId, difficulty);
         maxQuestions = session.getMaxQuestions();
+
+        switch (difficulty.toUpperCase()) {
+            case "EASY":
+                questionTimeout = Duration.seconds(30);
+                break;
+            case "MEDIUM":
+                questionTimeout = Duration.seconds(20);
+                break;
+            case "HARD":
+                questionTimeout = Duration.seconds(10);
+                break;
+        }
+
         loadNextQuestion(maxQuestions);
     }
-    
+
     /**
-     * Disables the user interaction with the UI.
-     * This method should be called when the quiz is over.
+     * Disables user interaction with key UI elements.
+     * This method prevents interaction by disabling the following UI components:
+     * - The "Submit" button
+     * - The "Skip" button
+     * - Answer options (optionA, optionB, optionC, and optionD)
+     * Typically, this method is used to prevent user interaction during actions
+     * such as processing an answer or transitioning to the next question.
      */
     private void disableInteraction() {
         submitButton.setDisable(true);
@@ -150,11 +266,19 @@ public class QuestionsController {
         optionC.setDisable(true);
         optionD.setDisable(true);
     }
-    
+
     /**
-     * Loads the next question and prepares the UI for the user to answer it.
+     * Loads the next question in the quiz session.
+     * This method determines whether to proceed with the next question or conclude
+     * the quiz based on the number of questions answered and the maximum allowed questions.
+     * It dynamically generates a question from a set of predefined types and initializes
+     * the corresponding answer options.
+     * If the question timer expires, it records the answer as incorrect
+     * and transitions to the next question after a delay.
      *
-     * @param maxQuestions the maximum number of questions to be asked
+     * @param maxQuestions the maximum number of questions allowed in the quiz session.
+     *                     If the number of questions answered by the user reaches
+     *                     this limit, the quiz session concludes.
      */
     private void loadNextQuestion(int maxQuestions) {
 
@@ -164,8 +288,8 @@ public class QuestionsController {
         if (session.getQuestionsAnswered() >= maxQuestions) {
             feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
             session.saveSession();
-            System.out.println(session.toString());
             disableInteraction();
+            concludeQuiz();
             return;
         }
 
@@ -247,11 +371,52 @@ public class QuestionsController {
                 break;
             }
         }
+
+        if (questionTimer != null) {
+            questionTimer.stop();
+        }
+
+        remainingTimeSeconds = (int) questionTimeout.toSeconds();
+
+        countdownTimeline = new Timeline(new javafx.animation.KeyFrame(Duration.seconds(1), e -> {
+            remainingTimeSeconds--;
+            timerLabel.setText("Tempo Rimasto: " + remainingTimeSeconds + " secondi");
+            if (remainingTimeSeconds <= 0) {
+                countdownTimeline.stop();
+                feedbackLabel.setStyle("-fx-text-fill: red;");
+                feedbackLabel.setText("Tempo scaduto! La risposta corretta era: " + correctAnswerText);
+                session.recordAnswer(false); // Risposta errata per scadenza tempo
+                setInteractionEnabled(false);
+
+                PauseTransition pause = new PauseTransition(Duration.seconds(2));
+                pause.setOnFinished(ev -> {
+                    setInteractionEnabled(true);
+                    loadNextQuestion(maxQuestions);
+                });
+                pause.play();
+            }
+        }));
+        countdownTimeline.setCycleCount(remainingTimeSeconds);
+        countdownTimeline.play();
+
+        timerLabel.setText("Tempo Rimasto: " + remainingTimeSeconds + " secondi");
+        setInteractionEnabled(true);
+
+
     }
 
     /**
-     * Set the answers for the question
-     * @param options 
+     * Sets the text for the available answer options for a question.
+     * This method assigns the provided list of option texts to the respective
+     * answer options (optionA, optionB, optionC, and optionD).
+     *
+     * @param options a list of strings representing the text for the options.
+     *                 This list must contain at least four elements where:
+     *                 - The first element sets the text for optionA.
+     *                 - The second element sets the text for optionB.
+     *                 - The third element sets the text for optionC.
+     *                 - The fourth element sets the text for optionD.
+     *                 If the list contains fewer than four elements, an exception may occur.
      */
     private void setOptions(List<String> options) {
         optionA.setText(options.get(0));
@@ -261,13 +426,13 @@ public class QuestionsController {
     }
 
     /**
-     * Handles the event triggered when the user clicks the "Submit" button.
-     * This method should validate the selected answer and display feedback.
-     * 
-     * @param event the ActionEvent triggered by clicking the "INVIA" button
+     * Handles the submission of an answer during the quiz.
+     * This method evaluates the user's selected answer, provides appropriate feedback,
+     * disables interactions until the transition to the next question, and schedules the
+     * next question to be loaded after a brief delay. If the question timer is active, it is stopped.
      */
     @FXML
-    private void onSubmitAnswer(ActionEvent event) {
+    private void onSubmitAnswer() {
         RadioButton selected = (RadioButton) answerGroup.getSelectedToggle();
         if (selected == null) {
             feedbackLabel.setText("Seleziona una risposta prima di inviare.");
@@ -286,33 +451,115 @@ public class QuestionsController {
             feedbackLabel.setText("Risposta sbagliata. La risposta corretta era: " + correctAnswerText);
         }
 
+        setInteractionEnabled(false);
+
         PauseTransition pause = new PauseTransition(Duration.seconds(2));
-        pause.setOnFinished(e -> loadNextQuestion(maxQuestions));
+
+        pause.setOnFinished(e -> {
+            setInteractionEnabled(false);
+            loadNextQuestion(maxQuestions);
+        });
+
+        if (countdownTimeline != null) {
+            countdownTimeline.stop();
+        }
+
         pause.play();
+    }
+
+    /**
+     * Enables or disables user interaction with specific UI components.
+     * This method is used to control whether the user can interact with
+     * interactive elements such as buttons and options during the quiz.
+     *
+     * @param enabled a boolean value indicating whether to enable or disable
+     *                interaction. If set to true, elements will be enabled.
+     *                If set to false, elements will be disabled.
+     */
+    private void setInteractionEnabled(boolean enabled) {
+        submitButton.setDisable(!enabled);
+        skipButton.setDisable(!enabled);
+        optionA.setDisable(!enabled);
+        optionB.setDisable(!enabled);
+        optionC.setDisable(!enabled);
+        optionD.setDisable(!enabled);
     }
 
     /**
      * Handles the event triggered when the user clicks the "Skip" button.
      * This method should proceed to the next question without evaluation.
-     * 
-     * @param event the ActionEvent triggered by clicking the skip button
+     *
      */
     @FXML
-    private void onSkipQuestion(ActionEvent event) {
+    public void onSkipQuestion() {
+
+        session.recordAnswer(false);
+
+        if (countdownTimeline != null) {
+            countdownTimeline.stop();
+        }
+
+        if (session.getQuestionsAnswered() >= maxQuestions) {
+            feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
+            session.saveSession();
+            disableInteraction();
+            concludeQuiz();
+            return;
+        }
+
         loadNextQuestion(maxQuestions);
     }
 
-    public void setMaxQuestion(int maxQuestions) {
-        this.maxQuestions = maxQuestions;
+
+    /**
+     * Concludes the current quiz session by displaying the result screen
+     * and closing the current question window.
+     * This method is responsible for:
+     * - Loading the result screen from the FXML file.
+     * - Passing the number of correct answers to the ResultsController.
+     * - Creating and displaying a new stage to show the results.
+     * - Closing the current stage that hosts the quiz questions.
+     * - Displaying an error message through `feedbackLabel` in case of an exception.
+     * The method interacts with the `ResultsController` to set the correct
+     * answers for the session and leverages JavaFX components like `FXMLLoader`
+     * and `Stage` for UI management.
+     * Any errors encountered during the loading or display of the result
+     * screen are caught and handled by logging the exception and updating
+     * the `feedbackLabel` with a user-facing error message.
+     */
+    private void concludeQuiz() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ResultView.fxml"));
+            Parent root = loader.load();
+            ResultsController resultsController = loader.getController();
+            resultsController.setCorrectAnswers(session.getCorrectAnswers());
+            resultsController.setTotalAnswers(session.getQuestionsAnswered());
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Risultati del Quiz");
+            stage.show();
+
+            Stage currentStage = (Stage) questionLabel.getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Retrieves the document ID associated with the current session or configuration.
+     *
+     * @return the document ID as an integer
+     */
     public int getDocumentId() {
         return documentId;
     }
 
     /**
-     * Sets the ID of the document associated with the quiz.
-     * @param id
+     * Sets the document ID for the session or configuration.
+     *
+     * @param id the ID of the document to be assigned
      */
     @FXML
     public void setDocumentId(int id) {

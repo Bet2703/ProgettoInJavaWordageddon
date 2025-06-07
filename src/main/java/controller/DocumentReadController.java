@@ -15,51 +15,96 @@ import service.DatabaseManagement;
 import java.io.IOException;
 import java.sql.*;
 
+/**
+ * The DocumentReadController class is responsible for managing the document reading functionality
+ * of the application, including text display, timing, and navigation to a subsequent quiz phase.
+ *
+ * This controller interacts with UI elements defined in the associated FXML file and
+ * facilitates document retrieval based on difficulty, timer management, and scene transitions.
+ *
+ * @author Gruppo6
+ */
 public class DocumentReadController {
 
     /**
-     * The document text area.
+     * The TextArea component used for displaying the document text within the
+     * DocumentReadController.
+     *
+     * This field is bound to the corresponding UI element in the FXML layout file.
+     * It allows the application to display the content of a document for the user
+     * to read within the application's interface. The content of this field
+     * is typically set programmatically by loading document data.
      */
     @FXML
     private TextArea documentTextArea;
 
     /**
-     * The timer label.
+     * Represents the label used to display the timer in the reading context.
+     * This label is updated in real-time to show the remaining time during a reading session.
+     * It is controlled and modified programmatically through associated methods in the
+     * `DocumentReadController` class.
      */
     @FXML
     private Label timerLabel;
 
     /**
-     * The document id.
+     * Represents the unique identifier for a document within the system.
+     * This variable is used to track and manage a specific document entity
+     * in operations performed by the controller.
      */
     private int documentId;
 
     /**
-     * The timeline. Used to schedule the timer.
+     * Represents the timeline that manages the reading timer for the document viewer.
+     * This object controls the scheduling and execution of timed tasks related to
+     * the countdown and state transitions within the context of the `DocumentReadController`.
      */
     private Timeline timeline;
 
     /**
-     * The seconds left. Used to schedule the timer.
+     * Represents the remaining time in seconds for the user to complete a task or interaction
+     * within the application. This variable is primarily used to manage and display a countdown
+     * timer in the reading phase of the application.
+     *
+     * The default value is initialized to 30 seconds. This value may be decremented during
+     * runtime as the timer elapses.
      */
-    private int secondsLeft = 30; // Imposta il tempo limite di lettura
+    private int secondsLeft = 30;
 
+    /**
+     * Represents the difficulty level of a document or task.
+     * This variable is used to differentiate or categorize content based on
+     * its difficulty, such as "Easy", "Medium", or "Hard".
+     * It is a private field accessible and modifiable through appropriate methods.
+     */
     private String difficulty;
 
 
     /**
-     * Initializes the controller class.
+     * Initializes the DocumentReadController.
+     *
+     * This method is invoked automatically when the associated FXML file is loaded.
+     * It retrieves the selected difficulty level using LevelsController.getDifficulty,
+     * fetches a random document text based on the difficulty level, and displays
+     * the text in the associated text area. The reading timer is then started.
      */
     @FXML
     public void initialize(){
-        difficulty = LevelsController.getDifficulty();
-        String text = fetchRandomDocumentByDifficulty(difficulty);
+        String text = fetchRandomDocumentByDifficulty();
         documentTextArea.setText(text);
         startTimer();
     }
 
     /**
-     * Starts the reading timer.
+     * Starts a countdown timer and updates the timer label with the time remaining.
+     *
+     * This method initializes a `Timeline` object that decreases the value of `secondsLeft` each second
+     * and updates the `timerLabel` to reflect the remaining time. Once the time reaches zero, the timer
+     * stops, the label displays a "time's up" message, and the application transitions to a question
+     * view by invoking the `goToQuestionsView` method.
+     *
+     * The duration of the countdown is determined by the `secondsLeft` field, and the timeline is
+     * configured to run for a number of cycles equal to this value.
      */
     private void startTimer() {
         timerLabel.setText("Tempo restante: " + secondsLeft + "s");
@@ -79,7 +124,20 @@ public class DocumentReadController {
     }
 
     /**
-     * Stops the reading timer and goes to the questions view.
+     * Opens the quiz view scene and transitions the application to the questions interface.
+     *
+     * This method is responsible for loading the `quizView.fxml` file using the `FXMLLoader`,
+     * setting it as the root node of a new scene, and opening it in a new stage titled "Domande".
+     * The `QuestionsController` associated with the view is retrieved, and the `documentId`
+     * field is passed to it. The `startGame` method of the controller is invoked to initialize
+     * the quiz game with the current document's ID.
+     *
+     * Additionally, the current window, associated with the reading document interface, is closed
+     * after transitioning to the quiz view. If an error occurs while loading the FXML or transitioning
+     * to the new scene, the exception is caught, logged to the console, and its stack trace is printed.
+     *
+     * Exceptions:
+     * - Prints an error message and the stack trace if an `IOException` occurs while loading the FXML.
      */
     private void goToQuestionsView() {
         try {
@@ -106,31 +164,64 @@ public class DocumentReadController {
     }
 
     /**
-     * Fetch a random document by difficulty.
+     * Fetches a random document from the database based on the specified difficulty level.
      *
-     * @param difficulty the difficulty of the document to fetch
+     * This method executes a SQL query to retrieve one random document with the given difficulty
+     * from a "documents" table. The text content of the document is then returned. If no document
+     * is found, an empty string is returned. In case of any SQL errors, the exception details are
+     * printed to the console.
      *
-     * @return the document text as a String
+     * @return the text content of the selected document, or an empty string if no document is found
      */
-    private String fetchRandomDocumentByDifficulty(String difficulty) {
+    private String fetchRandomDocumentByDifficulty() {
         String content = "";
-        String query = "SELECT id, text FROM documents WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1";
+        String query = "SELECT id, text, difficulty FROM documents WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1";
 
         try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            pstmt.setString(1, difficulty);
+            String selectedDifficulty = LevelsController.getDifficulty(); // <-- scelta dell'utente
+            pstmt.setString(1, selectedDifficulty);
+
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
                 content = rs.getString("text");
-                documentId = rs.getInt("id"); // IMPOSTA l'ID del documento selezionato
-                System.out.println("Documento letto: " + content + " (ID: " + documentId + ")");
+                documentId = rs.getInt("id");
+                difficulty = rs.getString("difficulty");
+                secondsLeft = getSecondsByDifficulty(difficulty);
             }
+
         } catch (SQLException e) {
             System.err.println("Errore nella connessione/query col database " + e.getMessage());
             e.printStackTrace();
         }
         return content;
+    }
+
+    /**
+     * Determines the time limit in seconds based on the specified difficulty level.
+     *
+     * This method returns a predefined number of seconds associated with a given
+     * difficulty level. If the difficulty level is not recognized, a default value
+     * is returned.
+     *
+     * @param difficulty the difficulty level, which can be "EASY", "MEDIUM", or "HARD"
+     *
+     * @return the number of seconds corresponding to the specified difficulty level.
+     *         Returns 30 seconds for "EASY", 20 seconds for "MEDIUM", 10 seconds for "HARD",
+     *         or falls back to 20 seconds if the input is unrecognized.
+     */
+    private int getSecondsByDifficulty(String difficulty) {
+        switch (difficulty.toUpperCase()) {
+            case "EASY":
+                return 30;
+            case "MEDIUM":
+                return 20;
+            case "HARD":
+                return 10;
+            default:
+                return 20;
+        }
     }
 }

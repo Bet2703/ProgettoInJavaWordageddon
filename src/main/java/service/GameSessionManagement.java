@@ -7,60 +7,92 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import users.Player;
 
+/**
+ * The GameSessionManagement class provides a mechanism to manage game sessions for a player.
+ * It ensures that only one session is active at a time using the singleton pattern. The class
+ * handles the initialization, tracking, and storage of game session data, including player
+ * information, session metrics, and difficulty level.
+ *
+ * @author Gruppo6
+ */
 public class GameSessionManagement {
 
     /**
-     * Singleton pattern implementation.
+     * Singleton instance of the GameSessionManagement class.
+     * This variable holds the single instance of the class to ensure
+     * that only one instance is created and shared across the application.
      */
     private static GameSessionManagement instance;
 
     /**
-     * Implementation of the current player.
+     * Represents the player currently logged into the game session.
+     * This variable holds the reference to the Player object that is
+     * actively participating in the session. It is updated when a new
+     * session starts for a different player.
+     *
+     * This field can be null if no player is currently logged into the
+     * session. It is used in various methods to retrieve information
+     * about the active player, such as their username, score, or answers.
      */
     private Player currentPlayer;
 
     /**
-     * Implementation of the document ID.
+     * Represents the unique identifier for a document associated with the game session.
+     * This variable is used to track which document the current session is tied to.
      */
     private int documentId;
 
     /**
-     * Implementation of the score.
+     * Represents the score for the current game session.
+     * This field is updated based on the player's performance during the session.
      */
     private int score;
 
     /**
-     * Implementation of the number of questions answered.
+     * Represents the number of questions answered by the current player during a game session.
+     * This field is used to track the progress of the session and is updated when a new question
+     * is answered, regardless of whether the answer is correct or incorrect.
      */
     private int questionsAnswered;
 
     /**
-     * Implementation of the number of correct answers.
+     * Represents the number of correct answers recorded during a game session.
+     *
+     * This variable is used to track the success rate of the player by counting
+     * the total number of correctly answered questions. It is incremented
+     * whenever a correct answer is recorded and provides insights into the
+     * player's performance.
      */
     private int correctAnswers;
 
     /**
-     * Implementation of the timestamp.
+     * Represents the timestamp of the game session.
+     * This variable stores the date and time when the session was created or updated.
      */
     private LocalDateTime timestamp;
 
     /**
-     * Implementation of the difficulty.
-     */
+     * Represents the difficulty level of a game session.
+     *
+     * This variable specifies the difficulty of the current session and can influence
+     * various aspects of the session, such*/
     private String difficulty;
 
 
     /**
-     * Private constructor for singleton pattern implementation.
+     * Private constructor for the GameSessionManagement class.
+     * This constructor is used to ensure that the class operates as a singleton,
+     * preventing the instantiation of multiple instances of the class from outside.
      */
     private GameSessionManagement() {
         // costruttore privato per singleton
     }
 
     /**
-     * Method that returns the instance of the singleton class.
+     * Returns the singleton instance of the GameSessionManagement class.
+     * This method ensures that only one instance of the class exists throughout the application.
      *
-     * @return the instance of the singleton class; if the instance is not yet created, it is created and returned.
+     * @return the singleton instance of the GameSessionManagement class.
      */
     public static GameSessionManagement getInstance() {
         if (instance == null) {
@@ -70,11 +102,13 @@ public class GameSessionManagement {
     }
 
     /**
-     * Method that initializes the session for the given player and document ID.
+     * Initializes and starts a new game session for the specified player with the given document ID and difficulty level.
+     * This method sets up the session by resetting session-specific variables such as score, questions answered,
+     * and correct answers to their initial states.
      *
-     * @param player the player who is starting the session; must not be {@code null}
-     * @param documentId the ID of the document for which the session is being started; must be greater than zero and must exist in the database.
-     * @param difficulty the difficulty of the session; must not be {@code null} or empty.
+     * @param player the player for whom the session is being started; must not be null
+     * @param documentId the ID of the document associated with the session
+     * @param difficulty the difficulty level of the session; typically a string like "easy", "medium", or "hard"
      */
     public void startSession(Player player, int documentId, String difficulty) {
         this.currentPlayer = player;
@@ -87,9 +121,11 @@ public class GameSessionManagement {
     }
 
     /**
-     * Method that records the answer of the current player.
+     * Records the result of a player's answer by incrementing the total number of questions answered
+     * and updating the score and count of correct answers if the answer is correct.
      *
-     * @param correct {@code true} if the answer was correct; {@code false} otherwise, e.g. if the answer was wrong.
+     * @param correct a boolean indicating whether the player's answer was correct. If true, the score
+     *                and the count of correct answers are updated.
      */
     public void recordAnswer(boolean correct) {
         questionsAnswered++;
@@ -100,7 +136,16 @@ public class GameSessionManagement {
     }
 
     /**
-     * Method that saves the session data to the database.
+     * Saves the current game session to the database by inserting the session's details
+     * such as username, score, timestamp, difficulty, and document ID.
+     *
+     * This method establishes a connection to the database and executes an SQL INSERT
+     * statement using a prepared statement to prevent SQL injection. The session details
+     * are retrieved using getter methods for the current username, score, timestamp,
+     * difficulty, and document ID.
+     *
+     * If an SQLException occurs during the operation, an error message is printed to
+     * standard error.
      */
     public void saveSession() {
         String sql = "INSERT INTO sessions (username, score, timestamp, difficulty, id_document) VALUES (?, ?, ?, ?, ?)";
@@ -122,9 +167,10 @@ public class GameSessionManagement {
     }
 
     /**
-     * Method that retrieves the session data from the database.
+     * Retrieves session information for the specified username from the database
+     * and prints details such as username, score, and timestamp.
      *
-     * @param username the username of the player whose session is to be retrieved; must not be {@code null} or empty
+     * @param username the username of the player whose session information is to be retrieved; must not be null
      */
     public void getSession(String username) {
         String sql = "SELECT * FROM sessions WHERE username = ?";
@@ -146,59 +192,65 @@ public class GameSessionManagement {
     }
 
     /**
-     * Method that resets the session data.
+     * Resets the current game session by clearing the instance or resetting its fields.
+     * This method is typically used to terminate or clear the current session data,
+     * ensuring that all session-related fields are either nullified or set to their
+     * default initial states.
      */
     public void resetSession() {
         instance = null; // oppure azzera i campi
     }
 
     /**
-     * Method that returns the current player.
+     * Retrieves the current player of the game session.
      *
-     * @return the current player; {@code null} if no player is currently logged in.
+     * @return the current Player object managing the game session; may return null if no player is set.
      */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
     /**
-     * Method that returns the document ID.
-     * @return the document ID; {@code -1} if no player is currently logged in.
+     * Retrieves the ID of the document associated with the current game session.
+     *
+     * @return the document ID as an integer; {@code -1} if no document is associated with the session.
      */
     public int getDocumentId() {
         return documentId;
     }
 
     /**
-     * Method that returns the score.
+     * Retrieves the score of the current game session.
      *
-     * @return the score; {@code -1} if no player is currently logged in.
+     * @return the score of the game session as an integer.
      */
     public int getScore() {
         return score;
     }
 
     /**
-     * Method that returns the number of questions answered.
+     * Retrieves the total number of questions answered in the current game session.
      *
-     * @return the number of questions answered; {@code -1} if no player is currently logged in.
+     * @return the number of questions answered as an integer.
      */
     public int getQuestionsAnswered() {
         return questionsAnswered;
     }
+
     /**
-     * Method that returns the number of correct answers.
+     * Retrieves the total number of correct answers in the current game session.
      *
-     * @return the number of correct answers; {@code -1} if no player is currently logged in.
+     * @return the number of correct answers as an integer.
      */
     public int getCorrectAnswers() {
         return correctAnswers;
     }
 
     /**
-     * Method that returns the percentage of correct answers.
+     * Calculates the percentage of correctly answered questions in the current game session.
+     * If no questions have been answered, the method returns 0.
      *
-     * @return the percentage of correct answers; {@code -1} if no player is currently logged in.
+     * @return the percentage of correct answers as a double value, or 0 if no questions have been answered.
      */
     public double getCorrectPercentage() {
         if (questionsAnswered == 0) {
@@ -208,18 +260,19 @@ public class GameSessionManagement {
     }
 
     /**
-     * Method that returns the timestamp.
+     * Retrieves the timestamp of the current game session.
      *
-     * @return the timestamp; {@code null} if no player is currently logged in.
+     * @return the timestamp of the game session as a LocalDateTime object.
      */
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
     /**
-     * Method that returns the username of the current player.
+     * Retrieves the username of the current player in the game session.
+     * If there is no current player, this method returns null.
      *
-     * @return the username of the current player; {@code null} if no player is currently logged in.
+     * @return the username of the current player as a string, or null if no player is set.
      */
     public String getUsername() {
         return currentPlayer != null ? currentPlayer.getUsername() : null;
@@ -227,27 +280,34 @@ public class GameSessionManagement {
 
 
     /**
-     * Method that returns the difficulty of the current session.
+     * Converts the difficulty of the current game session to its string representation.
      *
-     * @return the difficulty of the current session; {@code null} if no player is currently logged in.
+     * @return the string representation of the session's difficulty; {@code null} if no difficulty is set.
      */
     public String getDifficultyAsString() {
         return getDifficulty().toString();
     }
 
     /**
-     * Method that returns the difficulty of the current session.
+     * Retrieves the difficulty level of the current game session.
      *
-     * @return the difficulty of the current session; {@code null} if no player is currently logged in.
+     * @return the difficulty level of the game session as a string, or null if no difficulty is set.
      */
     public String getDifficulty() {
         return difficulty;
     }
 
     /**
-     * Method that returns the maximum number of questions for the given difficulty.
+     * Determines the maximum number of questions to be presented based on the current
+     * difficulty level of the session. The level is interpreted from the field
+     * "difficulty" and mapped to specific values:
+     * - "EASY": 5 questions
+     * - "MEDIUM": 10 questions
+     * - "HARD": 15 questions
+     * If the difficulty level is undefined or does not match the predefined levels,
+     * a default value of 10 questions is returned.
      *
-     * @return the maximum number of questions for the given difficulty; {@code 10} if no player is currently logged in.
+     * @return the maximum number of questions for the current difficulty level as an integer.
      */
     public int getMaxQuestions() {
         switch (difficulty.toUpperCase()) {
@@ -259,25 +319,35 @@ public class GameSessionManagement {
     }
 
     /**
-     * Method that returns the number of remaining questions for the current session.
+     * Calculates the number of remaining questions in the current game session.
+     * This is determined by subtracting the number of questions answered from
+     * the total number of questions allowed for the session.
      *
-     * @return the number of remaining questions for the current session; {@code -1} if no player is currently logged in.
+     * @return the remaining number of questions as an integer.
      */
     public int getRemainingQuestions() {
         return getMaxQuestions() - getQuestionsAnswered();
     }
 
     /**
-     * Method that returns a string representation of the current session.
+     * Sets the current player for the game session.
      *
-     * @return a string representation of the current session; {@code null} if no player is currently logged in.
+     * @param player the Player object to be set as the current player; must not be null
+     */
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
+    }
+
+    /**
+     * Returns a string representation of the game session.
+     * The string includes details about the current player, score, difficulty level,
+     * and the total number of questions answered.
+     *
+     * @return a formatted string describing the game session.
      */
     @Override
     public String toString() {
         return "La sessione del giocatore " + getCurrentPlayer() + " col punteggio " + getCorrectAnswers() + " a difficoltà " + getDifficulty() + " ha avuto " + getQuestionsAnswered() + " domande risposte.";
     }
 
-    public void setCurrentPlayer(Player player) {
-        this.currentPlayer = player;
-    }
 }

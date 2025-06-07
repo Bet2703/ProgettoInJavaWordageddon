@@ -49,9 +49,14 @@
                        <Button fx:id="skipButton" onAction="#onSkipQuestion" prefHeight="35" prefWidth="100" style="-fx-background-color: #e67e22; -fx-text-fill: white;                                    -fx-background-radius: 8; -fx-font-size: 14px;" text="Salta" />
                    </children>
                </HBox>
-   
+
                <!-- Feedback Label -->
-               <Label fx:id="feedbackLabel" style="-fx-font-size: 14px; -fx-text-fill: #c0392b;" text="Puoi inserire una risposta" textFill="RED" wrapText="true" />
+               <Label fx:id="feedbackLabel" style="-fx-font-size: 14px; -fx-text-fill: #c0392b;" text="Puoi inserire una risposta" wrapText="true" />
+
+
+               <!-- Timer Countdown Label -->
+               <Label fx:id="timerLabel" alignment="CENTER" style="-fx-font-size: 14px; -fx-text-fill: #2980b9;" text="Tempo rimasto: -- secondi" />
+
            </children>
         </VBox>
     </children>
