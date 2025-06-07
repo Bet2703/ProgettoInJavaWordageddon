@@ -53,6 +53,12 @@ public class ResultsController {
      * It can be used for calculating metrics such as accuracy or completion.
      */
     private int totalAnswers;
+    @FXML
+    private Button btnHome;
+    @FXML
+    private Button btnRetry;
+    @FXML
+    private Button personalScoresButton;
 
     /**
      * Initializes the ResultsController by setting up initial configurations
@@ -62,7 +68,6 @@ public class ResultsController {
      * Specifically, it updates the `correctCountLabel` text to display the
      * initial number of correct answers.
      */
-    @FXML
     private void initialize() {
 
         correctCountLabel.setText("Risposte corrette: " + correctAnswers + " su " + totalAnswers + " domande totali.");
@@ -145,6 +150,23 @@ public class ResultsController {
             System.err.println("Errore durante il caricamento della schermata del quiz: " + e.getMessage());
             e.printStackTrace(); // Può essere sostituito con un logger
         }
+    }
+
+    @FXML
+    private void onPersonaScore(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PersonalScoresView.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) feedbackMessage.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("PersonalScores");
+            stage.show();
+        } catch (IOException e) {
+            // Log dell'errore
+            System.err.println("Errore durante il caricamento della schermata della classifica personale: " + e.getMessage());
+            e.printStackTrace(); // Può essere sostituito con un logger
+        }
+        
     }
 
 
