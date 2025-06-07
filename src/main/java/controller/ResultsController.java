@@ -57,7 +57,7 @@ public class ResultsController {
     /**
      * Initializes the ResultsController by setting up initial configurations
      * for the UI components associated with this controller.
-     *
+     * <p>
      * This method is automatically called after the FXML file has been loaded.
      * Specifically, it updates the `correctCountLabel` text to display the
      * initial number of correct answers.
@@ -106,7 +106,7 @@ public class ResultsController {
     @FXML
     private void onBackToMenu(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserManagementView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainMenu.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -143,9 +143,7 @@ public class ResultsController {
         } catch (IOException e) {
             // Log dell'errore
             System.err.println("Errore durante il caricamento della schermata del quiz: " + e.getMessage());
-            e.printStackTrace(); // Può essere sostituito con un logger
+            e.printStackTrace();
         }
     }
-
-
 }

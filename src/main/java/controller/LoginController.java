@@ -110,7 +110,7 @@ public class LoginController {
 
             switch (role) {
                 case BASE:
-                    loader = new FXMLLoader(getClass().getResource("/view/UserManagementView.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/view/MainMenu.fxml"));
                     break;
                 case ADMIN:
                     loader = new FXMLLoader(getClass().getResource("/view/AdminView.fxml"));

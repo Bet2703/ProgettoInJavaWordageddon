@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -66,7 +67,7 @@ public class UserManagementViewController implements Initializable {
      * Manages operations related to user accounts, such as updating,
      * deleting, and retrieving user information, as well as managing
      * user sessions and profiles.
-     *
+     * <p>
      * This variable serves as a reference to the {@code UsersManagement} service
      * which provides functionalities to interact with the user database and handle
      * user-specific actions required by the controller.
@@ -87,8 +88,7 @@ public class UserManagementViewController implements Initializable {
      * It creates a new instance of {@link UsersManagement} and resets the status label.
      *
      * @param url the location used to resolve relative paths for the root object, or {@code null} if the location is not known.
-     *
-     * @param rb the resource bundle used to localize the root object, or {@code null} if the resource bundle is not specified.
+     * @param rb  the resource bundle used to localize the root object, or {@code null} if the resource bundle is not specified.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -183,33 +183,27 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Handles the action of starting the game.
-     * This method transitions the user from the current scene to the game level scene.
-     * It loads the Level.fxml file, sets up the new scene, and displays it on the current stage.
-     * Logs an error message if the loading process fails due to an I/O exception.
+     * Handles the action of navigating back to the main menu.
+     * This method loads the main menu view from the associated FXML file
+     * and updates the current stage's scene to display the main menu.
+     * If an IOException occurs during the loading of the FXML file,
+     * an error message is printed to the standard error stream.
      *
-     * @param event the ActionEvent that triggered this method. Typically, it is tied to a user action,
-     * such as clicking a button to play the game.
+     * @param event the ActionEvent that triggered the navigation.
      */
     @FXML
-    private void onPlayGame(ActionEvent event) {
-
+    private void onGoBack(ActionEvent event) {
         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainMenu.fxml"));
+            Scene scene = new Scene(loader.load());
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Level.fxml"));
-            Parent root = loader.load();
-
-            // Ottieni lo stage attuale a partire da un qualsiasi nodo (es. il pulsante premuto)
-            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-
-            // Sostituisci la scena
-            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
+            stage.setTitle("Menu Principale");
             stage.show();
 
         } catch (IOException e) {
-            System.err.println("Errore durante il caricamento della schermata: " + e.getMessage());
+            System.err.println("Errore durante il ritorno al menu: " + e.getMessage());
         }
     }
 }
-

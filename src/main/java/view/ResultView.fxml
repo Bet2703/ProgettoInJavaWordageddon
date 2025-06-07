@@ -14,6 +14,14 @@
             style="-fx-background-color: linear-gradient(to bottom, #34495e, #2c3e50);">
 
     <children>
+
+        <!-- Pulsante Torna al Menu in alto a sinistra -->
+        <Button fx:id="btnHomeTop"
+                text="← Menu"
+                onAction="#onBackToMenu"
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"
+                AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10"/>
+
         <VBox alignment="CENTER" spacing="20"
               AnchorPane.topAnchor="50" AnchorPane.leftAnchor="50"
               AnchorPane.rightAnchor="50" AnchorPane.bottomAnchor="50"
@@ -55,6 +63,7 @@
                         onAction="#onRetryQuiz"
                         style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 8;"
                         prefWidth="150" prefHeight="40"/>
+
             </HBox>
         </VBox>
     </children>

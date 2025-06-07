@@ -54,10 +54,6 @@
                 </children>
             </GridPane>
 
-            <Label fx:id="lblBestScore"
-                   text="${controller.bestScoreText}"
-                   style="-fx-font-size: 18px; -fx-text-fill: #16a085;"/>
-
             <HBox spacing="15" alignment="CENTER">
                 <Button fx:id="btnSave" text="Salva" onAction="#onSaveProfile"
                         style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-background-radius: 5;"
@@ -74,7 +70,7 @@
         </VBox>
         
         <!-- Bottone Gioca posizionato in basso al centro -->
-        <Button text="Gioca" onAction="#onPlayGame"
+        <Button text="Torna al Menu" onAction="#onGoBack"
                 style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 5;"
                 prefWidth="120" prefHeight="40"
                 AnchorPane.bottomAnchor="20"

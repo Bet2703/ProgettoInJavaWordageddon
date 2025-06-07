@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+            fx:controller="controller.MainMenuController"
+            prefWidth="600" prefHeight="450"
+            style="-fx-background-color: linear-gradient(to bottom, #fbeec1, #f8d49d);">
+
+    <children>
+        <VBox alignment="TOP_CENTER" spacing="20"
+              AnchorPane.topAnchor="40" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40">
+            <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
+            <effect>
+                <DropShadow radius="10" offsetY="5" color="#00000055"/>
+            </effect>
+            <children>
+
+                <!-- Titolo -->
+                <Label text="WORDAGEDDON"
+                       style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;
+                              -fx-background-color: #ffffff; -fx-padding: 10 20 10 20;
+                              -fx-background-radius: 8; -fx-border-color: #bdc3c7;
+                              -fx-border-radius: 8;"/>
+
+                <!-- Pulsanti Menu -->
+                <VBox spacing="15" alignment="CENTER">
+                    <children>
+                        <Button text="GIOCA"
+                                style="-fx-background-color: #27ae60; -fx-text-fill: white;
+                                       -fx-font-size: 18px; -fx-font-weight: bold;
+                                       -fx-background-radius: 10;"
+                                prefWidth="220" prefHeight="45" onAction="#onPlayClicked" />
+
+                        <Button text="PROFILO"
+                                style="-fx-background-color: #f39c12; -fx-text-fill: white;
+                                       -fx-font-size: 18px; -fx-font-weight: bold;
+                                       -fx-background-radius: 10;"
+                                prefWidth="220" prefHeight="45" onAction="#onProfileClicked"/>
+
+                        <Button text="CLASSIFICA"
+                                style="-fx-background-color: #c0392b; -fx-text-fill: white;
+                                       -fx-font-size: 18px; -fx-font-weight: bold;
+                                       -fx-background-radius: 10;"
+                                prefWidth="220" prefHeight="45" onAction="#onLeaderboardClicked"/>
+
+                        <Button text="ESCI"
+                                style="-fx-background-color: #263fbd; -fx-text-fill: white;
+                                       -fx-font-size: 18px; -fx-font-weight: bold;
+                                       -fx-background-radius: 10;"
+                                prefWidth="220" prefHeight="45" onAction="#onExitClicked"/>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+
+        <!-- Footer -->
+        <Label text="© 2025 Wordageddon - Gruppo6"
+               style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px;"
+               AnchorPane.bottomAnchor="15" AnchorPane.leftAnchor="20"/>
+    </children>
+</AnchorPane>
