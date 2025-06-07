@@ -153,7 +153,6 @@ public class DocumentReadController {
             controller.startGame(documentId);
             System.out.println("L'id del Testo nel DB e': " + controller.getDocumentId());
 
-            // Chiudi la finestra attuale (quella di lettura documento)
             Stage currentStage = (Stage) documentTextArea.getScene().getWindow();
             currentStage.close();
 

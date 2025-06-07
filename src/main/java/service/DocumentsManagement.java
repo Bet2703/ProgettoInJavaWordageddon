@@ -251,7 +251,7 @@ public class DocumentsManagement {
 
         try (Connection conn = DatabaseManagement.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) { //Serve per eseguire una query SQL e ottenere i risultati sotto forma di oggetto ResultSet.
+             ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
                 titles.add(rs.getString("title"));

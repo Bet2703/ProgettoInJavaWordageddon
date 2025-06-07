@@ -12,6 +12,8 @@ import java.io.IOException;
  * The MainMenuController class is responsible for managing the main menu of the application.
  * It handles user interactions for various menu buttons, such as navigating to the level selection view,
  * viewing the leaderboard, or exiting the application.
+ *
+ * @author Gruppo6
  */
 public class MainMenuController {
 
