@@ -17,8 +17,6 @@ import java.util.Objects;
  */
 public class Player extends User {
     
-    private String username;
-    private String password;
     private Role role;
     private List<Integer> personalScore;
 
@@ -36,24 +34,6 @@ public class Player extends User {
     }
 
     /**
-     * Returns the player's username.
-     * 
-     * @return the username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Returns the player's password.
-     * 
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
      * Returns the player's role.
      * 
      * @return the role (Admin or Player)
@@ -63,7 +43,7 @@ public class Player extends User {
     }
 
     /**
-     * Returns the list of personal scores of the player.
+     * Returns a list of player's integer scores.
      * 
      * @return a list of integer scores
      */
@@ -79,7 +59,7 @@ public class Player extends User {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 79 * hash + Objects.hashCode(this.username);
+        hash = 79 * hash + Objects.hashCode(super.getUsername());
         return hash;
     }
 
@@ -98,7 +78,7 @@ public class Player extends User {
             return false;
         }
         final Player other = (Player) obj;
-        return Objects.equals(this.username, other.username);
+        return Objects.equals(super.getUsername(), other.getUsername());
     }
 
     /**

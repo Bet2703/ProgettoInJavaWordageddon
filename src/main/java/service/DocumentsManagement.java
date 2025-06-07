@@ -47,7 +47,7 @@ public class DocumentsManagement {
     public static Map<String, Integer> textFiltering(String line) {
 
         Map<String, Integer> wordCount = new HashMap<>();
-        String[] words = line.split("\\s+");
+        String[] words = line.split("\\P{L}+");
         for(String word : words)
         {
             String cleaned = word.toLowerCase().replaceAll("[^a-zàèéìòùäöüßáêíóúñ]", "");
@@ -131,20 +131,17 @@ public class DocumentsManagement {
         //Query per inserimento nel database
         String sql = "INSERT INTO documents (text, title, difficulty) VALUES (?, ?, ?)";
 
-        try(Connection conn = DatabaseManagement.getConnection();
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseManagement.getConnection();
+             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8));
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            //Lettura del File
+            // Lettura del File
             StringBuilder contentBuilder = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null) {
-
                 contentBuilder.append(line);
-
             }
 
-            //Inviamo la Query al DB
             pstmt.setString(1, contentBuilder.toString());
             pstmt.setString(2, getBaseName(fileName.getName()));
             pstmt.setString(3, difficulty.name());

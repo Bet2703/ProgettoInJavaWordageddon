@@ -276,4 +276,8 @@ public class GameSessionManagement {
     public String toString() {
         return "La sessione del giocatore " + getCurrentPlayer() + " col punteggio " + getCorrectAnswers() + " a difficoltà " + getDifficulty() + " ha avuto " + getQuestionsAnswered() + " domande risposte.";
     }
+
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
+    }
 }

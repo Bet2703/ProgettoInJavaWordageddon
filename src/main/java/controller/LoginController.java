@@ -50,6 +50,7 @@ public class LoginController {
         Player player = Login.login(username, password);
 
         if (player != null) {
+            service.GameSessionManagement.getInstance().setCurrentPlayer(player);
             try {
                 loadViewForRole(player.getRole());
             } catch (IOException | IllegalArgumentException e) {

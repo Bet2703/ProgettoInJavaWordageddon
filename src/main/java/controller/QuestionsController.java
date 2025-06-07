@@ -127,6 +127,11 @@ public class QuestionsController {
             return;
         }
 
+        if (wordList.size() < 4) {
+            feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
+            return;
+        }
+
         String difficulty = LevelsController.getDifficulty();
         session.startSession(session.getCurrentPlayer(), documentId, difficulty);
         maxQuestions = session.getMaxQuestions();
@@ -152,17 +157,15 @@ public class QuestionsController {
      * @param maxQuestions the maximum number of questions to be asked
      */
     private void loadNextQuestion(int maxQuestions) {
+
+        feedbackLabel.setStyle("-fx-text-fill: black;");
+        feedbackLabel.setText("");
+
         if (session.getQuestionsAnswered() >= maxQuestions) {
             feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
             session.saveSession();
             System.out.println(session.toString());
             disableInteraction();
-            return;
-        }
-
-        wordList = service.QuestionGenerator.getWords(documentId);
-        if (wordList.size() < 4) {
-            feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
             return;
         }
 
@@ -187,6 +190,7 @@ public class QuestionsController {
                 Collections.shuffle(shuffled);
                 questionLabel.setText("Qual è la parola più frequente nel testo?");
                 setOptions(shuffled);
+                break;
             }
 
             case (2): { // Frequenza di una parola random
@@ -204,6 +208,7 @@ public class QuestionsController {
                 Collections.shuffle(shuffled);
                 questionLabel.setText("Quante volte appare la parola \"" + selectedWord.getText() + "\" nel testo?");
                 setOptions(shuffled);
+                break;
             }
 
             case (3): { // Meno frequente
@@ -221,6 +226,7 @@ public class QuestionsController {
                 Collections.shuffle(shuffled);
                 questionLabel.setText("Quale parola ha la frequenza più bassa?");
                 setOptions(shuffled);
+                break;
             }
 
             case (4): { // Lunghezza parola
@@ -238,6 +244,7 @@ public class QuestionsController {
                 Collections.shuffle(shuffled);
                 questionLabel.setText("Qual è la lunghezza della parola \"" + selectedWord.getText() + "\"?");
                 setOptions(shuffled);
+                break;
             }
         }
     }
