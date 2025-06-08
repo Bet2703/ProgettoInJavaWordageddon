@@ -77,4 +77,11 @@ public class GameSession {
      * @return the timestamp of the game session as a String.
      */
     public String getTimestamp() { return timestamp; }
+
+    /**
+     * Retrieves the document ID associated with the game session.
+     *
+     * @return the unique identifier for the document as an integer.
+     */
+    public int getDocumentID() { return documentId; }
 }

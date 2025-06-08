@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
 import java.io.IOException;
@@ -34,14 +29,10 @@ import service.DatabaseManagement;
 import service.GameSessionManagement;
 
 /**
- * The PersonalScoresViewController class is responsible for controlling the personal
- * scores view. It manages the display and sorting of game session scores across
- * different difficulty levels: easy, medium, and hard.
- *
- * This class implements the Initializable interface to perform initialization logic
- * when the associated view is loaded.
- *
- * @author Gruppo6
+ * Handles the event of navigating back to the main menu.
+ * Typically invoked when the "Back to Menu" button is clicked.
+ * Calls the {@code changeWindow()} method in the {@code ParentMenu} class
+ * to switch to the appropriate scene or window representing the main menu.
  */
 public class PersonalScoresViewController implements Initializable {
 
@@ -61,11 +52,12 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Represents the current sorting mode applied to the tables displaying game session data
-     * in the PersonalScoresViewController.
+     * Represents the current sorting mode used within the PersonalScoresViewController.
+     * The sorting can be either by score or by date, as defined by the SortMode enumeration.
      *
-     * The sorting mode determines how the game sessions are organized within the tables.
-     * It can either sort by score or by date, based on the values provided by the SortMode enum.
+     * This variable determines how game session data is organized and displayed
+     * in the tables associated with different difficulty levels. It is dynamically
+     * updated based on user interactions, such as clicking the sort button.
      */
     private SortMode currentSort = SortMode.BY_SCORE;
     
@@ -109,14 +101,13 @@ public class PersonalScoresViewController implements Initializable {
     private ObservableList<service.GameSession> hardSessions = FXCollections.observableArrayList();
 
     /**
-     * Initializes the controller after its root element has been completely processed.
-     * This method sets up the table columns for different difficulty levels,
-     * loads data from the database, applies default sorting to all tables,
-     * and initializes the display of scores for each difficulty tab.
+     * Initializes the controller class and sets up the required configurations for the
+     * user interface, such as configuring table columns, loading data from the database,
+     * displaying initial score tables, and applying sorting to all tables.
      *
-     * @param url the location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param url the location used to resolve relative paths for the root object, or null if unknown.
      *
-     * @param rb the resources used to localize the root object, or null if the root object was not localized.
+     * @param rb  the resource bundle that supplies localization features for this controller or null if not needed.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -134,31 +125,24 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Configures the cell value factories for the specified table columns to display
-     * proper data related to a game session, such as title of the document, score, and timestamp.
+     * Configures the cell value factories for the specified table columns to properly
+     * display game session data, including the document title, score, and date.
      *
-     * @param titleCol the table column responsible for displaying the title of the document in the game session.
-     *
-     * @param scoreCol the table column responsible for displaying the score of the game session.
-     *
-     * @param dateCol the table column responsible for displaying the date of the game session's timestamp.
+     * @param titleCol the table column that will display the title of the document
+     *                 associated with the game session. The title is fetched using
+     *                 the document ID from the game session.
+     * @param scoreCol the table column that will display the score associated with
+     *                 the game session. The score is directly retrieved as an integer value.
+     * @param dateCol  the table column that will display the timestamp of the game
+     *                 session, reflecting the date and time it occurred.
      */
     private void setupTableColumns(TableColumn<service.GameSession, String> titleCol, TableColumn<service.GameSession, Integer> scoreCol, TableColumn<service.GameSession, String> dateCol) {
-        /*per recuperare il titolo del documento attraverso il suo id, o si fa qui una query al db, 
-        oppure in documentsManagement si aggiunge il metodo statico getTitleFromId() che ritorna una String, ovvero il titolo stesso. 
-        io per una questione di ordine farei la seconda. 
-        
+
         titleCol.setCellValueFactory(cellData -> {
             int docId = cellData.getValue().getDocumentID();
-            String title = service.DocumentsManagement.getTitleFromIf(docId);
+            String title = service.DocumentsManagement.getTitleFromId(docId);
             return new SimpleStringProperty(title);        
         });
-        
-        */
-        
-        
-        ///momentaneo
-        titleCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDifficulty())); 
         
         scoreCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
         dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimestamp()));

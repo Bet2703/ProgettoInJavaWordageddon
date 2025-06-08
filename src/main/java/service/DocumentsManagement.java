@@ -263,4 +263,40 @@ public class DocumentsManagement {
 
         return titles;
     }
+
+    /**
+     * Retrieves the title of a single document from the database based on the provided document ID.
+     * Executes a query to fetch the title for the given ID, and returns the title if found.
+     * If the document is not found or an error occurs, appropriate error messages are logged.
+     *
+     * @param id_document The unique identifier of the document whose title is to be retrieved.
+     *                    It must not be null and should represent a valid ID present in the database.
+     * @return The title of the document as a String if the document is found,
+     *         or null if the document is not found or an error occurs during the database operation.
+     */
+    public static String getTitleFromId(int id_document) {
+
+        String query = "SELECT title FROM documents WHERE id = ?";
+
+        try(Connection conn = DatabaseManagement.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query);){
+
+            pstmt.setInt(1, id_document);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                return rs.getString("title");
+            }else{
+                System.err.println("Documento non trovato: " + id_document);
+            }
+
+        }
+        catch (SQLException e) {
+            System.err.println("Errore SQL nell'ottenimento del singolo titolo: " + e.getMessage());
+            return null;
+        }
+        return null;
+    }
+
 }
