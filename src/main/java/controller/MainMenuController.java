@@ -65,12 +65,12 @@ public class MainMenuController {
      */
     @FXML
     public void onLeaderboardClicked(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LeaderboardView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PersonalScoresView.fxml"));
         Scene scene = new Scene(loader.load());
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
-        stage.setTitle("Classifica");
+        stage.setTitle("PersonalScores");
         stage.show();
     }
 

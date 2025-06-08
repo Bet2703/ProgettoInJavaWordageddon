@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -67,7 +68,7 @@ public class PersonalScoresViewController implements Initializable {
      * It can either sort by score or by date, based on the values provided by the SortMode enum.
      */
     private SortMode currentSort = SortMode.BY_SCORE;
-
+    
     @FXML
     private Button sortButton;
     @FXML
@@ -75,37 +76,37 @@ public class PersonalScoresViewController implements Initializable {
     @FXML
     private Tab easySelector;
     @FXML
-    private TableView<service.GameSessionManagement> easyTable;
+    private TableView<service.GameSession> easyTable;
     @FXML
-    private TableColumn<service.GameSessionManagement, String> easyNameColumn;
+    private TableColumn<service.GameSession, String> easyTitleColumn;
     @FXML
-    private TableColumn<service.GameSessionManagement, Integer> easyScoreColumn;
+    private TableColumn<service.GameSession, Integer> easyScoreColumn;
     @FXML
-    private TableColumn<service.GameSessionManagement, LocalDate> easyDateColumn;
+    private TableColumn<service.GameSession, String> easyDateColumn;
     @FXML
     private Tab mediumSelector;
     @FXML
-    private TableView<service.GameSessionManagement> mediumTable;
+    private TableView<service.GameSession> mediumTable;
     @FXML
-    private TableColumn<service.GameSessionManagement, String> mediumNameColumn;
+    private TableColumn<service.GameSession, String> mediumTitleColumn;
     @FXML
-    private TableColumn<service.GameSessionManagement, Integer> mediumScoreColumn;
+    private TableColumn<service.GameSession, Integer> mediumScoreColumn;
     @FXML
-    private TableColumn<service.GameSessionManagement, LocalDate> mediumDateColumn;
+    private TableColumn<service.GameSession, String> mediumDateColumn;
     @FXML
     private Tab hardSelector;
     @FXML
-    private TableView<service.GameSessionManagement> hardTable;
+    private TableView<service.GameSession> hardTable;
     @FXML
-    private TableColumn<service.GameSessionManagement, String> hardNameColumn;
+    private TableColumn<service.GameSession, String> hardTitleColumn;
     @FXML
-    private TableColumn<service.GameSessionManagement, Integer> hardScoreColumn;
+    private TableColumn<service.GameSession, Integer> hardScoreColumn;
     @FXML
-    private TableColumn<service.GameSessionManagement, LocalDate> hardDateColumn;
+    private TableColumn<service.GameSession, String> hardDateColumn;
 
-    private ObservableList<service.GameSessionManagement> easySessions = FXCollections.observableArrayList();
-    private ObservableList<service.GameSessionManagement> mediumSessions = FXCollections.observableArrayList();
-    private ObservableList<service.GameSessionManagement> hardSessions = FXCollections.observableArrayList();
+    private ObservableList<service.GameSession> easySessions = FXCollections.observableArrayList();
+    private ObservableList<service.GameSession> mediumSessions = FXCollections.observableArrayList();
+    private ObservableList<service.GameSession> hardSessions = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller after its root element has been completely processed.
@@ -119,9 +120,9 @@ public class PersonalScoresViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setupTableColumns(easyNameColumn, easyScoreColumn, easyDateColumn);
-        setupTableColumns(mediumNameColumn, mediumScoreColumn, mediumDateColumn);
-        setupTableColumns(hardNameColumn, hardScoreColumn, hardDateColumn);
+        setupTableColumns(easyTitleColumn, easyScoreColumn, easyDateColumn);
+        setupTableColumns(mediumTitleColumn, mediumScoreColumn, mediumDateColumn);
+        setupTableColumns(hardTitleColumn, hardScoreColumn, hardDateColumn);
 
         loadDataFromDatabase();
 
@@ -134,22 +135,33 @@ public class PersonalScoresViewController implements Initializable {
 
     /**
      * Configures the cell value factories for the specified table columns to display
-     * proper data related to a game session, such as username, score, and timestamp.
+     * proper data related to a game session, such as title of the document, score, and timestamp.
      *
-     * @param nameCol the table column responsible for displaying the username of the game session.
+     * @param titleCol the table column responsible for displaying the title of the document in the game session.
      *
      * @param scoreCol the table column responsible for displaying the score of the game session.
      *
      * @param dateCol the table column responsible for displaying the date of the game session's timestamp.
      */
-    private void setupTableColumns(TableColumn<service.GameSessionManagement, String> nameCol, TableColumn<service.GameSessionManagement, Integer> scoreCol, TableColumn<service.GameSessionManagement, LocalDate> dateCol) {
-        nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
-        scoreCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
-        dateCol.setCellValueFactory(cellData -> {
-            LocalDate date = cellData.getValue().getTimestamp() != null ?
-                    cellData.getValue().getTimestamp().toLocalDate() : null;
-            return new SimpleObjectProperty<>(date);
+    private void setupTableColumns(TableColumn<service.GameSession, String> titleCol, TableColumn<service.GameSession, Integer> scoreCol, TableColumn<service.GameSession, String> dateCol) {
+        /*per recuperare il titolo del documento attraverso il suo id, o si fa qui una query al db, 
+        oppure in documentsManagement si aggiunge il metodo statico getTitleFromId() che ritorna una String, ovvero il titolo stesso. 
+        io per una questione di ordine farei la seconda. 
+        
+        titleCol.setCellValueFactory(cellData -> {
+            int docId = cellData.getValue().getDocumentID();
+            String title = service.DocumentsManagement.getTitleFromIf(docId);
+            return new SimpleStringProperty(title);        
         });
+        
+        */
+        
+        
+        ///momentaneo
+        titleCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDifficulty())); 
+        
+        scoreCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
+        dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimestamp()));
     }
 
     /**
@@ -165,29 +177,27 @@ public class PersonalScoresViewController implements Initializable {
      * - {@link SQLException} indirectly, if any database access problem occurs during the operation.
      */
     private void loadDataFromDatabase() {
-        String query = "SELECT d.title, s.score, s.difficulty FROM sessions s JOIN documents d ON s.id_document = d.id_document ORDER BY d.title, s.difficulty WHERE s.username = ?, s.difficulty = ?";
-        //String maxPointsQuery = "SELECT MAX(s.score) FROM sessioni s JOIN documents d ON s.id_document = d.id_document GROUP BY d.title, s.difficulty ORDER BY d.title, s.difficulty";
-
-        try (Connection conn = DatabaseManagement.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, GameSessionManagement.getInstance().getUsername());
-            pstmt.setString(2, GameSessionManagement.getInstance().getDifficulty());
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    String title = rs.getString("title");
-                    int score = rs.getInt("score");
-                    String difficulty = rs.getString("difficulty");
-
-                    System.out.println("Titolo: " + title +
-                            ", Difficoltà: " + difficulty +
-                            ", Punteggio: " + score);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Errore durante il caricamento dei dati: " + e.getMessage());
+        String username = service.GameSessionManagement.getInstance().getUsername();
+        service.UsersManagement userManagement = new service.UsersManagement();
+        List<service.GameSession> userSessions = userManagement.getSessionsByUsername(username);
+        
+        if(userSessions.isEmpty()){
+            System.err.println("Nessuna sessione trovata.");
+            return;
+        }
+        
+        for(service.GameSession s : userSessions) {
+            switch(s.getDifficulty()) {
+                case "EASY":
+                    easySessions.add(s);
+                    break;
+                case "MEDIUM":
+                    mediumSessions.add(s);
+                    break;
+                case "HARD":
+                    hardSessions.add(s);
+                    break;
+            }  
         }
     }
 
@@ -220,7 +230,7 @@ public class PersonalScoresViewController implements Initializable {
      * @param dateCol  the table column representing the date of game sessions.
      *                 This column is used when sorting by date.
      */
-    private void applySort(TableView<service.GameSessionManagement> table, TableColumn<service.GameSessionManagement, Integer> scoreCol,TableColumn<service.GameSessionManagement, LocalDate> dateCol) {
+    private void applySort(TableView<service.GameSession> table, TableColumn<service.GameSession, Integer> scoreCol,TableColumn<service.GameSession, String> dateCol) {
         table.getSortOrder().clear();
         if (currentSort == SortMode.BY_SCORE) {
             table.getSortOrder().add(scoreCol);

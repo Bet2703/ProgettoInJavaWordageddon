@@ -278,16 +278,6 @@ public class GameSessionManagement {
         return currentPlayer != null ? currentPlayer.getUsername() : null;
     }
 
-
-    /**
-     * Converts the difficulty of the current game session to its string representation.
-     *
-     * @return the string representation of the session's difficulty; {@code null} if no difficulty is set.
-     */
-    public String getDifficultyAsString() {
-        return getDifficulty().toString();
-    }
-
     /**
      * Retrieves the difficulty level of the current game session.
      *
