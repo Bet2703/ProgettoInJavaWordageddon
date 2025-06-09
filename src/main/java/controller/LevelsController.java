@@ -88,7 +88,6 @@ public class LevelsController {
 
     @FXML
     public void initialize() {
-        // Crea il ToggleGroup e assegna i RadioButton al gruppo
         difficultyGroup = new ToggleGroup();
 
         rbEasy.setToggleGroup(difficultyGroup);
@@ -113,7 +112,7 @@ public class LevelsController {
             return;
         }
 
-        String difficulty = selected.getText();  // Prende direttamente il testo dal RadioButton selezionato
+        String difficulty = selected.getText();
         messageLabel.setText("Hai selezionato il livello: " + difficulty);
 
         switch (difficulty) {
@@ -127,7 +126,7 @@ public class LevelsController {
                 selectedDifficulty = "HARD";
                 break;
             default:
-                selectedDifficulty = "EASY"; // fallback
+                selectedDifficulty = "EASY";
                 break;
         }
         try {

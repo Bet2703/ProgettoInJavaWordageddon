@@ -53,12 +53,49 @@ public class ResultsController {
      * It can be used for calculating metrics such as accuracy or completion.
      */
     private int totalAnswers;
+
+    /**
+     * Represents the button located at the top of the "Home" section in the ResultsController's
+     * user interface. This button is typically linked to actions or navigation related to
+     * returning to or interacting with the Home view of the application.
+     *
+     * This variable is injected using the FXMLLoader and is associated with the corresponding
+     * UI component defined in the FXML file.
+     */
     @FXML
     private Button btnHomeTop;
+
+    /**
+     * The btnHome variable represents a Button UI element in the ResultsController.
+     * This button is associated with the action of navigating back to the main menu
+     * or home screen from the results view in the application. It is linked to its
+     * corresponding element in the FXML file using the @FXML annotation.
+     */
     @FXML
     private Button btnHome;
+
+    /**
+     * Represents a button in the UI that allows the user to retry the quiz.
+     *
+     * This button is linked to an event handler that navigates the user back
+     * to the quiz interface when clicked. It provides a mechanism for the user
+     * to restart the quiz and attempt to improve their performance.
+     *
+     * The button's behavior and appearance are defined and managed within the
+     * ResultsController class.
+     */
     @FXML
     private Button btnRetry;
+
+    /**
+     * Represents the UI button for navigating to the "Personal Scores" view in the application.
+     * This button is tied to an FXML-defined element and allows users to access their
+     * personal score records when clicked.
+     *
+     * The associated action method, `onPersonalScores(ActionEvent event)`, is responsible
+     * for handling the logic necessary to transition to the relevant view or perform
+     * the required operations related to personal scores.
+     */
     @FXML
     private Button btnPersonalScores;
 
@@ -148,12 +185,21 @@ public class ResultsController {
             stage.setTitle("Quiz");
             stage.show();
         } catch (IOException e) {
-            // Log dell'errore
             System.err.println("Errore durante il caricamento della schermata del quiz: " + e.getMessage());
-            e.printStackTrace(); // Può essere sostituito con un logger
+            e.printStackTrace();
         }
     }
 
+    /**
+     * Handles the action of displaying the personal scores view. This method is triggered
+     * when the user interacts with the "Personal Scores" button in the UI. It loads the
+     * PersonalScoresView.fxml file, sets it as the current scene, and displays it in the
+     * existing stage.
+     *
+     * @param event the action event triggered by the user's interaction with the
+     *              "Personal Scores" button. Used to identify the source component
+     *              and retrieve the current stage.
+     */
     @FXML
     private void onPersonalScores(ActionEvent event) {
         try {
@@ -164,11 +210,8 @@ public class ResultsController {
             stage.setTitle("PersonalScores");
             stage.show();
         } catch (IOException e) {
-            // Log dell'errore
             System.err.println("Errore durante il caricamento della schermata della classifica personale: " + e.getMessage());
-            e.printStackTrace(); // Può essere sostituito con un logger
+            e.printStackTrace();
         }
     }
-
-
 }

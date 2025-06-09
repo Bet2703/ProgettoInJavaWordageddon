@@ -78,7 +78,7 @@ public class UserManagementViewController implements Initializable {
      * In a real-world scenario, the user ID would typically be retrieved from a session or
      * authentication service to ensure it corresponds to the logged-in user.
      */
-    private int userId = 1; // Simulazione: userId corrente (in un'app vera, da sessione)
+    private int userId = 1;
 
     /**
      * Initializes the UserManagementViewController by setting up the required components.
@@ -143,16 +143,18 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Exports the game sessions of the currently logged-in user to a CSV file.
-     * The method retrieves user sessions, writes the session details to a CSV file,
-     * and updates the status label to indicate success or failure.
+     * Handles the export of game session data to a CSV file.
+     * This method retrieves the game sessions associated with the current user,
+     * formats them into CSV content, and writes it to a file.
+     * If no sessions are found, or if an error occurs during writing,
+     * an appropriate status message is displayed.
      *
      * @param event the ActionEvent that triggered the export operation.
      */
     @FXML
     private void onExportCsv(ActionEvent event) {
         String username = service.GameSessionManagement.getInstance().getUsername();
-        List<GameSession> sessions = usersManagement.getSessionsByUsername(username);
+        List<GameSession> sessions = service.GameSessionManagement.getSessionsByUsername(username);
 
         if (sessions.isEmpty()) {
             lblStatus.setText("Nessuna sessione trovata per l'esportazione.");

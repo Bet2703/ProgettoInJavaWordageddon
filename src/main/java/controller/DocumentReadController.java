@@ -179,7 +179,7 @@ public class DocumentReadController {
         try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            String selectedDifficulty = LevelsController.getDifficulty(); // <-- scelta dell'utente
+            String selectedDifficulty = LevelsController.getDifficulty();
             pstmt.setString(1, selectedDifficulty);
 
             ResultSet rs = pstmt.executeQuery();
@@ -188,7 +188,7 @@ public class DocumentReadController {
                 content = rs.getString("text");
                 documentId = rs.getInt("id");
                 difficulty = rs.getString("difficulty");
-                secondsLeft = getSecondsByDifficulty(difficulty);
+                secondsLeft = service.Levels.getSecondsByDifficulty(difficulty.toUpperCase());
             }
 
         } catch (SQLException e) {
@@ -196,31 +196,5 @@ public class DocumentReadController {
             e.printStackTrace();
         }
         return content;
-    }
-
-    /**
-     * Determines the time limit in seconds based on the specified difficulty level.
-     *
-     * This method returns a predefined number of seconds associated with a given
-     * difficulty level. If the difficulty level is not recognized, a default value
-     * is returned.
-     *
-     * @param difficulty the difficulty level, which can be "EASY", "MEDIUM", or "HARD"
-     *
-     * @return the number of seconds corresponding to the specified difficulty level.
-     *         Returns 30 seconds for "EASY", 20 seconds for "MEDIUM", 10 seconds for "HARD",
-     *         or falls back to 20 seconds if the input is unrecognized.
-     */
-    private int getSecondsByDifficulty(String difficulty) {
-        switch (difficulty.toUpperCase()) {
-            case "EASY":
-                return 30;
-            case "MEDIUM":
-                return 20;
-            case "HARD":
-                return 10;
-            default:
-                return 20;
-        }
     }
 }

@@ -81,41 +81,4 @@ public class UsersManagement {
             System.out.println("Errore nella lettura dei dati: " + e.getMessage());
         }
     }
-
-    /**
-     * Retrieves a list of game sessions associated with the specified username.
-     * The game sessions are fetched from the database and include details such
-     * as score, timestamp, difficulty, and document ID.
-     *
-     * @param username the username for which the game sessions are to be retrieved; must not be null or empty
-     * @return a list of {@link GameSession} objects representing the game sessions associated with the given username;
-     *         an empty list if no sessions are found or if an error occurs during the retrieval process
-     */
-    public List<GameSession> getSessionsByUsername(String username) {
-        List<GameSession> sessions = new ArrayList<>();
-
-        String query = "SELECT score, timestamp, difficulty, id_document FROM sessions WHERE username = ?";
-
-        try (Connection conn = DatabaseManagement.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                GameSession session = new GameSession(
-                        rs.getInt("id_document"),
-                        rs.getString("difficulty"),
-                        rs.getInt("score"),
-                        rs.getString("timestamp")
-                );
-                sessions.add(session);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Errore durante il recupero delle sessioni: " + e.getMessage());
-        }
-        return sessions;
-    }
-
 }

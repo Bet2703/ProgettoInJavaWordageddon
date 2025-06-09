@@ -267,21 +267,24 @@ public class QuestionsController {
         optionD.setDisable(true);
     }
 
+
     /**
-     * Loads the next question in the quiz session.
-     * This method determines whether to proceed with the next question or conclude
-     * the quiz based on the number of questions answered and the maximum allowed questions.
-     * It dynamically generates a question from a set of predefined types and initializes
-     * the corresponding answer options.
-     * If the question timer expires, it records the answer as incorrect
-     * and transitions to the next question after a delay.
+     * Loads the next question in the quiz session or concludes the session if all questions
+     * have been answered or the timer expires.
      *
-     * @param maxQuestions the maximum number of questions allowed in the quiz session.
-     *                     If the number of questions answered by the user reaches
-     *                     this limit, the quiz session concludes.
+     * This method:
+     * - Resets the feedback label and prepares the UI for a new question.
+     * - Checks if the maximum number of questions has been answered:
+     *   - If all questions are answered, displays the final score, saves the session,
+     *     disables interaction, and concludes the quiz.
+     *   - Otherwise, it generates and displays the next question and its options.
+     * - Handles the countdown timer for the question and updates the timer label.
+     * - Processes the event when the timer expires, providing feedback and scheduling
+     *   the loading of the next question.
+     *
+     * @param maxQuestions the total number of questions allowed in the session.
      */
     private void loadNextQuestion(int maxQuestions) {
-
         feedbackLabel.setStyle("-fx-text-fill: black;");
         feedbackLabel.setText("");
 
@@ -293,84 +296,17 @@ public class QuestionsController {
             return;
         }
 
-        Random random = new Random();
-        int domanda = random.nextInt(4) + 1;
-        feedbackLabel.setText("");
+        service.Question question = service.QuestionGenerator.generateNextQuestion(wordList, session.getQuestionsAnswered());
+
+        questionLabel.setText(question.getQuestionText());
+        correctAnswerText = question.getCorrectAnswer();
+
+        List<String> options = question.getOptions();
+        optionA.setText(options.get(0));
+        optionB.setText(options.get(1));
+        optionC.setText(options.get(2));
+        optionD.setText(options.get(3));
         answerGroup.selectToggle(null);
-
-        switch (domanda) {
-            case (1): { // Più frequente
-                wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
-                Word correctWord = wordList.get(0);
-                correctAnswerText = correctWord.getText();
-
-                Set<String> options = new LinkedHashSet<>();
-                options.add(correctAnswerText);
-                while (options.size() < 4) {
-                    options.add(wordList.get(random.nextInt(wordList.size())).getText());
-                }
-
-                List<String> shuffled = new ArrayList<>(options);
-                Collections.shuffle(shuffled);
-                questionLabel.setText("Qual è la parola più frequente nel testo?");
-                setOptions(shuffled);
-                break;
-            }
-
-            case (2): { // Frequenza di una parola random
-                Word selectedWord = wordList.get(random.nextInt(wordList.size()));
-                correctAnswerText = selectedWord.getFrequencyString();
-
-                Set<String> options = new LinkedHashSet<>();
-                options.add(correctAnswerText);
-                while (options.size() < 4) {
-                    String freq = String.valueOf(wordList.get(random.nextInt(wordList.size())).getFrequency());
-                    options.add(freq);
-                }
-
-                List<String> shuffled = new ArrayList<>(options);
-                Collections.shuffle(shuffled);
-                questionLabel.setText("Quante volte appare la parola \"" + selectedWord.getText() + "\" nel testo?");
-                setOptions(shuffled);
-                break;
-            }
-
-            case (3): { // Meno frequente
-                wordList.sort(Comparator.comparingInt(Word::getFrequency));
-                Word correctWord = wordList.get(0);
-                correctAnswerText = correctWord.getText();
-
-                Set<String> options = new LinkedHashSet<>();
-                options.add(correctAnswerText);
-                while (options.size() < 4) {
-                    options.add(wordList.get(random.nextInt(wordList.size())).getText());
-                }
-
-                List<String> shuffled = new ArrayList<>(options);
-                Collections.shuffle(shuffled);
-                questionLabel.setText("Quale parola ha la frequenza più bassa?");
-                setOptions(shuffled);
-                break;
-            }
-
-            case (4): { // Lunghezza parola
-                Word selectedWord = wordList.get(random.nextInt(wordList.size()));
-                correctAnswerText = String.valueOf(selectedWord.getText().length());
-
-                Set<String> options = new LinkedHashSet<>();
-                options.add(correctAnswerText);
-                while (options.size() < 4) {
-                    String len = String.valueOf(wordList.get(random.nextInt(wordList.size())).getText().length());
-                    options.add(len);
-                }
-
-                List<String> shuffled = new ArrayList<>(options);
-                Collections.shuffle(shuffled);
-                questionLabel.setText("Qual è la lunghezza della parola \"" + selectedWord.getText() + "\"?");
-                setOptions(shuffled);
-                break;
-            }
-        }
 
         if (questionTimer != null) {
             questionTimer.stop();
@@ -385,7 +321,7 @@ public class QuestionsController {
                 countdownTimeline.stop();
                 feedbackLabel.setStyle("-fx-text-fill: red;");
                 feedbackLabel.setText("Tempo scaduto! La risposta corretta era: " + correctAnswerText);
-                session.recordAnswer(false); // Risposta errata per scadenza tempo
+                session.recordAnswer(false);
                 setInteractionEnabled(false);
 
                 PauseTransition pause = new PauseTransition(Duration.seconds(2));
@@ -401,8 +337,6 @@ public class QuestionsController {
 
         timerLabel.setText("Tempo Rimasto: " + remainingTimeSeconds + " secondi");
         setInteractionEnabled(true);
-
-
     }
 
     /**
@@ -453,7 +387,7 @@ public class QuestionsController {
 
         setInteractionEnabled(false);
 
-        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
 
         pause.setOnFinished(e -> {
             setInteractionEnabled(false);
@@ -486,9 +420,17 @@ public class QuestionsController {
     }
 
     /**
-     * Handles the event triggered when the user clicks the "Skip" button.
-     * This method should proceed to the next question without evaluation.
+     * Handles the event triggered when the "Skip" button is clicked during the quiz.
      *
+     * This method performs the following operations:
+     * 1. Records the skipped question as not answered correctly by calling `session.recordAnswer(false)`.
+     * 2. Stops the countdown timer if it is active to prevent further updates.
+     * 3. Checks if the maximum number of questions (`maxQuestions`) has been answered:
+     *    - If all questions are answered, displays the final score using `feedbackLabel`,
+     *      saves the session using `session.saveSession()`, disables user interaction by
+     *      calling `disableInteraction()`, and ends the quiz using `concludeQuiz()`.
+     *    - If there are remaining questions, loads the next question by calling
+     *      `loadNextQuestion(maxQuestions)`.
      */
     @FXML
     public void onSkipQuestion() {
@@ -509,7 +451,6 @@ public class QuestionsController {
 
         loadNextQuestion(maxQuestions);
     }
-
 
     /**
      * Concludes the current quiz session by displaying the result screen

@@ -36,14 +36,15 @@ public class LoadDocumentDialogController {
     private Label fileNameLabel;
 
     /**
-     * Represents a radio button in the document loading dialog UI that allows the user
-     * to select the "Easy" difficulty level for processing or categorizing the document.
+     * Represents the difficulty level radio button in the user interface.
      *
-     * Used in conjunction with other RadioButton elements in a ToggleGroup to ensure that
-     * only one difficulty level is selected at a time.
+     * This radio button allows users to select the difficulty level when uploading
+     * a document to the database. It is part of a toggle group with `easyRadio`, `mediumRadio`
+     * and `hardRadio`, ensuring that only one difficulty level can be selected at a time.
      *
-     * This button is part of the difficulty level options presented to the user and is
-     * dynamically checked when selected.
+     * The selected difficulty level is used to categorize the uploaded document
+     * appropriately. This field is initialized via dependency injection from the
+     * FXML file associated with the controller.
      */
     @FXML
     private RadioButton easyRadio, mediumRadio, hardRadio;
@@ -136,7 +137,6 @@ public class LoadDocumentDialogController {
     @FXML
     private void onConfirm() {
         if (selectedFile != null && getSelectedDifficulty() != null) {
-            // Passa file e difficoltà al metodo di caricamento documenti
             DocumentsManagement.loadToDB(selectedFile, getSelectedDifficulty());
             new Alert(Alert.AlertType.INFORMATION, "Documento caricato con successo!").showAndWait();
             dialogStage.close();

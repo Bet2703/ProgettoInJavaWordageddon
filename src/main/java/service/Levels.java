@@ -46,22 +46,26 @@ public class Levels {
     }
 
     /**
-     * Determines the time limit (in seconds) per question for a specified difficulty level.
+     * Determines the time limit in seconds based on the specified difficulty level.
+     * The method returns a default value of 20 seconds if the difficulty level
+     * is unrecognized.
      *
-     * @param difficulty the difficulty level for which the time limit is determined
-     * @return the time limit in seconds associated with the specified difficulty level,
-     *         or 0 if the difficulty is not recognized
+     * @param difficulty the difficulty level as a string. Expected values are
+     *                   "EASY", "MEDIUM", or "HARD". The comparison is case-insensitive.
+     * @return the time limit in seconds for the specified difficulty. Returns 30 for "EASY",
+     *         20 for "MEDIUM", 10 for "HARD", and defaults to 15 if an invalid difficulty
+     *         string is provided.
      */
-    public static int getTimeLimitPerQuestion(Difficulty difficulty) {
-        switch (difficulty) {
-            case EASY:
-                return 40;  // 30 secondi per domanda
-            case MEDIUM:
+    public static int getSecondsByDifficulty(String difficulty) {
+        switch (difficulty.toUpperCase()) {
+            case "EASY":
                 return 30;
-            case HARD:
-                return 15;
+            case "MEDIUM":
+                return 20;
+            case "HARD":
+                return 10;
             default:
-                return 0;
+                return 15;
         }
     }
 

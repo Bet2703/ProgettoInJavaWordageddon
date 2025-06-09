@@ -72,6 +72,8 @@ public class DatabaseManagement {
      *
      * If the connection is already closed or null, the method does nothing.
      * If an error occurs during the closure, it logs the error message to the standard error stream.
+     *
+     * Even if useless with the use of try-with-resources, this method is implemented anyway.
      */
     public static void closeConnection() {
         if (connection != null) {

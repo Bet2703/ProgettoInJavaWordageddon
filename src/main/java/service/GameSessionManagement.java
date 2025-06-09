@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import users.Player;
 
 /**
@@ -131,7 +134,7 @@ public class GameSessionManagement {
         questionsAnswered++;
         if (correct) {
             correctAnswers++;
-            score += 10; // puoi personalizzare il punteggio
+            score += 10;
         }
     }
 
@@ -198,7 +201,7 @@ public class GameSessionManagement {
      * default initial states.
      */
     public void resetSession() {
-        instance = null; // oppure azzera i campi
+        instance = null;
     }
 
     /**
@@ -288,25 +291,52 @@ public class GameSessionManagement {
     }
 
     /**
-     * Determines the maximum number of questions to be presented based on the current
-     * difficulty level of the session. The level is interpreted from the field
-     * "difficulty" and mapped to specific values:
-     * - "EASY": 5 questions
-     * - "MEDIUM": 10 questions
-     * - "HARD": 15 questions
-     * If the difficulty level is undefined or does not match the predefined levels,
-     * a default value of 10 questions is returned.
+     * Determines and retrieves the maximum number of questions allowed
+     * for the current game session based on the difficulty level.
      *
-     * @return the maximum number of questions for the current difficulty level as an integer.
+     * @return the maximum number of questions as an integer for the
+     *         current game's difficulty level.
      */
     public int getMaxQuestions() {
-        switch (difficulty.toUpperCase()) {
-            case "EASY": return 5;
-            case "MEDIUM": return 10;
-            case "HARD": return 15;
-            default: return 10;
-        }
+        Levels.Difficulty level = Levels.Difficulty.valueOf(difficulty.toUpperCase());
+        return Levels.getNumberOfQuestions(level);
     }
+
+    /**
+     * Retrieves a list of game sessions for a given username from the database.
+     * Each session includes details such as score, timestamp, difficulty, and document ID.
+     *
+     * @param username the username of the player whose game sessions are to be retrieved; must not be null
+     * @return a list of GameSession objects representing the game sessions associated with the specified username;
+     *         an empty list if no sessions are found or in case of an error
+     */
+    public static List<GameSession> getSessionsByUsername(String username) {
+        List<GameSession> sessions = new ArrayList<>();
+
+        String query = "SELECT score, timestamp, difficulty, id_document FROM sessions WHERE username = ?";
+
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                GameSession session = new GameSession(
+                        rs.getInt("id_document"),
+                        rs.getString("difficulty"),
+                        rs.getInt("score"),
+                        rs.getString("timestamp")
+                );
+                sessions.add(session);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Errore durante il recupero delle sessioni: " + e.getMessage());
+        }
+        return sessions;
+    }
+
 
     /**
      * Calculates the number of remaining questions in the current game session.

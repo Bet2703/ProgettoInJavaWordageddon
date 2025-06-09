@@ -12,13 +12,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import service.DocumentsManagement;
-import service.Levels;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -50,10 +47,17 @@ public class AdminController {
     @FXML
     private Label messageLabel;
 
+    /**
+     * Initializes the AdminController.
+     *
+     * This method is automatically called after the associated FXML file has been loaded.
+     * It sets up the initial state of the controller by populating the list of document titles
+     * in the `documentsList`. The `loadDocumentTitles` method is invoked to fetch and display
+     * the current list of available documents.
+     */
     @FXML
     public void initialize() {
 
-        //Popola la lista dei documenti caricati
         loadDocumentTitles();
 
     }
@@ -87,7 +91,6 @@ public class AdminController {
 
             dialogStage.showAndWait();
 
-            // Dopo la chiusura, aggiorna la lista dei documenti
             loadDocumentTitles();
 
         } catch (IOException e) {
@@ -126,7 +129,6 @@ public class AdminController {
             DocumentsManagement.deleteFromDB(selectedTitle);
         }
 
-        // Dopo la cancellazione, aggiorna la lista dei documenti
         loadDocumentTitles();
     }
 
