@@ -26,285 +26,285 @@ import javafx.stage.Stage;
 import service.DocumentsManagement;
 
 /**
- * Handles the event of navigating back to the main menu.
- * Typically, invoked when the "Back to Menu" button is clicked.
- * Calls the {@code changeWindow()} method in the {@code ParentMenu} class
- * to switch to the appropriate scene or window representing the main menu.
+ * Gestisce l'evento di navigazione di ritorno al menu principale.
+ * Tipicamente invocato quando viene cliccato il pulsante "Back to Menu".
+ * Chiama il metodo {@code changeWindow()} nella classe {@code ParentMenu}
+ * per passare alla scena o finestra appropriata che rappresenta il menu principale.
  */
 public class PersonalScoresViewController implements Initializable {
 
     /**
-     * Represents a button in the PersonalScoresViewController interface that allows
-     * the user to navigate back to the main menu. This button is associated with
-     * the {@code handleBackToMenu} method, which is triggered when the button is clicked.
+     * Rappresenta un pulsante nell'interfaccia PersonalScoresViewController che permette
+     * all'utente di tornare al menu principale. Questo pulsante è associato
+     * al metodo {@code handleBackToMenu}, che viene attivato quando il pulsante viene cliccato.
      *
-     * It serves as a user interface element for transitioning away from the
-     * personal scores view to the main menu screen.
+     * Serve come elemento dell'interfaccia utente per passare dalla vista
+     * dei punteggi personali alla schermata del menu principale.
      */
     @FXML
     private Button backToMenuButton;
 
     /**
-     * An enumeration that represents sorting modes used within the
-     * PersonalScoresViewController. The sorting can be based on either
-     * the score of entries or the date.
+     * Un'enumerazione che rappresenta le modalità di ordinamento utilizzate all'interno del
+     * PersonalScoresViewController. L'ordinamento può essere basato sul punteggio
+     * delle partite o sulla data.
      *
-     * This enum is primarily used to define the sorting behavior
-     * when displaying and organizing data in the associated tables.
+     * Questa enum è principalmente utilizzata per definire il comportamento
+     * di ordinamento quando si visualizzano e organizzano i dati nelle tabelle associate.
      */
     private enum SortMode{
         BY_SCORE, BY_DATE
     }
 
     /**
-     * Represents the current sorting mode used within the PersonalScoresViewController.
-     * The sorting can be either by score or by date, as defined by the SortMode enumeration.
+     * Rappresenta la modalità di ordinamento corrente utilizzata nel PersonalScoresViewController.
+     * L'ordinamento può essere per punteggio o per data, come definito dall'enumerazione SortMode.
      *
-     * This variable determines how game session data is organized and displayed
-     * in the tables associated with different difficulty levels. It is dynamically
-     * updated based on user interactions, such as clicking the sort button.
+     * Questa variabile determina come i dati delle sessioni di gioco sono organizzati e visualizzati
+     * nelle tabelle associate ai diversi livelli di difficoltà. Viene aggiornata dinamicamente
+     * in base alle interazioni dell'utente, come il clic sul pulsante di ordinamento.
      */
     private SortMode currentSort = SortMode.BY_SCORE;
 
     /**
-     * The sortButton is a private instance variable annotated with {@code @FXML},
-     * representing a button in the user interface responsible for triggering the sorting functionality
-     * of game session data displayed in the score tables. Interaction with this button
-     * typically initiates the process of toggling between sorting modes, such as sorting
-     * by score or by date.
+     * Il sortButton è una variabile d'istanza privata annotata con {@code @FXML},
+     * che rappresenta un pulsante nell'interfaccia utente responsabile di attivare la funzionalità di ordinamento
+     * dei dati delle sessioni di gioco visualizzati nelle tabelle dei punteggi. L'interazione con questo pulsante
+     * tipicamente avvia il processo di alternanza tra le modalità di ordinamento, come ordinare
+     * per punteggio o per data.
      */
     @FXML
     private Button sortButton;
 
     /**
-     * Represents a TabPane component used to manage and display multiple tabs
-     * corresponding to different difficulty levels (e.g., Easy, Medium, Hard).
-     * Each tab can contain a TableView that displays the game sessions and scores
-     * for the associated difficulty level. This UI element forms part of the
-     * PersonalScoresViewController interface, allowing users to navigate between
-     * the different difficulty-specific score tables.
+     * Rappresenta un componente TabPane utilizzato per gestire e visualizzare multiple tab
+     * corrispondenti a diversi livelli di difficoltà (es. Facile, Medio, Difficile).
+     * Ogni tab può contenere una TableView che mostra le sessioni di gioco e i punteggi
+     * per il relativo livello di difficoltà. Questo elemento dell'interfaccia fa parte del
+     * PersonalScoresViewController, permettendo all'utente di navigare tra
+     * le diverse tabelle dei punteggi specifiche per difficoltà.
      *
-     * The `difficultyTabs` component is linked to the FXML file via the `@FXML` annotation
-     * and is automatically loaded during the initialization of the controller.
+     * Il componente `difficultyTabs` è collegato al file FXML tramite l'annotazione `@FXML`
+     * e viene caricato automaticamente durante l'inizializzazione del controller.
      */
     @FXML
     private TabPane difficultyTabs;
 
     /**
-     * Represents the "Easy" tab in the difficulty selection interface of the PersonalScoresViewController.
-     * This tab allows the user to view and interact with the game session data filtered by the "Easy" difficulty level.
-     * It is part of a tab pane that organizes game scores by difficulty.
+     * Rappresenta la tab "Facile" nell'interfaccia di selezione della difficoltà del PersonalScoresViewController.
+     * Questa tab permette all'utente di visualizzare e interagire con i dati delle sessioni di gioco filtrati per il livello di difficoltà "Facile".
+     * Fa parte di un pannello a tab che organizza i punteggi di gioco per difficoltà.
      */
     @FXML
     private Tab easySelector;
 
     /**
-     * Represents a table view displaying game session data for the "Easy" difficulty level.
-     * This table is part of the user interface controlled by the {@code PersonalScoresViewController}.
+     * Rappresenta una tabella che mostra i dati delle sessioni di gioco per il livello di difficoltà "Facile".
+     * Questa tabella fa parte dell'interfaccia utente controllata dal {@code PersonalScoresViewController}.
      *
-     * The {@code easyTable} is populated with instances of {@code service.GameSession} representing
-     * the game sessions completed on the easy difficulty. Each row corresponds to a single session,
-     * displaying data such as the session's title, score, and timestamp. The table supports sorting
-     * and interaction functionalities defined in the controller.
+     * La {@code easyTable} è popolata con istanze di {@code service.GameSession} che rappresentano
+     * le sessioni di gioco completate con difficoltà facile. Ogni riga corrisponde a una singola sessione,
+     * mostrando dati come il titolo della sessione, il punteggio e il timestamp. La tabella supporta funzionalità
+     * di ordinamento e interazione definite nel controller.
      *
-     * FXML injection is used for this field to link it to the corresponding TableView component
-     * defined in the FXML file loaded by {@code PersonalScoresViewController}.
+     * L'iniezione FXML è utilizzata per questo campo per collegarlo al componente TableView corrispondente
+     * definito nel file FXML caricato dal {@code PersonalScoresViewController}.
      */
     @FXML
     private TableView<service.GameSession> easyTable;
 
     /**
-     * Represents the table column in the "Easy" difficulty score table that displays
-     * the titles of documents associated with game sessions.
+     * Rappresenta la colonna della tabella nella tabella dei punteggi di difficoltà "Facile" che mostra
+     * i titoli dei documenti associati alle sessioni di gioco.
      *
-     * This column is configured to extract and display the title information
-     * from the {@link service.GameSession} object, specifically as a String value.
-     * The title corresponds to the document associated with the game session.
+     * Questa colonna è configurata per estrarre e visualizzare le informazioni sul titolo
+     * dall'oggetto {@link service.GameSession}, specificamente come valore String.
+     * Il titolo corrisponde al documento associato alla sessione di gioco.
      *
-     * It is part of the user interface managed by the {@code PersonalScoresViewController} class
-     * and is used to present data in a structured tabular format for "Easy" difficulty.
+     * Fa parte dell'interfaccia utente gestita dalla classe {@code PersonalScoresViewController}
+     * ed è utilizzata per presentare i dati in un formato tabellare strutturato per la difficoltà "Facile".
      */
     @FXML
     private TableColumn<service.GameSession, String> easyTitleColumn;
 
     /**
-     * Represents the "Score" column in the table displaying game sessions for the "Easy" difficulty level.
-     * This column is used to display the scores achieved by players during game sessions categorized under the "Easy" level.
+     * Rappresenta la colonna "Punteggio" nella tabella che mostra le sessioni di gioco per il livello di difficoltà "Facile".
+     * Questa colonna è utilizzata per visualizzare i punteggi ottenuti dai giocatori durante le sessioni di gioco categorizzate come "Facile".
      *
-     * The column fetches and displays integer values corresponding to the `score` property of
-     * {@link service.GameSession} objects.
+     * La colonna recupera e mostra valori interi corrispondenti alla proprietà `score` degli
+     * oggetti {@link service.GameSession}.
      *
-     * This field is marked with the `@FXML` annotation to indicate its association with the UI layout
-     * defined in the corresponding FXML file for the PersonalScoresViewController.
+     * Questo campo è annotato con `@FXML` per indicare la sua associazione con il layout UI
+     * definito nel corrispondente file FXML per il PersonalScoresViewController.
      */
     @FXML
     private TableColumn<service.GameSession, Integer> easyScoreColumn;
 
     /**
-     * Represents the table column in the "Easy" difficulty score table that displays
-     * the date and time associated with each game session.
+     * Rappresenta la colonna della tabella nella tabella dei punteggi di difficoltà "Facile" che mostra
+     * la data e l'ora associata a ciascuna sessione di gioco.
      *
-     * Each cell in this column reflects the timestamp of a specific game session,
-     * indicating when the session took place. Data for this column is sourced from
-     * the `timestamp` field of the corresponding {@link service.GameSession} objects.
+     * Ogni cella in questa colonna riflette il timestamp di una specifica sessione di gioco,
+     * indicando quando la sessione è avvenuta. I dati per questa colonna sono presi dal
+     * campo `timestamp` dei corrispondenti oggetti {@link service.GameSession}.
      */
     @FXML
     private TableColumn<service.GameSession, String> easyDateColumn;
 
     /**
-     * Represents the Tab element for the "Medium" difficulty level within the user interface.
-     * This tab allows users to navigate to and view the medium difficulty scores.
-     * It is part of the difficulty-based tab navigation system in the score view.
+     * Rappresenta l'elemento Tab per il livello di difficoltà "Medio" nell'interfaccia utente.
+     * Questa tab permette agli utenti di navigare e visualizzare i punteggi di difficoltà media.
+     * Fa parte del sistema di navigazione a tab basato sulla difficoltà nella vista dei punteggi.
      */
     @FXML
     private Tab mediumSelector;
 
     /**
-     * Represents the table view responsible for displaying game session data
-     * filtered by the "Medium" difficulty level within the application's user interface.
-     * Each entry in the table corresponds to a {@link service.GameSession} object.
+     * Rappresenta la vista tabella responsabile della visualizzazione dei dati delle sessioni di gioco
+     * filtrati per il livello di difficoltà "Medio" nell'interfaccia utente dell'applicazione.
+     * Ogni voce nella tabella corrisponde a un oggetto {@link service.GameSession}.
      *
-     * This table is dynamically populated with "Medium" difficulty game session data
-     * through the application's logic and supports features such as sorting and
-     * interaction as configured in the controller.
+     * Questa tabella è popolata dinamicamente con i dati delle sessioni di gioco di difficoltà "Media"
+     * attraverso la logica dell'applicazione e supporta funzionalità come l'ordinamento e
+     * l'interazione come configurato nel controller.
      *
-     * The table is primarily managed by the {@code PersonalScoresViewController} class
-     * and interacts with methods focused on loading, sorting, and displaying game sessions
-     * based on the selected difficulty.
+     * La tabella è principalmente gestita dalla classe {@code PersonalScoresViewController}
+     * e interagisce con metodi focalizzati sul caricamento, ordinamento e visualizzazione delle sessioni di gioco
+     * basate sulla difficoltà selezionata.
      */
     @FXML
     private TableView<service.GameSession> mediumTable;
 
     /**
-     * Represents a TableColumn in the user interface responsible for displaying the title
-     * of documents associated with game sessions present in the "Medium" difficulty level table.
+     * Rappresenta una TableColumn nell'interfaccia utente responsabile della visualizzazione del titolo
+     * dei documenti associati alle sessioni di gioco presenti nella tabella di difficoltà "Medio".
      *
-     * This column is configured to display string values fetched using the document ID from the
-     * game session data. It is part of the mediumTable and is populated dynamically when the
-     * medium difficulty score table is displayed.
+     * Questa colonna è configurata per mostrare valori stringa recuperati usando l'ID del documento dai
+     * dati della sessione di gioco. Fa parte della mediumTable ed è popolata dinamicamente quando
+     * viene visualizzata la tabella dei punteggi di difficoltà media.
      *
-     * Used by methods such as {@code setupTableColumns} to define cell value factories
-     * for proper data rendering and is populated with data from {@code mediumSessions}.
+     * Utilizzato da metodi come {@code setupTableColumns} per definire le factory dei valori delle celle
+     * per una corretta visualizzazione dei dati ed è popolato con dati da {@code mediumSessions}.
      *
-     * Data displayed in this column is associated with {@link service.GameSession} entities.
+     * I dati visualizzati in questa colonna sono associati a entità {@link service.GameSession}.
      */
     @FXML
     private TableColumn<service.GameSession, String> mediumTitleColumn;
 
     /**
-     * Represents the TableColumn for displaying the score of game sessions with a "Medium" difficulty level.
-     * This column is configured to show the integer score values stored in the {@link service.GameSession} objects.
-     * It is part of the mediumTable in the PersonalScoresViewController, which displays
-     * all medium-difficulty game session data.
+     * Rappresenta la TableColumn per visualizzare il punteggio delle sessioni di gioco con difficoltà "Medio".
+     * Questa colonna è configurata per mostrare i valori interi dei punteggi memorizzati negli oggetti {@link service.GameSession}.
+     * Fa parte della mediumTable nel PersonalScoresViewController, che mostra
+     * tutti i dati delle sessioni di gioco di difficoltà media.
      */
     @FXML
     private TableColumn<service.GameSession, Integer> mediumScoreColumn;
 
     /**
-     * Represents the table column used for displaying the date information of game sessions
-     * within the "Medium" difficulty score table in the user interface. It is configured
-     * to handle and display date-related data for game sessions belonging to the medium
-     * difficulty level.
+     * Rappresenta la colonna della tabella utilizzata per visualizzare le informazioni sulla data delle sessioni di gioco
+     * all'interno della tabella dei punteggi di difficoltà "Medio" nell'interfaccia utente. È configurata
+     * per gestire e mostrare dati relativi alla data per le sessioni di gioco appartenenti al livello
+     * di difficoltà medio.
      *
-     * The column values are expected to show the timestamp associated with each game session,
-     * reflecting when the session took place. This information is bound to the `timestamp`
-     * property of the {@link service.GameSession} object.
+     * I valori della colonna dovrebbero mostrare il timestamp associato a ogni sessione di gioco,
+     * riflettendo quando la sessione è avvenuta. Questa informazione è legata alla proprietà `timestamp`
+     * dell'oggetto {@link service.GameSession}.
      *
-     * This field is annotated with {@code @FXML} to denote that it is defined in the associated
-     * FXML file and is injected at runtime by the JavaFX framework.
+     * Questo campo è annotato con {@code @FXML} per indicare che è definito nel relativo
+     * file FXML e viene iniettato a runtime dal framework JavaFX.
      */
     @FXML
     private TableColumn<service.GameSession, String> mediumDateColumn;
 
     /**
-     * Represents the Tab component used for displaying the "Hard" difficulty level score table.
-     * Associated with the "Hard" difficulty data, this tab provides an interface for
-     * viewing game session information, such as scores, titles, and timestamps, for
-     * sessions played at the hardest level of the game.
+     * Rappresenta il componente Tab utilizzato per visualizzare la tabella dei punteggi di difficoltà "Difficile".
+     * Associato ai dati di difficoltà "Difficile", questa tab fornisce un'interfaccia per
+     * visualizzare informazioni sulle sessioni di gioco, come punteggi, titoli e timestamp, per
+     * sessioni giocate al livello più difficile del gioco.
      *
-     * This Tab is part of the difficultyTabs in the PersonalScoresViewController and,
-     * when selected, interacts with the hardTable to show the corresponding data.
+     * Questa Tab fa parte del difficultyTabs nel PersonalScoresViewController e,
+     * quando selezionata, interagisce con la hardTable per mostrare i dati corrispondenti.
      */
     @FXML
     private Tab hardSelector;
 
     /**
-     * Represents the table view used to display game session data for the "Hard" difficulty level.
-     * This table is populated with instances of {@link service.GameSession}, containing details
-     * such as the document title, score, and date for game sessions categorized as "Hard".
-     * The data is dynamically loaded, displayed, and sorted within the table based on user interactions.
+     * Rappresenta la vista tabella utilizzata per visualizzare i dati delle sessioni di gioco per il livello di difficoltà "Difficile".
+     * Questa tabella è popolata con istanze di {@link service.GameSession}, contenenti dettagli
+     * come il titolo del documento, il punteggio e la data per le sessioni di gioco categorizzate come "Difficile".
+     * I dati sono caricati dinamicamente, visualizzati e ordinati all'interno della tabella in base alle interazioni dell'utente.
      */
     @FXML
     private TableView<service.GameSession> hardTable;
 
     /**
-     * Represents the "Title" column in the "Hard" difficulty level table within the personal scores view.
-     * This column displays the document titles associated with game sessions stored in the hard difficulty category.
-     * The column is bound to the title property of the {@code GameSession} class.
+     * Rappresenta la colonna "Titolo" nella tabella di livello di difficoltà "Difficile" all'interno della vista dei punteggi personali.
+     * Questa colonna mostra i titoli dei documenti associati alle sessioni di gioco memorizzate nella categoria di difficoltà "Difficile".
+     * La colonna è legata alla proprietà title della classe {@code GameSession}.
      */
     @FXML
     private TableColumn<service.GameSession, String> hardTitleColumn;
 
     /**
-     * Represents the table column for displaying the 'Hard' difficulty level scores in the user interface.
-     * This column is part of the `hardTable` in the `PersonalScoresViewController` and is bound to the
-     * `score` property of the `GameSession` class. It displays the integer scores achieved by players
-     * during sessions set at the "Hard" challenge level.
+     * Rappresenta la colonna della tabella per visualizzare i punteggi di difficoltà 'Difficile' nell'interfaccia utente.
+     * Questa colonna fa parte della `hardTable` nel `PersonalScoresViewController` ed è legata alla
+     * proprietà `score` della classe `GameSession`. Mostra i punteggi interi ottenuti dai giocatori
+     * durante sessioni impostate al livello di sfida "Difficile".
      *
-     * The column is configured as part of the table setup to retrieve and display score-related data
-     * for game sessions with "Hard" difficulty, providing a visual representation within the interface.
+     * La colonna è configurata come parte della configurazione della tabella per recuperare e visualizzare dati relativi ai punteggi
+     * per sessioni di gioco con difficoltà "Difficile", fornendo una rappresentazione visiva all'interno dell'interfaccia.
      */
     @FXML
     private TableColumn<service.GameSession, Integer> hardScoreColumn;
 
     /**
-     * Represents the "Date" column in the table displaying game session data for the "Hard" difficulty level.
-     * This column is configured to display the timestamp of each game session, formatted as a string.
+     * Rappresenta la colonna "Data" nella tabella che mostra i dati delle sessioni di gioco per il livello di difficoltà "Difficile".
+     * Questa colonna è configurata per visualizzare il timestamp di ogni sessione di gioco, formattato come stringa.
      *
-     * It is associated with the hard difficulty table and is populated with data from the {@code hardSessions} list.
-     * The timestamps correspond to the date and time when the sessions occurred.
+     * È associata alla tabella di difficoltà difficile ed è popolata con dati dalla lista {@code hardSessions}.
+     * I timestamp corrispondono alla data e ora in cui le sessioni sono avvenute.
      */
     @FXML
     private TableColumn<service.GameSession, String> hardDateColumn;
 
     /**
-     * Stores a list of game sessions specifically filtered or categorized under the "Easy" difficulty level.
-     * Each session in the list is represented by an instance of {@code service.GameSession}.
-     * The list is observable, allowing the user interface to automatically reflect changes to the list.
-     * It is used within the context of the {@code PersonalScoresViewController} for managing and displaying
-     * game session data related to the "Easy" difficulty in the appropriate score table.
+     * Memorizza una lista di sessioni di gioco specificamente filtrate o categorizzate sotto il livello di difficoltà "Facile".
+     * Ogni sessione nella lista è rappresentata da un'istanza di {@code service.GameSession}.
+     * La lista è osservabile, permettendo all'interfaccia utente di riflettere automaticamente i cambiamenti alla lista.
+     * È utilizzata nel contesto della classe {@code PersonalScoresViewController} per gestire e visualizzare
+     * dati delle sessioni di gioco relativi alla difficoltà "Facile" nella relativa tabella dei punteggi.
      */
     private ObservableList<service.GameSession> easySessions = FXCollections.observableArrayList();
 
     /**
-     * A collection of observable game sessions corresponding to the "Medium" difficulty level.
-     * This list is used to manage and display medium-difficulty game session data within the user interface.
+     * Una collezione di sessioni di gioco osservabili corrispondenti al livello di difficoltà "Medio".
+     * Questa lista è utilizzata per gestire e visualizzare i dati delle sessioni di gioco di difficoltà media nell'interfaccia utente.
      *
-     * The list is initialized as an empty observable array list and may be dynamically populated
-     * with instances of {@code service.GameSession} depending on the application's data fetching and display logic.
+     * La lista è inizializzata come una lista osservabile vuota e può essere popolata dinamicamente
+     * con istanze di {@code service.GameSession} a seconda della logica di recupero e visualizzazione dati dell'applicazione.
      */
     private ObservableList<service.GameSession> mediumSessions = FXCollections.observableArrayList();
 
     /**
-     * An observable list of game sessions filtered by the "Hard" difficulty level.
-     * This list is specifically designed to store and manage GameSession objects
-     * representing game sessions played at the "Hard" difficulty.
-     * The data is dynamically managed, allowing for real-time updates and
-     * reflecting changes in the underlying data set.
+     * Una lista osservabile di sessioni di gioco filtrate per il livello di difficoltà "Difficile".
+     * Questa lista è specificamente progettata per memorizzare e gestire oggetti GameSession
+     * che rappresentano sessioni di gioco giocate a difficoltà "Difficile".
+     * I dati sono gestiti dinamicamente, permettendo aggiornamenti in tempo reale e
+     * riflettendo cambiamenti nel set di dati sottostante.
      *
-     * This field is used primarily to populate and display the "Hard" difficulty
-     * score table in the user interface.
+     * Questo campo è utilizzato principalmente per popolare e visualizzare la tabella dei punteggi
+     * di difficoltà "Difficile" nell'interfaccia utente.
      */
     private ObservableList<service.GameSession> hardSessions = FXCollections.observableArrayList();
 
     /**
-     * Initializes the controller class and sets up the required configurations for the
-     * user interface, such as configuring table columns, loading data from the database,
-     * displaying initial score tables, and applying sorting to all tables.
+     * Inizializza la classe controller e configura le impostazioni richieste per l'interfaccia utente,
+     * come la configurazione delle colonne delle tabelle, il caricamento dei dati dal database,
+     * la visualizzazione delle tabelle dei punteggi iniziali e l'applicazione dell'ordinamento a tutte le tabelle.
      *
-     * @param url the location used to resolve relative paths for the root object, or null if unknown.
+     * @param url la posizione utilizzata per risolvere i percorsi relativi per l'oggetto root, o null se sconosciuta.
      *
-     * @param rb  the resource bundle that supplies localization features for this controller or null if not needed.
+     * @param rb  il resource bundle che fornisce funzionalità di localizzazione per questo controller o null se non necessario.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -322,16 +322,16 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Configures the cell value factories for the specified table columns to properly
-     * display game session data, including the document title, score, and date.
+     * Configura le factory dei valori delle celle per le colonne specificate della tabella per visualizzare correttamente
+     * i dati delle sessioni di gioco, incluso il titolo del documento, il punteggio e la data.
      *
-     * @param titleCol the table column that will display the title of the document
-     *                 associated with the game session. The title is fetched using
-     *                 the document ID from the game session.
-     * @param scoreCol the table column that will display the score associated with
-     *                 the game session. The score is directly retrieved as an integer value.
-     * @param dateCol  the table column that will display the timestamp of the game
-     *                 session, reflecting the date and time it occurred.
+     * @param titleCol la colonna della tabella che mostrerà il titolo del documento
+     *                 associato alla sessione di gioco. Il titolo è recuperato usando
+     *                 l'ID del documento dalla sessione di gioco.
+     * @param scoreCol la colonna della tabella che mostrerà il punteggio associato alla
+     *                 sessione di gioco. Il punteggio è recuperato direttamente come valore intero.
+     * @param dateCol  la colonna della tabella che mostrerà il timestamp della sessione di gioco,
+     *                 riflettendo la data e l'ora in cui è avvenuta.
      */
     private void setupTableColumns(TableColumn<service.GameSession, String> titleCol,
                                    TableColumn<service.GameSession, Integer> scoreCol,
@@ -348,16 +348,16 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Loads data from the database by executing a predefined SQL query that retrieves
-     * document titles, associated scores, and difficulty levels of game sessions.
-     * The data is fetched by joining the "sessions" and "documents" tables, and it
-     * is returned in sorted order based on document titles and difficulty levels.
-     * The method establishes a connection to the database using the {@code DatabaseManagement.getConnection()}
-     * method, executes the query, and iterates over the result set to process the retrieved data.
-     * Any exceptions encountered during the database operation, such as SQL errors, are caught,
-     * and corresponding error messages are printed to the standard error output.
-     * Throws:
-     * - {@link SQLException} indirectly, if any database access problem occurs during the operation.
+     * Carica i dati dal database eseguendo una query SQL predefinita che recupera
+     * i titoli dei documenti, i punteggi associati e i livelli di difficoltà delle sessioni di gioco.
+     * I dati sono recuperati unendo le tabelle "sessions" e "documents", e sono
+     * restituiti in ordine basato sui titoli dei documenti e sui livelli di difficoltà.
+     * Il metodo stabilisce una connessione al database usando il metodo {@code DatabaseManagement.getConnection()},
+     * esegue la query e itera sul result set per elaborare i dati recuperati.
+     * Qualsiasi eccezione incontrata durante l'operazione sul database, come errori SQL, è catturata,
+     * e i corrispondenti messaggi di errore sono stampati nell'output standard degli errori.
+     * Lancia:
+     * - {@link SQLException} indirettamente, se si verifica un problema di accesso al database durante l'operazione.
      */
     private void loadDataFromDatabase() {
         String username = service.GameSessionManagement.getInstance().getUsername();
@@ -384,14 +384,14 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Applies the current sorting mode to all difficulty tables: easy, medium, and hard.
-     * Clears existing sorting criteria for each table and re-applies sorting based on
-     * the specified {@code currentSort} mode. The sorting can be applied either
-     * by score or by date depending on the value of {@code currentSort}.
+     * Applica la modalità di ordinamento corrente a tutte le tabelle di difficoltà: facile, medio e difficile.
+     * Cancella i criteri di ordinamento esistenti per ogni tabella e ri-applica l'ordinamento basato su
+     * la modalità {@code currentSort} specificata. L'ordinamento può essere applicato
+     * per punteggio o per data a seconda del valore di {@code currentSort}.
      *
-     * This method delegates the actual sorting logic to the {@code applySort} method,
-     * which is invoked separately for each difficulty table with their respective
-     * score and date columns.
+     * Questo metodo delega la logica effettiva di ordinamento al metodo {@code applySort},
+     * che è invocato separatamente per ogni tabella di difficoltà con le rispettive
+     * colonne punteggio e data.
      */
     private void applySortToAllTables() {
         applySort(easyTable, easyScoreColumn, easyDateColumn);
@@ -400,17 +400,17 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Applies sorting to the given table based on the current sorting mode.
-     * Clears existing sorting criteria and sets a sort order using the specified
-     * score or date column depending on the value of {@code currentSort}.
-     * Finally, triggers sorting on the table.
+     * Applica l'ordinamento alla tabella specificata basandosi sulla modalità di ordinamento corrente.
+     * Cancella i criteri di ordinamento esistenti e imposta un ordine di ordinamento usando la specifica
+     * colonna punteggio o data a seconda del valore di {@code currentSort}.
+     * Infine, attiva l'ordinamento sulla tabella.
      *
-     * @param table    the table view to which the sorting is applied. It displays
-     *                 game session data and is sorted by the specified criteria.
-     * @param scoreCol the table column representing the score of game sessions.
-     *                 This column is used when sorting by score.
-     * @param dateCol  the table column representing the date of game sessions.
-     *                 This column is used when sorting by date.
+     * @param table    la vista tabella alla quale è applicato l'ordinamento. Mostra
+     *                 i dati delle sessioni di gioco ed è ordinata secondo i criteri specificati.
+     * @param scoreCol la colonna della tabella che rappresenta il punteggio delle sessioni di gioco.
+     *                 Questa colonna è usata quando si ordina per punteggio.
+     * @param dateCol  la colonna della tabella che rappresenta la data delle sessioni di gioco.
+     *                 Questa colonna è usata quando si ordina per data.
      */
     private void applySort(TableView<service.GameSession> table,
                            TableColumn<service.GameSession, Integer> scoreCol,
@@ -421,13 +421,13 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Handles the action of changing the sorting mode for displaying game session data.
-     * Toggles between sorting by score and sorting by date based on the current state.
-     * After updating the sorting mode, the method applies the updated sorting to all
-     * difficulty-related tables by using the {@code applySortToAllTables} method.
+     * Gestisce l'azione di cambiare la modalità di ordinamento per visualizzare i dati delle sessioni di gioco.
+     * Alterna tra l'ordinamento per punteggio e l'ordinamento per data basandosi sullo stato corrente.
+     * Dopo aver aggiornato la modalità di ordinamento, il metodo applica l'ordinamento aggiornato a tutte
+     * le tabelle relative alla difficoltà usando il metodo {@code applySortToAllTables}.
      *
-     * @param event the action event triggered when the user interacts with the sorting control,
-     *              such as clicking the sort button.
+     * @param event l'evento di azione attivato quando l'utente interagisce con il controllo di ordinamento,
+     *              come il clic sul pulsante di ordinamento.
      */
     @FXML
     private void handleChangeSort(ActionEvent event) {
@@ -436,11 +436,11 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Handles the action of navigating back to the main menu.
-     * Loads the UserManagementView FXML file, sets it as the current scene,
-     * and displays it in the primary stage.
+     * Gestisce l'azione di navigazione di ritorno al menu principale.
+     * Carica il file FXML UserManagementView, lo imposta come scena corrente,
+     * e lo mostra nel stage principale.
      *
-     * @param event the action event triggered when the back-to-menu button is clicked.
+     * @param event l'evento di azione attivato quando viene cliccato il pulsante back-to-menu.
      */
     @FXML
     private void handleBackToMenu(ActionEvent event) {
@@ -448,12 +448,12 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Displays the score table for the "Easy" difficulty level.
-     * Populates the easyTable with game session data stored in easySessions,
-     * if the table is not null.
+     * Mostra la tabella dei punteggi per il livello di difficoltà "Facile".
+     * Popola la easyTable con i dati delle sessioni di gioco memorizzati in easySessions,
+     * se la tabella non è null.
      *
-     * @param event the event that triggers this action, typically initiated
-     *              by the user interacting with the interface.
+     * @param event l'evento che attiva questa azione, tipicamente iniziato
+     *              dall'utente che interagisce con l'interfaccia.
      */
     @FXML
     private void showEasyScore(Event event) {
@@ -461,12 +461,12 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Displays the score table for the "Medium" difficulty level.
-     * Populates the mediumTable with game session data stored in mediumSessions,
-     * if the table is not null.
+     * Mostra la tabella dei punteggi per il livello di difficoltà "Medio".
+     * Popola la mediumTable con i dati delle sessioni di gioco memorizzati in mediumSessions,
+     * se la tabella non è null.
      *
-     * @param event the event that triggers this action, typically initiated
-     *              by the user interacting with the interface.
+     * @param event l'evento che attiva questa azione, tipicamente iniziato
+     *              dall'utente che interagisce con l'interfaccia.
      */
     @FXML
     private void showMediumScore(Event event) {
@@ -474,12 +474,12 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Displays the score table for the "Hard" difficulty level.
-     * Populates the hardTable with game session data stored in hardSessions,
-     * if the table is not null.
+     * Mostra la tabella dei punteggi per il livello di difficoltà "Difficile".
+     * Popola la hardTable con i dati delle sessioni di gioco memorizzati in hardSessions,
+     * se la tabella non è null.
      *
-     * @param event the event that triggers this action, typically initiated
-     *              by the user interacting with the interface.
+     * @param event l'evento che attiva questa azione, tipicamente iniziato
+     *              dall'utente che interagisce con l'interfaccia.
      */
     @FXML
     private void showHardScore(Event event) {

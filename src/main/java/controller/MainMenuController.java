@@ -10,28 +10,45 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 /**
- * The MainMenuController class is responsible for managing the main menu of the application.
- * It handles user interactions for various menu buttons, such as navigating to the level selection view,
- * viewing the leaderboard, or exiting the application.
- *
- * @author Gruppo6
+ * La classe MainMenuController gestisce le interazioni dell'utente nel menu principale dell'applicazione.
+ * Fornisce metodi per il passaggio a diverse schermate, come la selezione della difficoltà, 
+ * la gestione del profilo utente, la visualizzazione della classifica personale o l'uscita dall'applicazione.
+ * 
+ * Ogni pulsante nel menu è associato a una vista diversa, caricata dinamicamente tramite FXMLLoader.
+ * 
+ * Autore: Gruppo6
  */
 public class MainMenuController {
 
+    /**
+     * Mappa immutabile che associa i percorsi FXML ai titoli delle finestre corrispondenti.
+     * Utilizzata per rendere il caricamento delle viste più chiaro e centralizzato.
+     */
     private final Map<String, String> views;
 
-    public MainMenuController()
-    {
+    /**
+     * Costruttore della classe.
+     * Inizializza la mappa delle viste disponibili nel menu principale.
+     */
+    public MainMenuController() {
         Map<String, String> tempMap = new HashMap<>();
         tempMap.put("/view/Level.fxml", "Seleziona Difficoltà");
         tempMap.put("/view/UserManagementView.fxml", "Profilo");
-        tempMap.put("/view/PersonalScoresView.fxml", "PersonalScores");
-        views = Collections.unmodifiableMap(tempMap);
+        tempMap.put("/view/PersonalScoresView.fxml", "Classifica Personale");
+        views = Collections.unmodifiableMap(tempMap); // rende la mappa non modificabile
     }
 
+    /**
+     * Metodo generico per il caricamento di una nuova vista FXML.
+     * Carica il file FXML specificato, crea una nuova scena e la imposta nello stage attuale.
+     *
+     * @param event evento generato dal pulsante che ha attivato l'azione
+     * @param fxmlPath percorso del file FXML da caricare
+     * @param title titolo da assegnare alla finestra
+     * @throws IOException se il file FXML non viene trovato o non può essere caricato
+     */
     private void loadView(ActionEvent event, String fxmlPath, String title) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Scene scene = new Scene(loader.load());
@@ -43,29 +60,25 @@ public class MainMenuController {
     }
 
     /**
-     * Handles the action triggered when the play button is clicked.
-     * This method transitions the application to the level selection screen.
-     * It loads the "Level.fxml" file, sets up a new scene, and updates the stage with the new view.
+     * Gestisce il click sul pulsante "Gioca".
+     * Carica la schermata per la selezione della difficoltà di gioco.
      *
-     * @param event the ActionEvent triggered by the user interaction, such as clicking the play button.
-     * @throws IOException if the "Level.fxml" file cannot be loaded.
+     * @param event evento generato dal pulsante "Gioca"
      */
     @FXML
     public void onPlayClicked(ActionEvent event) {
         try {
             loadView(event, "/view/Level.fxml", "Seleziona Difficoltà");
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // stampa lo stack trace per il debug
         }
     }
 
     /**
-     * Handles the action triggered when the profile button is clicked.
-     * This method transitions the application to the user profile management screen.
-     * It loads the "UserManagementView.fxml" file, sets up a new scene, and updates the stage with the new view.
+     * Gestisce il click sul pulsante "Profilo".
+     * Carica la schermata per la gestione dell'utente.
      *
-     * @param event the ActionEvent triggered by the user interaction, such as clicking the profile button.
-     * @throws IOException if the "UserManagementView.fxml" file cannot be loaded.
+     * @param event evento generato dal pulsante "Profilo"
      */
     @FXML
     public void onProfileClicked(ActionEvent event) {
@@ -77,12 +90,10 @@ public class MainMenuController {
     }
 
     /**
-     * Handles the action triggered when the leaderboard button is clicked.
-     * This method transitions the application to the leaderboard screen.
-     * It loads the "LeaderboardView.fxml" file, sets up a new scene, and updates the stage with the new view.
+     * Gestisce il click sul pulsante "Classifica".
+     * Carica la schermata della classifica personale dell'utente.
      *
-     * @param event the ActionEvent triggered by the user interaction, such as clicking the leaderboard button.
-     * @throws IOException if the "LeaderboardView.fxml" file cannot be loaded.
+     * @param event evento generato dal pulsante "Classifica"
      */
     @FXML
     public void onLeaderboardClicked(ActionEvent event) {
@@ -94,9 +105,8 @@ public class MainMenuController {
     }
 
     /**
-     * Handles the action triggered when the exit button is clicked.
-     * This method terminates the application by invoking the `System.exit` method,
-     * which ensures that the program is closed immediately.
+     * Gestisce il click sul pulsante "Esci".
+     * Termina l'applicazione immediatamente tramite {@code System.exit(0)}.
      */
     @FXML
     public void onExitClicked() {

@@ -18,54 +18,59 @@ import users.Player;
 import users.Role;
 
 /**
- * The LoginController class is responsible for managing user login
- * and registration interactions within the application. It handles
- * input validation, authentication, and UI transitions based on
- * user roles. The class is associated with an FXML view.
+ * La classe LoginController gestisce le interazioni legate all'autenticazione
+ * e alla registrazione degli utenti. Controlla i dati inseriti, avvia il processo
+ * di autenticazione, carica le schermate appropriate in base al ruolo dell'utente,
+ * e fornisce feedback tramite l'interfaccia utente.
  *
- * @author Gruppo6
+ * Questa classe è collegata a una vista FXML.
+ * 
+ * Autore: Gruppo6
  */
 public class LoginController {
 
     /**
-     * The `usernameField` variable represents a text input field in the login form.
-     * This field is used to collect the username input from*/
+     * Campo di testo per l'inserimento del nome utente.
+     * Associato all'interfaccia utente tramite FXML, serve per raccogliere il nome utente
+     * durante le operazioni di login o registrazione.
+     */
     @FXML
     private TextField usernameField;
 
     /**
-     * Represents a PasswordField that captures user input for passwords.
-     * This component is used to securely input and display obfuscated
-     * characters to protect sensitive information like user passwords.
-     * Connected to the GUI through FXML in the LoginController.
+     * Campo password per l'inserimento sicuro della password.
+     * Visualizza i caratteri in forma mascherata per proteggere i dati sensibili.
+     * Associato tramite FXML all'interfaccia grafica.
      */
     @FXML
     private PasswordField passwordField;
 
     /**
-     * The button component used for initiating the login action.
-     * This button triggers the login process when clicked, validating the entered
-     * username and password and directing the user to the appropriate view upon success.
+     * Pulsante che avvia il processo di login quando viene premuto.
+     * Valida i dati inseriti e, se corretti, tenta di autenticare l'utente
+     * e carica la schermata corrispondente al suo ruolo.
      */
     @FXML
     private Button loginButton;
 
     /**
-     * Label component used to display messages to the user.
-     * This label is updated programmatically to provide feedback, error notifications,
-     * or other contextual information within the context of the LoginController.
+     * Etichetta per mostrare messaggi all'utente.
+     * Viene utilizzata per comunicare errori, avvisi o conferme
+     * durante il login o la registrazione.
      */
     @FXML
     private Label messageLabel;
 
     /**
-     * Handles the login process when the login button is clicked.
-     * Validates user inputs, attempts authentication, and loads the appropriate
-     * UI based on the user's role if authentication is successful.
-     * Displays error messages for invalid credentials, missing fields,
-     * or issues during view loading.
+     * Metodo invocato quando viene premuto il pulsante di login.
      *
-     * @param event the action event that triggered this method
+     * Esegue le seguenti operazioni:
+     * - Verifica che i campi username e password non siano vuoti.
+     * - Chiama il metodo di autenticazione dal servizio Login.
+     * - Se l'autenticazione ha successo, imposta l'utente attuale nella sessione e carica la schermata adatta.
+     * - In caso di errore, mostra un messaggio di errore all'utente.
+     *
+     * @param event evento generato dal click sul pulsante di login.
      */
     @FXML
     private void onLogin(ActionEvent event) {
@@ -97,17 +102,17 @@ public class LoginController {
     }
 
     /**
-     * Loads the appropriate view based on the user's role and sets it as the current scene.
+     * Carica la schermata corretta in base al ruolo dell’utente autenticato.
      *
-     * The method distinguishes between the `BASE` and `ADMIN` roles to load the respective FXML file.
-     * An `IllegalArgumentException` is thrown if the role is not recognized. After loading the FXML file,
-     * the method updates the scene of the current stage and displays it. It also handles possible I/O
-     * errors during the loading process.
+     * In base al ruolo restituito dall'oggetto Player, il metodo decide quale vista FXML caricare:
+     * - `Role.BASE` → carica il menu principale dell’utente.
+     * - `Role.ADMIN` → carica la vista amministratore.
      *
-     * @param role the role of the user, used to determine which view to load. Accepted values are
-     *             `Role.BASE` and `Role.ADMIN`.
+     * Se il ruolo è nullo o non riconosciuto, viene sollevata un’eccezione.
+     * Dopo il caricamento, imposta la nuova scena nello stage attuale.
      *
-     * @throws IOException if an error occurs while loading the FXML file for the specified role.
+     * @param role ruolo dell’utente autenticato.
+     * @throws IOException se si verifica un errore durante il caricamento del file FXML.
      */
     private void loadViewForRole(Role role) throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -130,11 +135,15 @@ public class LoginController {
     }
 
     /**
-     * Handles the user registration process when the register button is clicked.
-     * Validates the input fields, checks for already existing usernames,
-     * registers the user if the input is valid, and updates the UI with appropriate messages.
+     * Gestisce la registrazione di un nuovo utente quando viene premuto il pulsante "Registrati".
      *
-     * @param event the action event that triggered this method
+     * Esegue le seguenti operazioni:
+     * - Verifica che i campi username e password siano compilati.
+     * - Controlla che l’username non sia già presente nel sistema.
+     * - Registra il nuovo utente come giocatore base (`Role.BASE`) tramite il servizio Login.
+     * - Mostra un messaggio di conferma all’utente e svuota i campi di input.
+     *
+     * @param event evento generato dal click sul pulsante di registrazione.
      */
     @FXML
     private void onRegister(ActionEvent event) {
@@ -156,7 +165,7 @@ public class LoginController {
         Login.userRegister(username, passwordOpt.get(), Role.BASE);
         messageLabel.setText("Utente registrato con successo!");
 
-        // usa method reference per pulire i campi
+        // Pulisce i campi di input
         Runnable clearFields = () -> {
             usernameField.clear();
             passwordField.clear();

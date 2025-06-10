@@ -20,73 +20,74 @@ import service.GameSession;
 import service.UsersManagement;
 
 /**
- * The UserManagementViewController class is responsible for managing the user interface for
- * user profile updates, session exports, and navigation within the application, such as
- * transitioning to the game level scene. It implements the Initializable interface to
- * initialize and manage UI components and application logic.
+ * La classe UserManagementViewController è responsabile della gestione dell'interfaccia utente per
+ * l'aggiornamento del profilo utente, l'esportazione delle sessioni e la navigazione all'interno 
+ * dell'applicazione, come il passaggio alla scena del livello di gioco. Implementa l'interfaccia 
+ * Initializable per inizializzare e gestire i componenti dell'interfaccia utente e la logica dell'applicazione.
  *
  * @author Gruppo6
  */
 public class UserManagementViewController implements Initializable {
 
     /**
-     * Represents the input field for the username in the User Management view.
-     * This field is bound to the FXML file and allows the user to enter their username.
-     * It is used in various operations such as user profile validation and management.
+     * Campo di testo per l'inserimento del nome utente nella vista di gestione utente.
+     * Questo campo è collegato al file FXML e permette all'utente di inserire il proprio username.
+     * Viene utilizzato in varie operazioni come la validazione e la gestione del profilo utente.
      */
     @FXML
     private TextField tfUsername;
 
     /**
-     * A PasswordField component in the FXML view, representing the input field for the user's password.
-     * This field is used for securely capturing and handling user-entered passwords without displaying visible text.
+     * Componente PasswordField nella vista FXML, rappresenta il campo di inserimento per la password dell'utente.
+     * Questo campo viene utilizzato per acquisire e gestire in modo sicuro le password inserite 
+     * dall'utente senza mostrare il testo in chiaro.
      */
     @FXML
     private PasswordField pfPassword;
 
     /**
-     * Represents a password confirmation input field in the User Management View.
-     * This field is used to capture the confirmation of the new password entered by the user.
-     * It is typically validated against the main password field to ensure the values match
-     * before saving the profile changes.
+     * Rappresenta un campo di input per la conferma della password nella vista di gestione utente.
+     * Questo campo viene utilizzato per acquisire la conferma della nuova password inserita dall'utente.
+     * Tipicamente viene validato rispetto al campo password principale per assicurarsi che i valori coincidano
+     * prima di salvare le modifiche al profilo.
      */
     @FXML
     private PasswordField pfConfirm;
 
     /**
-     * Represents the label component in the UserManagementViewController used to display status messages to the user.
-     * This label serves as a feedback mechanism, providing information such as success, error, or other
-     * contextual messages related to user management tasks.
+     * Componente label nel UserManagementViewController utilizzato per mostrare messaggi di stato all'utente.
+     * Questa etichetta funge da meccanismo di feedback, fornendo informazioni come successo, errore o altri
+     * messaggi contestuali relativi alle operazioni di gestione utente.
      */
     @FXML
     private Label lblStatus;
 
     /**
-     * Manages operations related to user accounts, such as updating,
-     * deleting, and retrieving user information, as well as managing
-     * user sessions and profiles.
+     * Gestisce le operazioni relative agli account utente, come l'aggiornamento,
+     * la cancellazione e il recupero delle informazioni utente, oltre alla gestione
+     * delle sessioni e dei profili utente.
      * <p>
-     * This variable serves as a reference to the {@code UsersManagement} service
-     * which provides functionalities to interact with the user database and handle
-     * user-specific actions required by the controller.
+     * Questa variabile serve come riferimento al servizio {@code UsersManagement}
+     * che fornisce le funzionalità per interagire con il database utente e gestire
+     * le azioni specifiche per l'utente richieste dal controller.
      */
     private UsersManagement usersManagement;
 
     /**
-     * Represents the unique identifier of the current user within the system.
-     * This variable is used to track and identify the user interacting with the application.
-     * In a real-world scenario, the user ID would typically be retrieved from a session or
-     * authentication service to ensure it corresponds to the logged-in user.
+     * Rappresenta l'identificatore univoco dell'utente corrente all'interno del sistema.
+     * Questa variabile viene utilizzata per tracciare e identificare l'utente che interagisce con l'applicazione.
+     * In uno scenario reale, l'ID utente verrebbe tipicamente recuperato da un servizio di sessione o
+     * autenticazione per assicurarsi che corrisponda all'utente loggato.
      */
     private int userId = 1;
 
     /**
-     * Initializes the UserManagementViewController by setting up the required components.
-     * This method is automatically called after the FXML file has been loaded.
-     * It creates a new instance of {@link UsersManagement} and resets the status label.
+     * Inizializza il UserManagementViewController configurando i componenti necessari.
+     * Questo metodo viene chiamato automaticamente dopo il caricamento del file FXML.
+     * Crea una nuova istanza di {@link UsersManagement} e resetta l'etichetta di stato.
      *
-     * @param url the location used to resolve relative paths for the root object, or {@code null} if the location is not known.
-     * @param rb  the resource bundle used to localize the root object, or {@code null} if the resource bundle is not specified.
+     * @param url la posizione utilizzata per risolvere i percorsi relativi per l'oggetto root, o {@code null} se la posizione non è nota.
+     * @param rb  il resource bundle utilizzato per localizzare l'oggetto root, o {@code null} se il resource bundle non è specificato.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -95,12 +96,12 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Handles the event of saving the user's profile changes.
-     * Validates the input fields for username, password, and confirm password.
-     * Displays error messages for invalid input or mismatched passwords.
-     * Updates the user's profile data using the usersManagement service.
+     * Gestisce l'evento di salvataggio delle modifiche al profilo utente.
+     * Valida i campi di input per username, password e conferma password.
+     * Mostra messaggi di errore per input non validi o password non coincidenti.
+     * Aggiorna i dati del profilo utente utilizzando il servizio usersManagement.
      *
-     * @param event the ActionEvent that triggered the method call.
+     * @param event l'ActionEvent che ha triggerato la chiamata al metodo.
      */
     @FXML
     private void onSaveProfile(ActionEvent event) {
@@ -127,11 +128,11 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Handles the action of cancelling the changes made in the user input fields.
-     * This method clears the input fields for username, password, and confirm password,
-     * and resets the status label with a message indicating that the changes have been canceled.
+     * Gestisce l'azione di annullamento delle modifiche apportate ai campi di input utente.
+     * Questo metodo svuota i campi di input per username, password e conferma password,
+     * e resetta l'etichetta di stato con un messaggio che indica che le modifiche sono state annullate.
      *
-     * @param event the ActionEvent that triggered the method call.
+     * @param event l'ActionEvent che ha triggerato la chiamata al metodo.
      */
     @FXML
     private void onCancel(ActionEvent event) {
@@ -143,13 +144,13 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Handles the export of game session data to a CSV file.
-     * This method retrieves the game sessions associated with the current user,
-     * formats them into CSV content, and writes it to a file.
-     * If no sessions are found, or if an error occurs during writing,
-     * an appropriate status message is displayed.
+     * Gestisce l'esportazione dei dati delle sessioni di gioco in un file CSV.
+     * Questo metodo recupera le sessioni di gioco associate all'utente corrente,
+     * le formatta in contenuto CSV e le scrive in un file.
+     * Se non vengono trovate sessioni, o se si verifica un errore durante la scrittura,
+     * viene mostrato un messaggio di stato appropriato.
      *
-     * @param event the ActionEvent that triggered the export operation.
+     * @param event l'ActionEvent che ha triggerato l'operazione di esportazione.
      */
     @FXML
     private void onExportCsv(ActionEvent event) {
@@ -183,13 +184,13 @@ public class UserManagementViewController implements Initializable {
     }
 
     /**
-     * Handles the action of navigating back to the main menu.
-     * This method loads the main menu view from the associated FXML file
-     * and updates the current stage's scene to display the main menu.
-     * If an IOException occurs during the loading of the FXML file,
-     * an error message is printed to the standard error stream.
+     * Gestisce l'azione di ritorno al menu principale.
+     * Questo metodo carica la vista del menu principale dal file FXML associato
+     * e aggiorna la scena dello stage corrente per mostrare il menu principale.
+     * Se si verifica un'IOException durante il caricamento del file FXML,
+     * viene stampato un messaggio di errore nello standard error stream.
      *
-     * @param event the ActionEvent that triggered the navigation.
+     * @param event l'ActionEvent che ha triggerato la navigazione.
      */
     @FXML
     private void onGoBack(ActionEvent event) {

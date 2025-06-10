@@ -18,77 +18,73 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * The DocumentReadController class is responsible for managing the document reading functionality
- * of the application, including text display, timing, and navigation to a subsequent quiz phase.
- *
- * This controller interacts with UI elements defined in the associated FXML file and
- * facilitates document retrieval based on difficulty, timer management, and scene transitions.
+ * Controller per la gestione della lettura dei documenti nell'applicazione.
+ * Si occupa della visualizzazione del testo, della gestione del timer e della
+ * transizione alla fase di quiz successiva.
+ * 
+ * <p>Principali funzionalità:
+ * <ul>
+ *   <li>Visualizzazione del contenuto dei documenti</li>
+ *   <li>Gestione del timer di lettura</li>
+ *   <li>Transizione alla schermata delle domande</li>
+ *   <li>Recupero casuale di documenti in base alla difficoltà</li>
+ * </ul>
+ * </p>
  *
  * @author Gruppo6
  */
 public class DocumentReadController {
 
     /**
-     * The TextArea component used for displaying the document text within the
-     * DocumentReadController.
-     *
-     * This field is bound to the corresponding UI element in the FXML layout file.
-     * It allows the application to display the content of a document for the user
-     * to read within the application's interface. The content of this field
-     * is typically set programmatically by loading document data.
+     * Area di testo per la visualizzazione del contenuto del documento.
+     * Viene popolata automaticamente con il testo del documento selezionato.
      */
     @FXML
     private TextArea documentTextArea;
 
     /**
-     * Represents the label used to display the timer in the reading context.
-     * This label is updated in real-time to show the remaining time during a reading session.
-     * It is controlled and modified programmatically through associated methods in the
-     * `DocumentReadController` class.
+     * Etichetta per la visualizzazione del timer di lettura.
+     * Mostra il tempo rimanente in secondi in formato "Tempo restante: Xs".
      */
     @FXML
     private Label timerLabel;
 
     /**
-     * Represents the unique identifier for a document within the system.
-     * This variable is used to track and manage a specific document entity
-     * in operations performed by the controller.
+     * ID univoco del documento corrente.
+     * Viene utilizzato per identificare il documento nel database e per
+     * recuperare le domande associate durante la fase di quiz.
      */
     private int documentId;
 
     /**
-     * Represents the timeline that manages the reading timer for the document viewer.
-     * This object controls the scheduling and execution of timed tasks related to
-     * the countdown and state transitions within the context of the `DocumentReadController`.
+     * Timeline per la gestione del countdown.
+     * Viene utilizzata per aggiornare il timer ogni secondo.
      */
     private Timeline timeline;
 
     /**
-     * Represents the remaining time in seconds for the user to complete a task or interaction
-     * within the application. This variable is primarily used to manage and display a countdown
-     * timer in the reading phase of the application.
-     *
-     * The default value is initialized to 30 seconds. This value may be decremented during
-     * runtime as the timer elapses.
+     * Tempo rimanente in secondi per la lettura del documento.
+     * Il valore iniziale viene determinato in base alla difficoltà del documento.
      */
     private int secondsLeft = 30;
 
     /**
-     * Represents the difficulty level of a document or task.
-     * This variable is used to differentiate or categorize content based on
-     * its difficulty, such as "Easy", "Medium", or "Hard".
-     * It is a private field accessible and modifiable through appropriate methods.
+     * Livello di difficoltà del documento corrente.
+     * Può assumere i valori "EASY", "MEDIUM" o "HARD".
      */
     private String difficulty;
 
-
     /**
-     * Initializes the DocumentReadController.
-     *
-     * This method is invoked automatically when the associated FXML file is loaded.
-     * It retrieves the selected difficulty level using LevelsController.getDifficulty,
-     * fetches a random document text based on the difficulty level, and displays
-     * the text in the associated text area. The reading timer is then started.
+     * Metodo di inizializzazione del controller.
+     * Viene chiamato automaticamente dopo il caricamento del file FXML associato.
+     * 
+     * <p>Si occupa di:
+     * <ol>
+     *   <li>Recuperare un documento casuale in base alla difficoltà</li>
+     *   <li>Visualizzare il testo nell'area dedicata</li>
+     *   <li>Avviare il timer di lettura</li>
+     * </ol>
+     * </p>
      */
     @FXML
     public void initialize(){
@@ -98,15 +94,15 @@ public class DocumentReadController {
     }
 
     /**
-     * Starts a countdown timer and updates the timer label with the time remaining.
-     *
-     * This method initializes a `Timeline` object that decreases the value of `secondsLeft` each second
-     * and updates the `timerLabel` to reflect the remaining time. Once the time reaches zero, the timer
-     * stops, the label displays a "time's up" message, and the application transitions to a question
-     * view by invoking the `goToQuestionsView` method.
-     *
-     * The duration of the countdown is determined by the `secondsLeft` field, and the timeline is
-     * configured to run for a number of cycles equal to this value.
+     * Avvia il countdown per la lettura del documento.
+     * 
+     * <p>Il timer:
+     * <ul>
+     *   <li>Viene aggiornato ogni secondo</li>
+     *   <li>Mostra il tempo rimanente nell'etichetta dedicata</li>
+     *   <li>Al termine del tempo, avvia automaticamente la fase di quiz</li>
+     * </ul>
+     * </p>
      */
     private void startTimer() {
         timerLabel.setText("Tempo restante: " + secondsLeft + "s");
@@ -125,20 +121,19 @@ public class DocumentReadController {
     }
 
     /**
-     * Opens the quiz view scene and transitions the application to the question interface.
-     *
-     * This method is responsible for loading the `quizView.fxml` file using the `FXMLLoader`,
-     * setting it as the root node of a new scene, and opening it in a new stage titled "Domande".
-     * The `QuestionsController` associated with the view is retrieved, and the `documentId`
-     * field is passed to it. The `startGame` method of the controller is invoked to initialize
-     * the quiz game with the current document's ID.
-     *
-     * Additionally, the current window, associated with the reading document interface, is closed
-     * after transitioning to the quiz view. If an error occurs while loading the FXML or transitioning
-     * to the new scene, the exception is caught, logged to the console, and its stack trace is printed.
-     *
-     * Exceptions:
-     * - Prints an error message and the stack trace if an `IOException` occurs while loading the FXML.
+     * Gestisce il passaggio alla schermata delle domande.
+     * 
+     * <p>Questa operazione:
+     * <ol>
+     *   <li>Carica la schermata delle domande</li>
+     *   <li>Passa l'ID del documento al controller delle domande</li>
+     *   <li>Avvia il quiz</li>
+     *   <li>Chiude la schermata corrente</li>
+     * </ol>
+     * </p>
+     * 
+     * <p>In caso di errore durante il caricamento della schermata,
+     * viene stampato lo stack trace dell'errore.</p>
      */
     private void goToQuestionsView() {
         try {
@@ -169,14 +164,18 @@ public class DocumentReadController {
     }
 
     /**
-     * Fetches a random document from the database based on the specified difficulty level.
-     *
-     * This method executes a SQL query to retrieve one random document with the given difficulty
-     * from a "documents" table. The text content of the document is then returned. If no document
-     * is found, an empty string is returned. In case of any SQL errors, the exception details are
-     * printed to the console.
-     *
-     * @return the text content of the selected document, or an empty string if no document is found
+     * Recupera un documento casuale dal database in base alla difficoltà.
+     * 
+     * <p>La query SQL:
+     * <ul>
+     *   <li>Seleziona un documento random con la difficoltà specificata</li>
+     *   <li>Imposta l'ID del documento, la difficoltà e il tempo disponibile</li>
+     *   <li>Restituisce il testo del documento</li>
+     * </ul>
+     * </p>
+     * 
+     * @return Il testo del documento selezionato, oppure una stringa vuota se non trovato
+     * @throws SQLException in caso di errori di connessione al database
      */
     private String fetchRandomDocumentByDifficulty() {
         String query = "SELECT id, text, difficulty FROM documents WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1";

@@ -7,41 +7,49 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * The MainApp class serves as the entry point for the JavaFX application.
- * It extends the Application class and is responsible for initializing
- * and displaying the primary stage of the application.
- *
- * @author Gruppo6
+ * La classe MainApp rappresenta il punto di ingresso principale dell'applicazione JavaFX.
+ * Estende la classe {@link Application} e ha il compito di inizializzare e mostrare
+ * lo stage primario dell'interfaccia grafica.
+ * 
+ * In particolare, carica il file FXML associato alla schermata di login e lo imposta
+ * come scena iniziale dell'applicazione.
+ * 
+ * Autore: Gruppo6
  */
 public class MainApp extends Application {
 
     /**
-     * Start the application.
-     * This method is called after the init method has returned, and after the system is ready for the application to begin running.
+     * Metodo di avvio dell'applicazione.
+     * Questo metodo viene invocato automaticamente dalla piattaforma JavaFX
+     * dopo l'inizializzazione, e rappresenta il punto in cui l'interfaccia grafica viene caricata.
      *
-     * @param primaryStage the primary stage for this application, onto which
-     * the application scene can be set.
-     * Applications may create other stages, if needed, but they will not be
-     * primary stages.
+     * @param primaryStage lo stage principale dell'applicazione, ovvero la finestra principale.
+     *                     È su questo oggetto che viene impostata la scena iniziale.
      *
-     * @throws Exception
+     * @throws Exception se si verifica un errore durante il caricamento del file FXML.
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+        // Caricamento del layout della schermata di login da file FXML
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/view/Login.fxml"));
         Parent root = loader.load();
 
+        // Impostazione del titolo della finestra
         primaryStage.setTitle("Login");
+
+        // Creazione e impostazione della scena principale
         primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+        primaryStage.show(); // Visualizzazione dello stage
     }
 
     /**
-     * The main method serves as the entry point for the Java application.
-     * It initializes and launches the JavaFX application by invoking the `launch` method.
+     * Metodo main dell'applicazione Java.
+     * Questo metodo viene eseguito all'avvio del programma e richiama il metodo {@code launch}
+     * per inizializzare il framework JavaFX e avviare l'interfaccia grafica.
      *
-     * @param args the command-line arguments passed to the application.
+     * @param args eventuali argomenti da riga di comando (non utilizzati in questa applicazione).
      */
-    public static void main(String[] args) {launch(args);}
+    public static void main(String[] args) {
+        launch(args); // Avvio dell'applicazione JavaFX
+    }
 }

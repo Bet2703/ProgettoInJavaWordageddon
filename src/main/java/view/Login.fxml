@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.Color?>
 
 <AnchorPane prefHeight="401.0" prefWidth="499.0" style="-fx-background-image: url('background.jpg'); -fx-background-size: cover;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
     <children>
-        <!-- Main centered card -->
         <StackPane prefHeight="401.0" prefWidth="499.0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
             <children>
                 <VBox fx:id="card" alignment="CENTER" maxWidth="300" spacing="20" style="-fx-background-color: rgba(255,255,255,0.85); -fx-background-radius: 20; -fx-padding: 30;">
@@ -18,19 +14,19 @@
                         <DropShadow color="#00000040" offsetY="4" radius="10" spread="0.2" />
                     </effect>
                    <children>
-                       <!-- Titolo dell'app -->
-                       <Label style="-fx-font-size: 24px; -fx-text-fill: #333; -fx-font-weight: bold;" text="Wordageddon" />
-                       <!-- Input Fields -->
-                       <TextField fx:id="usernameField" promptText="Username" style="-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);" />
-                       <PasswordField fx:id="passwordField" promptText="Password" style="-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);" />
-                       <!-- Buttons -->
+                       <Label style="-fx-font-size: 24px; -fx-text-fill: #333; -fx-font-weight: bold;" text="%app.title" />
+                       <TextField fx:id="usernameField" style="-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);" />
+                       <PasswordField fx:id="passwordField" style="-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);" />
                        <HBox alignment="CENTER" spacing="15">
                           <children>
-                              <Button fx:id="loginButton" onAction="#onLogin" prefHeight="30" prefWidth="100" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5;" text="Login" />
-                              <Button fx:id="registerButton" onAction="#onRegister" prefHeight="30" prefWidth="100" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5;" text="Registrati" />
+                              <Button fx:id="loginButton" onAction="#onLogin" prefHeight="30" prefWidth="100" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5;" />
+                              <Button fx:id="registerButton" onAction="#onRegister" prefHeight="30" prefWidth="100" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5;" />
                           </children>
                        </HBox>
-                       <!-- Message Label -->
+                       <HBox alignment="CENTER" spacing="10">
+                           <Button onAction="#switchToItalian" style="-fx-background-color: #E0E0E0; -fx-background-radius: 5;" text="Italiano" />
+                           <Button onAction="#switchToEnglish" style="-fx-background-color: #E0E0E0; -fx-background-radius: 5;" text="English" />
+                       </HBox>
                        <Label fx:id="messageLabel" textFill="#C62828" wrapText="true" />
                    </children>
                 </VBox>

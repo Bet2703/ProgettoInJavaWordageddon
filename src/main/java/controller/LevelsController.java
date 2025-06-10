@@ -18,92 +18,99 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Controller class for managing the difficulty selection screen.
- * This class handles user interactions, such as selecting a difficulty level,
- * starting the game, and navigating back to the login screen.
+ * Controller per la gestione della schermata di selezione della difficoltà.
+ * 
+ * <p>Questa classe si occupa di:
+ * <ul>
+ *   <li>Gestire la selezione del livello di difficoltà da parte dell'utente</li>
+ *   <li>Avviare il gioco con la difficoltà selezionata</li>
+ *   <li>Navigare tra le diverse schermate dell'applicazione</li>
+ * </ul>
+ * </p>
  *
  * @author Gruppo6
  */
 public class LevelsController {
 
     /**
-     * Represents the "Easy" difficulty level selection RadioButton in the LevelsController.
-     * This button is part of the difficulty selection group and allows the user to
-     * choose the "Easy" mode for the game.
-     *
-     * The state of this RadioButton can be used to determine the selected difficulty level
-     * and is linked to the corresponding FXML UI component via the @FXML annotation.
+     * RadioButton per la selezione della difficoltà "Facile".
+     * Fa parte di un gruppo di selezione esclusiva che permette all'utente
+     * di scegliere un solo livello di difficoltà alla volta.
      */
     @FXML
     private RadioButton rbEasy;
 
     /**
-     * A RadioButton representing the medium difficulty option in the level selection screen.
-     * This control is part of a group of RadioButtons that allows the user to choose
-     * a difficulty level for the game. The selection is used to determine the difficulty
-     * of the quiz or game being initiated.
-     *
-     * Associated logic for this control includes handling the user's choice
-     * and updating the application state accordingly to reflect the selected
-     * difficulty level.
+     * RadioButton per la selezione della difficoltà "Medio".
+     * Quando selezionato, imposta il gioco ad un livello di difficoltà intermedio.
      */
     @FXML
     private RadioButton rbMedium;
 
     /**
-     * Represents the RadioButton UI component corresponding to the "Hard" difficulty selection.
-     *
-     * This button allows the user to select the "Hard" difficulty level in the game's settings.
-     * It is part of the difficulty selection group managed by the LevelsController class
-     * and is associated with the difficultyGroup toggle group.
-     *
-     * Used to capture the user's preference for playing the game at the highest difficulty level.
+     * RadioButton per la selezione della difficoltà "Difficile".
+     * Rappresenta il livello di sfida più alto disponibile nel gioco.
      */
     @FXML
     private RadioButton rbHard;
 
     /**
-     * A Label component used in the LevelsController to display messages or feedback to the user.
-     * The label is dynamically updated during runtime to show information such as
-     * error messages, prompts, or notifications related to user actions in the difficulty selection process.
+     * Etichetta per la visualizzazione di messaggi all'utente.
+     * Utilizzata principalmente per:
+     * <ul>
+     *   <li>Confermare la selezione della difficoltà</li>
+     *   <li>Segnalare errori</li>
+     *   <li>Fornire feedback all'utente</li>
+     * </ul>
      */
     @FXML
     private Label messageLabel;
 
     /**
-     * Represents a ToggleGroup used for managing the selection among multiple
-     * difficulty options in the LevelsController class.
-     * This group typically contains radio buttons (e.g., rbEasy, rbMedium, rbHard),
-     * allowing the user to select one difficulty level at a time.
-     * It ensures that only one button in the group can be selected, providing
-     * mutually exclusive selection behavior.
+     * Gruppo di selezione per i RadioButton delle difficoltà.
+     * Garantisce che solo un RadioButton alla volta possa essere selezionato.
      */
     @FXML
     private ToggleGroup difficultyGroup;
 
     /**
-     * Represents the currently selected difficulty level in the application.
-     * This variable holds the value of the difficulty level chosen by the user
-     * (e.g., "Easy", "Medium", "Hard") during gameplay setup. It is updated
-     * when the user makes a choice and is used to determine the level of
-     * challenge in the quiz or game functionality.
+     * Difficoltà attualmente selezionata dall'utente.
+     * Può assumere i valori "EASY", "MEDIUM" o "HARD".
+     * È memorizzata come variabile statica per essere accessibile
+     * da altre classi dell'applicazione.
      */
     private static String selectedDifficulty;
 
+    /**
+     * Metodo di inizializzazione del controller.
+     * Viene chiamato automaticamente dopo il caricamento del file FXML.
+     * 
+     * <p>Si occupa di:
+     * <ol>
+     *   <li>Inizializzare il gruppo di selezione</li>
+     *   <li>Associare i RadioButton al gruppo</li>
+     * </ol>
+     * </p>
+     */
     @FXML
     public void initialize() {
         difficultyGroup = new ToggleGroup();
-
         Stream.of(rbEasy, rbMedium, rbHard).forEach(rb -> rb.setToggleGroup(difficultyGroup));
     }
 
     /**
-     * Handles the start of the game by retrieving the selected difficulty level,
-     * updating the label with the selected level, and transitioning to the quiz view.
-     * If no difficulty level is selected, a message is displayed to prompt the user.
-     * If an error occurs during the loading process of the quiz view, an error message is displayed.
-     *
-     * @param event the ActionEvent triggered by user interaction, typically a button click
+     * Gestisce l'azione di avvio del gioco.
+     * 
+     * <p>Operazioni eseguite:
+     * <ol>
+     *   <li>Verifica che sia stata selezionata una difficoltà</li>
+     *   <li>Mappa la selezione in un codice standardizzato</li>
+     *   <li>Mostra un messaggio di conferma all'utente</li>
+     *   <li>Carica la schermata di lettura del documento</li>
+     * </ol>
+     * </p>
+     * 
+     * @param event L'evento generato dal click sul pulsante
      */
     @FXML
     private void onStartGame(ActionEvent event) {
@@ -122,19 +129,27 @@ public class LevelsController {
     }
 
     /**
-     * Handles the action of navigating back to the login screen.
-     * This method loads the "Login.fxml" file, sets up the new scene onto the application stage,
-     * and transitions the user to the login view. If an error occurs during the loading process,
-     * an error message is displayed in the `messageLabel`.
-     *
-     * @param event the ActionEvent triggered by the user interaction, usually a button click.
+     * Gestisce il ritorno al menu principale.
+     * 
+     * @param event L'evento generato dal click sul pulsante
      */
     @FXML
     private void onBack(ActionEvent event) {
-        loadScene(event, "/view/MainMenu.fxml", () -> messageLabel.setText("Errore nel tornare al Menu principale."));
+        loadScene(event, "/view/MainMenu.fxml", 
+                () -> messageLabel.setText("Errore nel tornare al Menu principale."));
     }
 
-
+    /**
+     * Carica una nuova scena sostituendo quella corrente.
+     * 
+     * <p>Parametri:
+     * <ul>
+     *   <li>event: Evento che ha originato la richiesta</li>
+     *   <li>fxmlPath: Percorso del file FXML da caricare</li>
+     *   <li>onError: Azione da eseguire in caso di errore</li>
+     * </ul>
+     * </p>
+     */
     private void loadScene(ActionEvent event, String fxmlPath, Runnable onError) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -150,7 +165,12 @@ public class LevelsController {
         }
     }
 
-
+    /**
+     * Mappa il testo del RadioButton nel codice di difficoltà corrispondente.
+     * 
+     * @param text Il testo del RadioButton selezionato
+     * @return Il codice della difficoltà ("EASY", "MEDIUM" o "HARD")
+     */
     private String mapDifficulty(String text) {
         List<String> labels = Arrays.asList("Facile", "Medio", "Difficile");
         List<String> codes = Arrays.asList("EASY", "MEDIUM", "HARD");
@@ -160,15 +180,13 @@ public class LevelsController {
                 .filter(i -> labels.get(i).equalsIgnoreCase(text))
                 .findFirst()
                 .map(codes::get)
-                .orElse("EASY");  // default
+                .orElse("EASY");  // valore di default
     }
 
     /**
-     * Retrieves the currently selected difficulty level.
-     * This is a static method that provides access to the `selectedDifficulty`
-     * variable, representing the difficulty level selected by the user.
-     *
-     * @return the selected difficulty level as a String
+     * Restituisce la difficoltà attualmente selezionata.
+     * 
+     * @return La difficoltà selezionata ("EASY", "MEDIUM" o "HARD")
      */
     public static String getDifficulty() {
         return selectedDifficulty;

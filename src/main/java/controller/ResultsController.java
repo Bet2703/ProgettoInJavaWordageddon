@@ -13,110 +13,80 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * The ResultsController class manages the behavior and interaction logic for
- * the results view in the application. It interacts with the associated FXML
- * components to display the user's performance and handles navigation actions.
- * This controller is responsible for updating the UI based on the number of
- * correct answers and navigating back to the main menu when prompted.
+ * La classe ResultsController gestisce la logica di interazione e comportamento 
+ * della vista dei risultati dell'applicazione. Si occupa di aggiornare l'interfaccia
+ * utente in base alle risposte corrette fornite e permette la navigazione al menu principale.
  *
  * @author Gruppo6
  */
 public class ResultsController {
 
     /**
-     * A label that displays the number of correct answers achieved by the user.
-     * This UI component is updated dynamically based on the user's performance
-     * during the session. It is initialized and manipulated by the ResultsController.
+     * Etichetta che mostra il numero di risposte corrette ottenute dall'utente.
+     * Questo componente UI viene aggiornato dinamicamente in base alle prestazioni dell'utente.
      */
     @FXML
     private Label correctCountLabel;
 
     /**
-     * Label used to display feedback messages to the user.
-     * This label is updated dynamically to provide relevant
-     * information or responses based on user interactions
-     * or application state changes.
+     * Etichetta utilizzata per visualizzare messaggi di feedback all'utente.
+     * Viene aggiornata dinamicamente per fornire informazioni pertinenti
+     * basate sull'interazione o sullo stato dell'applicazione.
      */
     @FXML
     private Label feedbackMessage;
 
     /**
-     * Tracks the number of correct answers provided by the user during a session.
-     * This variable is used to dynamically update the results displayed in the UI
-     * and to provide feedback on the user's performance.
+     * Numero di risposte corrette fornite dall'utente durante una sessione.
+     * Questo valore viene utilizzato per aggiornare dinamicamente i risultati visualizzati.
      */
     private int correctAnswers;
 
     /**
-     * Represents the total number of answers provided during a quiz or assessment.
-     * This variable is used to keep track of all submitted answers, regardless of their correctness.
-     * It can be used for calculating metrics such as accuracy or completion.
+     * Numero totale di risposte fornite dall'utente in un quiz o valutazione.
+     * Utile per calcolare metriche come accuratezza o completamento del quiz.
      */
     private int totalAnswers;
 
     /**
-     * Represents the button located at the top of the "Home" section in the ResultsController's
-     * user interface. This button is typically linked to actions or navigation related to
-     * returning to or interacting with the Home view of the application.
-     *
-     * This variable is injected using the FXMLLoader and is associated with the corresponding
-     * UI component defined in the FXML file.
+     * Pulsante che permette il ritorno alla schermata principale ("Home").
+     * Questo pulsante viene iniettato tramite FXMLLoader e associato all'elemento UI definito nel file FXML.
      */
     @FXML
     private Button btnHomeTop;
 
     /**
-     * The btnHome variable represents a Button UI element in the ResultsController.
-     * This button is associated with the action of navigating back to the main menu
-     * or home screen from the results view in the application. It is linked to its
-     * corresponding element in the FXML file using the @FXML annotation.
+     * Pulsante per tornare al menu principale dell'applicazione dalla schermata dei risultati.
      */
     @FXML
     private Button btnHome;
 
     /**
-     * Represents a button in the UI that allows the user to retry the quiz.
-     *
-     * This button is linked to an event handler that navigates the user back
-     * to the quiz interface when clicked. It provides a mechanism for the user
-     * to restart the quiz and attempt to improve their performance.
-     *
-     * The button's behavior and appearance are defined and managed within the
-     * ResultsController class.
+     * Pulsante che consente all'utente di riprovare il quiz.
+     * Al clic, ricarica la schermata del quiz permettendo di ripeterlo per migliorare la performance.
      */
     @FXML
     private Button btnRetry;
 
     /**
-     * Represents the UI button for navigating to the "Personal Scores" view in the application.
-     * This button is tied to an FXML-defined element and allows users to access their
-     * personal score records when clicked.
-     *
-     * The associated action method, `onPersonalScores(ActionEvent event)`, is responsible
-     * for handling the logic necessary to transition to the relevant view or perform
-     * the required operations related to personal scores.
+     * Pulsante per accedere alla schermata dei punteggi personali dell'utente.
+     * Permette la visualizzazione delle statistiche individuali delle sessioni di quiz.
      */
     @FXML
     private Button btnPersonalScores;
 
     /**
-     * Initializes the ResultsController by setting up initial configurations
-     * for the UI components associated with this controller.
-     *
-     * This method is automatically called after the FXML file has been loaded.
-     * Specifically, it updates the `correctCountLabel` text to display the
-     * initial number of correct answers.
+     * Metodo di inizializzazione chiamato automaticamente dopo il caricamento del file FXML.
+     * Configura l'etichetta dei risultati visualizzando il numero iniziale di risposte corrette.
      */
     private void initialize() {
-
         correctCountLabel.setText("Risposte corrette: " + correctAnswers + " su " + totalAnswers + " domande totali.");
     }
 
     /**
-     * Updates the number of correct answers and refreshes the associated UI label
-     * to reflect the updated value, if applicable.
+     * Metodo per aggiornare il numero di risposte corrette e riflettere il nuovo valore nell'interfaccia utente.
      *
-     * @param correctAnswers the number of correct answers to be set and displayed
+     * @param correctAnswers Numero di risposte corrette da aggiornare e visualizzare.
      */
     public void setCorrectAnswers(int correctAnswers) {
         this.correctAnswers = correctAnswers;
@@ -126,10 +96,9 @@ public class ResultsController {
     }
 
     /**
-     * Updates the total number of answers and refreshes the associated UI label
-     * to display the updated total and correct answers, if applicable.
+     * Metodo per aggiornare il numero totale di risposte e modificare l'etichetta UI di conseguenza.
      *
-     * @param totalAnswers the total number of answers to be set and displayed
+     * @param totalAnswers Numero totale di risposte da impostare e mostrare.
      */
     public void setTotalAnswers(int totalAnswers) {
         this.totalAnswers = totalAnswers;
@@ -139,12 +108,9 @@ public class ResultsController {
     }
 
     /**
-     * Handles the action of retrying the quiz. This method is triggered when the user interacts
-     * with the "Retry Quiz" button in the UI. It loads the quiz view FXML file, initializes the
-     * question controller with the current game session, and updates the application's stage
-     * to display the quiz interface.
+     * Gestisce l'azione di ripetere il quiz. Carica la vista del quiz e inizializza la sessione corrente.
      *
-     * @param event the action event triggered by the user's interaction with the "Retry Quiz" button
+     * @param event Evento scatenato dall'interazione con il pulsante "Ripeti Quiz".
      */
     @FXML
     private void onRetryQuiz(ActionEvent event) {
@@ -153,7 +119,6 @@ public class ResultsController {
             Parent root = loader.load();
 
             QuestionsController questionsController = loader.getController();
-
             questionsController.startGame(service.GameSessionManagement.getInstance().getDocumentId());
 
             Stage stage = (Stage) feedbackMessage.getScene().getWindow();
@@ -167,34 +132,34 @@ public class ResultsController {
     }
 
     /**
-     * Handles the action of displaying the personal scores view. This method is triggered
-     * when the user interacts with the "Personal Scores" button in the UI. It loads the
-     * PersonalScoresView.fxml file, sets it as the current scene, and displays it in the
-     * existing stage.
+     * Gestisce l'azione di visualizzare la schermata dei punteggi personali.
+     * Carica la vista PersonalScoresView.fxml e la imposta come scena attiva.
      *
-     * @param event the action event triggered by the user's interaction with the
-     *              "Personal Scores" button. Used to identify the source component
-     *              and retrieve the current stage.
+     * @param event Evento scatenato dall'interazione con il pulsante "Punteggi Personali".
      */
     @FXML
     private void onPersonalScores(ActionEvent event) {
-        loadView(event, "/view/PersonalScoresView.fxml", "Personal Scores");
+        loadView(event, "/view/PersonalScoresView.fxml", "Punteggi Personali");
     }
 
     /**
-     * Handles the action of navigating back to the main menu view when triggered.
-     * This method is linked to the "Back to Menu" button in the UI and is responsible
-     * for loading the UserManagementView.fxml file, setting it as the current scene, and
-     * displaying it in the existing stage.
+     * Gestisce l'azione di tornare al menu principale. Carica la vista del menu e la imposta come scena attiva.
      *
-     * @param event the action event triggered by the user's interaction with the "Back to Menu" button
-     *              in the UI. Used to identify the source component and retrieve the current stage.
+     * @param event Evento scatenato dall'interazione con il pulsante "Torna al Menu".
      */
     @FXML
     private void onBackToMenu(ActionEvent event) {
         loadView(event, "/view/UserManagementView.fxml", "Menu Principale");
     }
 
+    /**
+     * Metodo generico per caricare una nuova vista nell'applicazione.
+     * Imposta il file FXML specificato come scena attuale.
+     *
+     * @param event Evento associato all'azione di cambio schermata.
+     * @param fxmlPath Percorso del file FXML da caricare.
+     * @param title Titolo della finestra dopo il cambio di scena.
+     */
     private void loadView(ActionEvent event, String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));

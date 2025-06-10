@@ -15,77 +15,54 @@ import service.DocumentsManagement;
 import service.Levels;
 
 /**
- * Controller class for managing the load document dialog.
+ * Controller responsabile della gestione della finestra di dialogo per il caricamento di documenti.
  *
- * This class handles the interactions and logic of the document loading
- * dialog, including file selection, difficulty level selection, and actions
- * associated with confirming or canceling the dialog. It also integrates with
- * the user interface components defined in the FXML file to provide functionality
- * for the dialog.
- *
- * @author Gruppo6
+ * Questa classe gestisce le interazioni e la logica associate alla finestra di caricamento dei documenti,
+ * inclusa la selezione del file, la scelta del livello di difficoltà e le azioni associate ai pulsanti
+ * di conferma e annullamento. Integra i componenti dell'interfaccia grafica definiti nel file FXML.
  */
 public class LoadDocumentDialogController {
 
     /**
-     * Label component used to display the name of the file selected by the user
-     * in the file selection dialog.
+     * Etichetta utilizzata per mostrare il nome del file selezionato dall’utente.
      *
-     * When a file is successfully chosen, its name is displayed as the text of
-     * this label to provide feedback to the user.
-     *
-     * This label is part of the UI elements of the document loading dialog and is
-     * updated dynamically when the user selects a file.
+     * Una volta scelto un file, il nome viene visualizzato per fornire un riscontro all’utente.
      */
     @FXML
     private Label fileNameLabel;
 
     /**
-     * Represents the difficulty level radio button in the user interface.
+     * Pulsanti radio per la selezione del livello di difficoltà.
      *
-     * This radio button allows users to select the difficulty level when uploading
-     * a document to the database. It is part of a toggle group with `easyRadio`, `mediumRadio`
-     * and `hardRadio`, ensuring that only one difficulty level can be selected at a time.
-     *
-     * The selected difficulty level is used to categorize the uploaded document
-     * appropriately. This field is initialized via dependency injection from the
-     * FXML file associated with the controller.
+     * Appartengono a un gruppo esclusivo che consente di selezionarne solo uno alla volta.
+     * Il livello scelto viene usato per classificare il documento caricato.
      */
     @FXML
     private RadioButton easyRadio, mediumRadio, hardRadio;
 
     /**
-     * Represents the file selected by the user in the file selection dialog.
+     * Riferimento al file selezionato dall’utente.
      *
-     * This variable stores a reference to the selected file and is used
-     * in later operations such as displaying the file name in the UI
-     * (via the `fileNameLabel`) or passing it for processing when the user
-     * confirms their selection.
-     *
-     * If no file is selected, this variable remains null.
+     * Se nessun file è stato selezionato, rimane null.
      */
     private File selectedFile;
 
     /**
-     * Represents the stage used for displaying dialog windows in the LoadDocumentDialogController.
-     * This variable holds a reference to the JavaFX Stage instance that serves as a modal dialog,
-     * allowing the user to interact with the dialog independently of the main application window.
-     * It is used to configure and control the behavior of the dialog, such as its modality, scene, and visibility.
+     * Finestra di dialogo corrente associata a questo controller.
+     *
+     * Serve per gestire e chiudere la finestra al termine delle operazioni.
      */
     private Stage dialogStage;
 
     /**
-     * Represents a group of toggleable nodes ensuring only one of them can be selected at a time.
-     * Typically used with RadioButtons for managing exclusive selection behavior.
+     * Gruppo di selezione esclusiva per i pulsanti radio (un solo elemento selezionabile).
      */
     private ToggleGroup group;
 
     /**
-     * Initializes the controller by setting up the toggle group for difficulty level radio buttons.
+     * Inizializza il controller impostando il gruppo di toggle per i livelli di difficoltà.
      *
-     * This method is automatically invoked after the FXML file has been loaded.
-     * It groups the `easyRadio`, `mediumRadio`, and `hardRadio` buttons into a single `ToggleGroup`,
-     * ensuring only one option can be selected at a time.
+     * Metodo invocato automaticamente dopo il caricamento del file FXML.
      */
     @FXML
     public void initialize() {
@@ -95,24 +72,18 @@ public class LoadDocumentDialogController {
     }
 
     /**
-     * Sets the dialog stage for this controller.
-     * This stage is used to display the dialog managed by this controller.
+     * Imposta lo stage (finestra) per il dialogo.
      *
-     * @param stage the stage to be set as the dialog stage for this controller
+     * @param stage lo stage da associare al controller.
      */
     public void setDialogStage(Stage stage) {
         this.dialogStage = stage;
     }
 
     /**
-     * Displays a file chooser dialog to allow the user to select a text file and updates the file name label accordingly.
+     * Apre un file chooser per permettere la selezione di un file di testo.
      *
-     * This method opens a modal file chooser dialog, filtered to display only `.txt` files (UTF-8).
-     * Once a file is selected, it assigns the selected file to the `selectedFile` field and updates
-     * the `fileNameLabel` with the name of the chosen file. If no file is selected, no action is taken.
-     *
-     * The method also ensures that the user interface reflects the current state
-     * of the selected file by updating the appropriate label.
+     * Aggiorna l’etichetta con il nome del file selezionato.
      */
     @FXML
     private void onChooseFile() {
@@ -126,20 +97,14 @@ public class LoadDocumentDialogController {
     }
 
     /**
-     * Handles the confirmation action triggered by the "Confirm" button.
+     * Gestisce l’azione di conferma (pulsante "Conferma").
      *
-     * This method validates that both a file and a difficulty level are selected.
-     * If both are provided, it delegates to the `DocumentsManagement.loadToDB` method
-     * to load the selected file and difficulty into the database. It then displays a
-     * success alert to inform the user that the document has been successfully uploaded
-     * and closes the dialog stage.
-     *
-     * If either the file or difficulty level is not selected, it displays a warning
-     * alert to prompt the user to make the necessary selections.
+     * Verifica che siano stati selezionati sia un file che un livello di difficoltà.
+     * Se sì, carica il documento nel database e mostra un messaggio di successo.
+     * Altrimenti, mostra un avviso per informare l’utente che mancano dati.
      */
     @FXML
     private void onConfirm() {
-        // usa Optional per validazione e azioni
         Optional<File> fileOpt = Optional.ofNullable(selectedFile);
         Optional<Levels.Difficulty> diffOpt = Optional.ofNullable(getSelectedDifficulty());
 
@@ -153,24 +118,19 @@ public class LoadDocumentDialogController {
     }
 
     /**
-     * Closes the dialog stage without performing any additional actions.
+     * Chiude la finestra di dialogo senza eseguire ulteriori operazioni.
      *
-     * This method is primarily intended to handle cancel operations, allowing the user
-     * to close the dialog without making any changes or confirming any actions. It
-     * is typically invoked when the "Cancel" button in the associated UI is clicked*/
+     * Utilizzato principalmente per l’azione del pulsante "Annulla".
+     */
     @FXML
     private void onCancel() {
         Optional.ofNullable(dialogStage).ifPresent(Stage::close);
     }
 
     /**
-     * Determines the selected difficulty level based on the state of the radio buttons.
+     * Restituisce il livello di difficoltà selezionato tramite i pulsanti radio.
      *
-     * This method checks whether any of the radio buttons (`easyRadio`, `mediumRadio`, or `hardRadio`) is selected
-     * and returns the corresponding difficulty level. If none of the buttons are selected, it returns null.
-     *
-     * @return the selected difficulty level as a {@code Levels.Difficulty} enum value,
-     *         or {@code null} if no option is selected
+     * @return livello di difficoltà selezionato, oppure null se nessuno è selezionato.
      */
     private Levels.Difficulty getSelectedDifficulty() {
         return Arrays.asList(

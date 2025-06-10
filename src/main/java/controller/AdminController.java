@@ -16,59 +16,42 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The AdminController class handles the administration functionalities of the application.
- * It provides functionality to load, delete, and manage document metadata,
- * as well as the ability to navigate back to the login screen.
- * This controller is responsible for interacting with the associated FXML view components.
- *
- * @author Gruppo6
+ * Controller per la gestione delle funzionalità amministrative dell'applicazione.
+ * Si occupa della gestione dei documenti (caricamento, eliminazione) e della navigazione tra schermate.
+ * Interagisce con i componenti dell'interfaccia grafica definiti nel file FXML associato.
  */
 public class AdminController {
 
-
     /**
-     * A ListView component used to display a list of document titles in the AdminController.
-     * This control allows users to view and select documents from the list.
-     * It is populated and managed programmatically through controller methods.
+     * ListView che mostra l'elenco dei titoli dei documenti disponibili.
+     * Viene popolata dinamicamente con i titoli dei documenti presenti nel sistema.
      */
     @FXML
     private ListView<String> documentsList;
 
     /**
-     * Label used to display messages to the user in the AdminController context.
-     * This can include notifications, error messages, or other information
-     * relevant to the actions performed within the Admin interface.
+     * Etichetta per la visualizzazione di messaggi all'utente.
+     * Utilizzata per mostrare informazioni, avvisi o messaggi di errore.
      */
     @FXML
     private Label messageLabel;
 
     /**
-     * Initializes the AdminController.
-     *
-     * This method is automatically called after the associated FXML file has been loaded.
-     * It sets up the initial state of the controller by populating the list of document titles
-     * in the `documentsList`. The `loadDocumentTitles` method is invoked to fetch and display
-     * the current list of available documents.
+     * Metodo di inizializzazione del controller.
+     * Viene chiamato automaticamente dopo il caricamento del file FXML associato.
+     * Si occupa di caricare l'elenco dei titoli dei documenti all'avvio.
      */
     @FXML
     public void initialize() {
-
         loadDocumentTitles();
-
     }
 
     /**
-     * Handles the action of loading documents when triggered.
-     * This method opens a dialog window for document upload,
-     * provides tools for file selection and difficulty level assignment,
-     * and processes the user input upon confirmation.
-     *
-     * The method loads the "LoadDocumentView.fxml" file to render the dialog
-     * and initializes a new stage with modality set to `APPLICATION_MODAL`.
-     * The `LoadDocumentDialogController` is used in the dialog to manage user interactions.
-     *
-     * Upon closing the dialog, it updates the list of document titles.
-     * Any file input/output errors during the loading of the dialog are caught and logged.
+     * Gestisce l'azione di caricamento di un nuovo documento.
+     * Apre una finestra di dialogo modale per la selezione del file e l'impostazione
+     * del livello di difficoltà. Al termine dell'operazione, aggiorna la lista dei documenti.
+     * 
+     * @throws IOException se si verifica un errore durante il caricamento della finestra di dialogo
      */
     @FXML
     private void onLoadDocuments() {
@@ -91,16 +74,9 @@ public class AdminController {
     }
 
     /**
-     * Handles the action of deleting a selected document.
-     *
-     * This method checks if a document is selected from the `documentsList`. If no document is selected,
-     * it updates the `messageLabel` with a prompt requesting the user to select a document.
-     * Otherwise, it prompts the user with a confirmation dialog.
-     * If the user confirms the deletion, the selected document is removed from the database using the
-     * `DocumentsManagement.deleteFromDB` method.
-     *
-     * After a successful deletion, the method updates the displayed list of documents by invoking
-     * the `loadDocumentTitles` method.
+     * Gestisce l'eliminazione di un documento selezionato.
+     * Mostra una finestra di conferma prima di procedere all'eliminazione.
+     * Se l'utente conferma, rimuove il documento dal database e aggiorna la lista.
      */
     @FXML
     private void onDeleteDocument() {
@@ -125,12 +101,11 @@ public class AdminController {
     }
 
     /**
-     * Handles the action of navigating back to the login screen.
-     * This method is triggered by the associated user action, such as clicking a button.
-     * It loads the "Login.fxml" file, sets up the new scene, and transitions to the login view.
-     * If an error occurs during the loading process, an error message is displayed on the message label.
-     *
-     * @param event the ActionEvent*/
+     * Gestisce il ritorno alla schermata di login.
+     * Carica la schermata di login e sostituisce la scena corrente.
+     * 
+     * @param event l'evento di azione che ha scatenato questo metodo
+     */
     @FXML
     private void onBackToLogin(ActionEvent event) {
         try {
@@ -149,14 +124,9 @@ public class AdminController {
     }
 
     /**
-     * Loads the titles of all documents into the `documentsList` observable list.
-     *
-     * This method retrieves a list of document titles from the `DocumentsManagement` class.
-     * It then clears any existing items in the `documentsList` and populates it with the newly
-     * retrieved list of document titles.
-     *
-     * Designed to ensure the `documentsList` accurately reflects the current state of documents
-     * managed by the system.
+     * Carica l'elenco dei titoli dei documenti presenti nel sistema.
+     * Pulisce la lista corrente e la riempie con i titoli recuperati dal database,
+     * applicando filtri per rimuovere duplicati e valori nulli, e ordinando alfabeticamente.
      */
     public void loadDocumentTitles() {
         List<String> titles = DocumentsManagement.getAllDocumentTitles();
@@ -170,5 +140,3 @@ public class AdminController {
                 .forEach(documentsList.getItems()::add);
     }
 }
-
-
