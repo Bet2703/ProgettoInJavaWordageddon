@@ -166,13 +166,13 @@ public class UserManagementViewController implements Initializable {
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.println("DocumentID,Difficulty,Score,Timestamp");
 
-            for (GameSession s : sessions) {
-                writer.printf("%d,%s,%d,%s%n",
-                        s.getDocumentId(),
-                        s.getDifficulty(),
-                        s.getScore(),
-                        s.getTimestamp());
-            }
+            sessions.stream()
+                    .map(s -> String.format("%d,%s,%d,%s",
+                            s.getDocumentId(),
+                            s.getDifficulty(),
+                            s.getScore(),
+                            s.getTimestamp()))
+                    .forEach(writer::println);
 
             lblStatus.setText("Sessioni esportate in " + file.getAbsolutePath());
 

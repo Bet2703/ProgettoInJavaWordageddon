@@ -14,6 +14,8 @@ import service.DatabaseManagement;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * The DocumentReadController class is responsible for managing the document reading functionality
@@ -115,7 +117,6 @@ public class DocumentReadController {
             if (secondsLeft <= 0) {
                 timeline.stop();
                 timerLabel.setText("Tempo scaduto!");
-                // Passa alla schermata successiva (domande)
                 goToQuestionsView();
             }
         }));
@@ -124,7 +125,7 @@ public class DocumentReadController {
     }
 
     /**
-     * Opens the quiz view scene and transitions the application to the questions interface.
+     * Opens the quiz view scene and transitions the application to the question interface.
      *
      * This method is responsible for loading the `quizView.fxml` file using the `FXMLLoader`,
      * setting it as the root node of a new scene, and opening it in a new stage titled "Domande".
@@ -143,21 +144,26 @@ public class DocumentReadController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/quizView.fxml"));
             Parent root = loader.load();
+
             Stage stage = new Stage();
             stage.setTitle("Domande");
             stage.setScene(new Scene(root));
             stage.show();
 
             QuestionsController controller = loader.getController();
+            Consumer<Integer> startGame = controller::startGame;
             controller.setDocumentId(documentId);
-            controller.startGame(documentId);
+            startGame.accept(documentId);
+
             System.out.println("L'id del Testo nel DB e': " + controller.getDocumentId());
 
-            Stage currentStage = (Stage) documentTextArea.getScene().getWindow();
-            currentStage.close();
+            Optional.ofNullable(documentTextArea.getScene())
+                    .map(Scene::getWindow)
+                    .map(Stage.class::cast)
+                    .ifPresent(Stage::close);
 
         } catch (IOException e) {
-            System.err.println("Errore nell'apertura della scena " + e.getMessage());
+            System.err.println("Errore nell'apertura della scena: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -173,28 +179,27 @@ public class DocumentReadController {
      * @return the text content of the selected document, or an empty string if no document is found
      */
     private String fetchRandomDocumentByDifficulty() {
-        String content = "";
         String query = "SELECT id, text, difficulty FROM documents WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1";
 
         try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            String selectedDifficulty = LevelsController.getDifficulty();
-            pstmt.setString(1, selectedDifficulty);
+            pstmt.setString(1, LevelsController.getDifficulty());
 
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                content = rs.getString("text");
-                documentId = rs.getInt("id");
-                difficulty = rs.getString("difficulty");
-                secondsLeft = service.Levels.getSecondsByDifficulty(difficulty.toUpperCase());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    documentId = rs.getInt("id");
+                    difficulty = rs.getString("difficulty");
+                    secondsLeft = service.Levels.getSecondsByDifficulty(difficulty.toUpperCase());
+                    return rs.getString("text");
+                }
             }
 
         } catch (SQLException e) {
-            System.err.println("Errore nella connessione/query col database " + e.getMessage());
+            System.err.println("Errore nella connessione/query col database: " + e.getMessage());
             e.printStackTrace();
         }
-        return content;
+
+        return "";
     }
 }

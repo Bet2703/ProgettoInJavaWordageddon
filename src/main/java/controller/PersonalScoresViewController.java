@@ -3,11 +3,9 @@ package controller;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,6 +23,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import service.DocumentsManagement;
 
 /**
  * Handles the event of navigating back to the main menu.
@@ -318,7 +317,7 @@ public class PersonalScoresViewController implements Initializable {
         showEasyScore(null);
         showMediumScore(null);
         showHardScore(null);
-        
+
         applySortToAllTables();
     }
 
@@ -334,16 +333,18 @@ public class PersonalScoresViewController implements Initializable {
      * @param dateCol  the table column that will display the timestamp of the game
      *                 session, reflecting the date and time it occurred.
      */
-    private void setupTableColumns(TableColumn<service.GameSession, String> titleCol, TableColumn<service.GameSession, Integer> scoreCol, TableColumn<service.GameSession, String> dateCol) {
+    private void setupTableColumns(TableColumn<service.GameSession, String> titleCol,
+                                   TableColumn<service.GameSession, Integer> scoreCol,
+                                   TableColumn<service.GameSession, String> dateCol) {
 
-        titleCol.setCellValueFactory(cellData -> {
-            int docId = cellData.getValue().getDocumentID();
-            String title = service.DocumentsManagement.getTitleFromId(docId);
-            return new SimpleStringProperty(title);        
-        });
-        
-        scoreCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
-        dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimestamp()));
+        titleCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(DocumentsManagement.getTitleFromId(cellData.getValue().getDocumentID())));
+
+        scoreCol.setCellValueFactory(cellData ->
+                new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
+
+        dateCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getTimestamp()));
     }
 
     /**
@@ -361,25 +362,25 @@ public class PersonalScoresViewController implements Initializable {
     private void loadDataFromDatabase() {
         String username = service.GameSessionManagement.getInstance().getUsername();
         List<service.GameSession> userSessions = service.GameSessionManagement.getSessionsByUsername(username);
-        
-        if(userSessions.isEmpty()){
+
+        if (userSessions.isEmpty()) {
             System.err.println("Nessuna sessione trovata.");
             return;
         }
-        
-        for(service.GameSession s : userSessions) {
-            switch(s.getDifficulty()) {
+
+        userSessions.stream().forEach(session -> {
+            switch (session.getDifficulty()) {
                 case "EASY":
-                    easySessions.add(s);
+                    easySessions.add(session);
                     break;
                 case "MEDIUM":
-                    mediumSessions.add(s);
+                    mediumSessions.add(session);
                     break;
                 case "HARD":
-                    hardSessions.add(s);
+                    hardSessions.add(session);
                     break;
-            }  
-        }
+            }
+        });
     }
 
     /**
@@ -411,13 +412,11 @@ public class PersonalScoresViewController implements Initializable {
      * @param dateCol  the table column representing the date of game sessions.
      *                 This column is used when sorting by date.
      */
-    private void applySort(TableView<service.GameSession> table, TableColumn<service.GameSession, Integer> scoreCol,TableColumn<service.GameSession, String> dateCol) {
+    private void applySort(TableView<service.GameSession> table,
+                           TableColumn<service.GameSession, Integer> scoreCol,
+                           TableColumn<service.GameSession, String> dateCol) {
         table.getSortOrder().clear();
-        if (currentSort == SortMode.BY_SCORE) {
-            table.getSortOrder().add(scoreCol);
-        } else {
-            table.getSortOrder().add(dateCol);
-        }
+        table.getSortOrder().add(currentSort == SortMode.BY_SCORE ? scoreCol : dateCol);
         table.sort();
     }
 
@@ -445,17 +444,7 @@ public class PersonalScoresViewController implements Initializable {
      */
     @FXML
     private void handleBackToMenu(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainMenu.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadView(event, "/view/MainMenu.fxml");
     }
 
     /**
@@ -468,8 +457,7 @@ public class PersonalScoresViewController implements Initializable {
      */
     @FXML
     private void showEasyScore(Event event) {
-        if (easyTable != null)
-            easyTable.setItems(easySessions);
+        if (easyTable != null) easyTable.setItems(easySessions);
     }
 
     /**
@@ -482,8 +470,7 @@ public class PersonalScoresViewController implements Initializable {
      */
     @FXML
     private void showMediumScore(Event event) {
-        if (mediumTable != null)
-            mediumTable.setItems(mediumSessions);
+        if (mediumTable != null) mediumTable.setItems(mediumSessions);
     }
 
     /**
@@ -496,8 +483,17 @@ public class PersonalScoresViewController implements Initializable {
      */
     @FXML
     private void showHardScore(Event event) {
-        if (hardTable != null)
-            hardTable.setItems(hardSessions);
+        if (hardTable != null) hardTable.setItems(hardSessions);
     }
-    
+
+    private void loadView(ActionEvent event, String fxmlPath) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

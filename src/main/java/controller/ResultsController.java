@@ -139,30 +139,6 @@ public class ResultsController {
     }
 
     /**
-     * Handles the action of navigating back to the main menu view when triggered.
-     * This method is linked to the "Back to Menu" button in the UI and is responsible
-     * for loading the UserManagementView.fxml file, setting it as the current scene, and
-     * displaying it in the existing stage.
-     *
-     * @param event the action event triggered by the user's interaction with the "Back to Menu" button
-     *              in the UI. Used to identify the source component and retrieve the current stage.
-     */
-    @FXML
-    private void onBackToMenu(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserManagementView.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Handles the action of retrying the quiz. This method is triggered when the user interacts
      * with the "Retry Quiz" button in the UI. It loads the quiz view FXML file, initializes the
      * question controller with the current game session, and updates the application's stage
@@ -202,15 +178,34 @@ public class ResultsController {
      */
     @FXML
     private void onPersonalScores(ActionEvent event) {
+        loadView(event, "/view/PersonalScoresView.fxml", "Personal Scores");
+    }
+
+    /**
+     * Handles the action of navigating back to the main menu view when triggered.
+     * This method is linked to the "Back to Menu" button in the UI and is responsible
+     * for loading the UserManagementView.fxml file, setting it as the current scene, and
+     * displaying it in the existing stage.
+     *
+     * @param event the action event triggered by the user's interaction with the "Back to Menu" button
+     *              in the UI. Used to identify the source component and retrieve the current stage.
+     */
+    @FXML
+    private void onBackToMenu(ActionEvent event) {
+        loadView(event, "/view/UserManagementView.fxml", "Menu Principale");
+    }
+
+    private void loadView(ActionEvent event, String fxmlPath, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PersonalScoresView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = (Stage) feedbackMessage.getScene().getWindow();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("PersonalScores");
+            stage.setTitle(title);
             stage.show();
         } catch (IOException e) {
-            System.err.println("Errore durante il caricamento della schermata della classifica personale: " + e.getMessage());
+            System.err.println("Errore durante il caricamento della schermata: " + e.getMessage());
             e.printStackTrace();
         }
     }

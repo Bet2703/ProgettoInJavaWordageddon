@@ -6,6 +6,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.ToggleGroup;
 import java.io.File;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import service.DocumentsManagement;
 import service.Levels;
 
@@ -85,9 +90,8 @@ public class LoadDocumentDialogController {
     @FXML
     public void initialize() {
         group = new ToggleGroup();
-        easyRadio.setToggleGroup(group);
-        mediumRadio.setToggleGroup(group);
-        hardRadio.setToggleGroup(group);
+        List<RadioButton> radios = Arrays.asList(easyRadio, mediumRadio, hardRadio);
+        radios.forEach(rb -> rb.setToggleGroup(group));
     }
 
     /**
@@ -113,13 +117,12 @@ public class LoadDocumentDialogController {
     @FXML
     private void onChooseFile() {
         FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(txtFilter);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt"));
 
         selectedFile = fileChooser.showOpenDialog(dialogStage);
-        if (selectedFile != null) {
-            fileNameLabel.setText(selectedFile.getName());
-        }
+        Optional.ofNullable(selectedFile)
+                .map(File::getName)
+                .ifPresent(fileNameLabel::setText);
     }
 
     /**
@@ -136,10 +139,14 @@ public class LoadDocumentDialogController {
      */
     @FXML
     private void onConfirm() {
-        if (selectedFile != null && getSelectedDifficulty() != null) {
-            DocumentsManagement.loadToDB(selectedFile, getSelectedDifficulty());
+        // usa Optional per validazione e azioni
+        Optional<File> fileOpt = Optional.ofNullable(selectedFile);
+        Optional<Levels.Difficulty> diffOpt = Optional.ofNullable(getSelectedDifficulty());
+
+        if (fileOpt.isPresent() && diffOpt.isPresent()) {
+            fileOpt.ifPresent(file -> DocumentsManagement.loadToDB(file, diffOpt.get()));
             new Alert(Alert.AlertType.INFORMATION, "Documento caricato con successo!").showAndWait();
-            dialogStage.close();
+            Optional.ofNullable(dialogStage).ifPresent(Stage::close);
         } else {
             new Alert(Alert.AlertType.WARNING, "Seleziona file e difficoltà.").showAndWait();
         }
@@ -153,7 +160,7 @@ public class LoadDocumentDialogController {
      * is typically invoked when the "Cancel" button in the associated UI is clicked*/
     @FXML
     private void onCancel() {
-        dialogStage.close();
+        Optional.ofNullable(dialogStage).ifPresent(Stage::close);
     }
 
     /**
@@ -166,9 +173,14 @@ public class LoadDocumentDialogController {
      *         or {@code null} if no option is selected
      */
     private Levels.Difficulty getSelectedDifficulty() {
-        if (easyRadio.isSelected()) return Levels.Difficulty.EASY;
-        if (mediumRadio.isSelected()) return Levels.Difficulty.MEDIUM;
-        if (hardRadio.isSelected()) return Levels.Difficulty.HARD;
-        return null;
+        return Arrays.asList(
+                        new AbstractMap.SimpleEntry<>(easyRadio, Levels.Difficulty.EASY),
+                        new AbstractMap.SimpleEntry<>(mediumRadio, Levels.Difficulty.MEDIUM),
+                        new AbstractMap.SimpleEntry<>(hardRadio, Levels.Difficulty.HARD)
+                ).stream()
+                .filter(entry -> entry.getKey().isSelected())
+                .map(AbstractMap.SimpleEntry::getValue)
+                .findFirst()
+                .orElse(null);
     }
 }

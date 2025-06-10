@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The DocumentsManagement class provides methods for managing documents and their associated words.
@@ -57,19 +58,10 @@ public class DocumentsManagement {
      * @return A map where the keys are words (after filtering) and the values are their respective frequencies as integers.
      */
     public static Map<String, Integer> textFiltering(String line) {
-
-        Map<String, Integer> wordCount = new HashMap<>();
-        String[] words = line.split("\\P{L}+");
-        for(String word : words)
-        {
-            String cleaned = word.toLowerCase().replaceAll("[^a-zàèéìòùäöüßáêíóúñ]", "");
-
-            if(!cleaned.isEmpty() && !stopWords_IT.contains(cleaned))
-            {
-                wordCount.put(cleaned, wordCount.getOrDefault(cleaned, 0) + 1);
-            }
-        }
-        return wordCount;
+        return Arrays.stream(line.split("\\P{L}+"))
+                .map(word -> word.toLowerCase().replaceAll("[^a-zàèéìòùäöüßáêíóúñ]", ""))
+                .filter(cleaned -> !cleaned.isEmpty() && !stopWords_IT.contains(cleaned))
+                .collect(Collectors.groupingBy(w -> w, Collectors.summingInt(w -> 1)));
     }
 
     /**
@@ -82,16 +74,14 @@ public class DocumentsManagement {
      * @param line     The text line containing words to be processed and stored in the database.
      */
     public static void insertWordsIntoDatabase(String fileName, String line) {
-
         Map<String, Integer> words = textFiltering(line);
 
         String findIDQuery = "SELECT id FROM documents WHERE title = ?";
-
-        String insertQuery = "INSERT INTO words (id_document, word, frequency) VALUES (?, ?, ?) ";
+        String insertQuery = "INSERT INTO words (id_document, word, frequency) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseManagement.getConnection()) {
-
             int documentId = -1;
+
             try (PreparedStatement selectStmt = conn.prepareStatement(findIDQuery)) {
                 selectStmt.setString(1, fileName);
                 ResultSet rs = selectStmt.executeQuery();
@@ -104,21 +94,28 @@ public class DocumentsManagement {
             }
 
             conn.setAutoCommit(false);
+
             try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
-                int id=0;
-                for (Map.Entry<String, Integer> entry : words.entrySet()) {
-                    insertStmt.setInt(1, documentId);
-                    insertStmt.setString(2, entry.getKey());
-                    insertStmt.setInt(3, entry.getValue());
-                    insertStmt.addBatch();
-                }
+                int finalDocumentId = documentId;
+                words.entrySet().stream().forEach(entry -> {
+                    try {
+                        insertStmt.setInt(1, finalDocumentId);
+                        insertStmt.setString(2, entry.getKey());
+                        insertStmt.setInt(3, entry.getValue());
+                        insertStmt.addBatch();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
                 insertStmt.executeBatch();
             }
+
             conn.commit();
 
-            System.out.println("Parole inserite/aggiornate con successo.");
         } catch (SQLException e) {
             System.err.println("Errore database: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("Errore nell'inserimento batch: " + e.getCause().getMessage());
         }
     }
 
@@ -130,7 +127,6 @@ public class DocumentsManagement {
      * @param difficulty The difficulty level to associate with the file's content. It must be one of the levels in Levels.Difficulty.
      */
     public static void loadToDB(File fileName, Levels.Difficulty difficulty) {
-
         if (fileName == null) {
             System.err.println("Il file non è specificato (null).");
             return;
@@ -139,36 +135,35 @@ public class DocumentsManagement {
             System.err.println("Il file non esiste o non è leggibile: " + fileName.getAbsolutePath());
             return;
         }
-        System.out.println("File selezionato: " + fileName);
+        System.out.println("File selezionato: " + fileName.getAbsolutePath());
 
-        String sql = "INSERT INTO documents (text, title, difficulty) VALUES (?, ?, ?)";
+        String insertDocSQL = "INSERT INTO documents (title, difficulty, content) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseManagement.getConnection();
-             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8));
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(insertDocSQL)) {
 
             StringBuilder contentBuilder = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                contentBuilder.append(line);
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    contentBuilder.append(line).append("\n");
+                }
             }
 
-            pstmt.setString(1, contentBuilder.toString());
-            pstmt.setString(2, getBaseName(fileName.getName()));
-            pstmt.setString(3, difficulty.name());
+            String content = contentBuilder.toString();
 
-            pstmt.executeUpdate();
 
-            System.out.println("Documento inserito/aggiornato con successo.");
+            ps.setString(1, fileName.getName());
+            ps.setString(2, difficulty.toString());
+            ps.setString(3, content);
+
+            ps.executeUpdate();
 
             insertWordsIntoDatabase(getBaseName(fileName.getName()), contentBuilder.toString());
 
-        } catch (FileNotFoundException e) {
-            System.err.println("File non trovato: " + e.getMessage());
-        } catch (IOException e) {
-            System.err.println("Errore di I/O: " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("Errore SQL: " + e.getMessage());
+        } catch (SQLException | IOException e) {
+            System.err.println("Errore caricamento documento: " + e.getMessage());
         }
     }
 

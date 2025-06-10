@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package service;
 
 import java.sql.*;
@@ -89,7 +84,6 @@ public class Login {
      * @param role the role of the new user, specified as a {@link Role} enum
      */
     public static void userRegister(String inputUsername, String inputPassword, Role role) {
-        String url = "jdbc:sqlite:wordageddon.db"; // Percorso relativo al DB
         String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
         try(Connection conn = DatabaseManagement.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);){

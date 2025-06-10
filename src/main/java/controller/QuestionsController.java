@@ -16,6 +16,8 @@ import service.Word;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * The QuestionsController class is responsible for managing the quiz interface,
@@ -199,10 +201,7 @@ public class QuestionsController {
     @FXML
     public void initialize() {
         answerGroup = new ToggleGroup();
-        optionA.setToggleGroup(answerGroup);
-        optionB.setToggleGroup(answerGroup);
-        optionC.setToggleGroup(answerGroup);
-        optionD.setToggleGroup(answerGroup);
+        Stream.of(optionA, optionB, optionC, optionD).forEach(rb -> rb.setToggleGroup(answerGroup));
     }
 
     /**
@@ -301,11 +300,8 @@ public class QuestionsController {
         questionLabel.setText(question.getQuestionText());
         correctAnswerText = question.getCorrectAnswer();
 
-        List<String> options = question.getOptions();
-        optionA.setText(options.get(0));
-        optionB.setText(options.get(1));
-        optionC.setText(options.get(2));
-        optionD.setText(options.get(3));
+        setOptions(question.getOptions());
+
         answerGroup.selectToggle(null);
 
         if (questionTimer != null) {
@@ -353,10 +349,9 @@ public class QuestionsController {
      *                 If the list contains fewer than four elements, an exception may occur.
      */
     private void setOptions(List<String> options) {
-        optionA.setText(options.get(0));
-        optionB.setText(options.get(1));
-        optionC.setText(options.get(2));
-        optionD.setText(options.get(3));
+        List<RadioButton> optionsButtons = Arrays.asList(optionA, optionB, optionC, optionD);
+        IntStream.range(0, optionsButtons.size())
+                .forEach(i -> optionsButtons.get(i).setText(options.get(i)));
     }
 
     /**
@@ -367,28 +362,33 @@ public class QuestionsController {
      */
     @FXML
     private void onSubmitAnswer() {
-        RadioButton selected = (RadioButton) answerGroup.getSelectedToggle();
-        if (selected == null) {
+        Optional<RadioButton> selectedOpt = Stream.of(optionA, optionB, optionC, optionD)
+                .filter(RadioButton::isSelected)
+                .findFirst();
+
+        if (!selectedOpt.isPresent()) {
             feedbackLabel.setText("Seleziona una risposta prima di inviare.");
             return;
         }
 
-        String selectedText = selected.getText();
+        String selectedText = selectedOpt.get().getText();
         boolean isCorrect = selectedText.equals(correctAnswerText);
         session.recordAnswer(isCorrect);
 
-        if (isCorrect) {
-            feedbackLabel.setStyle("-fx-text-fill: green;");
-            feedbackLabel.setText("Risposta corretta!");
-        } else {
-            feedbackLabel.setStyle("-fx-text-fill: red;");
-            feedbackLabel.setText("Risposta sbagliata. La risposta corretta era: " + correctAnswerText);
-        }
+        Map<Boolean, String> messages = new HashMap<>();
+        messages.put(true, "Risposta corretta!");
+        messages.put(false, "Risposta sbagliata. La risposta corretta era: " + correctAnswerText);
+
+        Map<Boolean, String> styles = new HashMap<>();
+        styles.put(true, "-fx-text-fill: green;");
+        styles.put(false, "-fx-text-fill: red;");
+
+        feedbackLabel.setText(messages.get(isCorrect));
+        feedbackLabel.setStyle(styles.get(isCorrect));
 
         setInteractionEnabled(false);
 
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
-
         pause.setOnFinished(e -> {
             setInteractionEnabled(false);
             loadNextQuestion(maxQuestions);
@@ -411,12 +411,8 @@ public class QuestionsController {
      *                If set to false, elements will be disabled.
      */
     private void setInteractionEnabled(boolean enabled) {
-        submitButton.setDisable(!enabled);
-        skipButton.setDisable(!enabled);
-        optionA.setDisable(!enabled);
-        optionB.setDisable(!enabled);
-        optionC.setDisable(!enabled);
-        optionD.setDisable(!enabled);
+        List<javafx.scene.control.Control> controls = Arrays.asList(submitButton, skipButton, optionA, optionB, optionC, optionD);
+        controls.forEach(c -> c.setDisable(!enabled));
     }
 
     /**

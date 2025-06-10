@@ -7,6 +7,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * The MainMenuController class is responsible for managing the main menu of the application.
@@ -17,6 +21,27 @@ import java.io.IOException;
  */
 public class MainMenuController {
 
+    private final Map<String, String> views;
+
+    public MainMenuController()
+    {
+        Map<String, String> tempMap = new HashMap<>();
+        tempMap.put("/view/Level.fxml", "Seleziona Difficoltà");
+        tempMap.put("/view/UserManagementView.fxml", "Profilo");
+        tempMap.put("/view/PersonalScoresView.fxml", "PersonalScores");
+        views = Collections.unmodifiableMap(tempMap);
+    }
+
+    private void loadView(ActionEvent event, String fxmlPath, String title) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(loader.load());
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.show();
+    }
+
     /**
      * Handles the action triggered when the play button is clicked.
      * This method transitions the application to the level selection screen.
@@ -26,14 +51,12 @@ public class MainMenuController {
      * @throws IOException if the "Level.fxml" file cannot be loaded.
      */
     @FXML
-    public void onPlayClicked(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Level.fxml"));
-        Scene scene = new Scene(loader.load());
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Seleziona Difficoltà");
-        stage.show();
+    public void onPlayClicked(ActionEvent event) {
+        try {
+            loadView(event, "/view/Level.fxml", "Seleziona Difficoltà");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -45,14 +68,12 @@ public class MainMenuController {
      * @throws IOException if the "UserManagementView.fxml" file cannot be loaded.
      */
     @FXML
-    public void onProfileClicked(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserManagementView.fxml"));
-        Scene scene = new Scene(loader.load());
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Profilo");
-        stage.show();
+    public void onProfileClicked(ActionEvent event) {
+        try {
+            loadView(event, "/view/UserManagementView.fxml", "Profilo");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -64,14 +85,12 @@ public class MainMenuController {
      * @throws IOException if the "LeaderboardView.fxml" file cannot be loaded.
      */
     @FXML
-    public void onLeaderboardClicked(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/PersonalScoresView.fxml"));
-        Scene scene = new Scene(loader.load());
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("PersonalScores");
-        stage.show();
+    public void onLeaderboardClicked(ActionEvent event) {
+        try {
+            loadView(event, "/view/PersonalScoresView.fxml", "Classifica Personale");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

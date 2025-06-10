@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
 import javafx.event.ActionEvent;
@@ -86,13 +81,10 @@ public class AdminController {
             dialogStage.setScene(new Scene(root));
             dialogStage.initModality(Modality.APPLICATION_MODAL);
 
-            LoadDocumentDialogController controller = loader.getController();
-            controller.setDialogStage(dialogStage);
-
+            loader.<LoadDocumentDialogController>getController().setDialogStage(dialogStage);
             dialogStage.showAndWait();
 
             loadDocumentTitles();
-
         } catch (IOException e) {
             System.err.println("Errore durante il caricamento della schermata: " + e.getMessage());
         }
@@ -170,9 +162,13 @@ public class AdminController {
         List<String> titles = DocumentsManagement.getAllDocumentTitles();
 
         documentsList.getItems().clear();
-        documentsList.getItems().addAll(titles);
-    }
 
+        titles.stream()
+                .filter(title -> title != null)
+                .distinct()
+                .sorted()
+                .forEach(documentsList.getItems()::add);
+    }
 }
 
 

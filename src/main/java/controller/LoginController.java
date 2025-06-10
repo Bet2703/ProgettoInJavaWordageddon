@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -70,14 +72,18 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        if (username.isEmpty() || password.isEmpty()) {
+        Optional<String> usernameOpt = Optional.ofNullable(username).filter(s -> !s.trim().isEmpty());
+        Optional<String> passwordOpt = Optional.ofNullable(password).filter(s -> !s.trim().isEmpty());
+
+        if (!usernameOpt.isPresent() || !passwordOpt.isPresent()) {
             messageLabel.setText("Inserisci username e password.");
             return;
         }
 
-        Player player = Login.login(username, password);
+        Optional<Player> playerOpt = Optional.ofNullable(Login.login(username, password));
 
-        if (player != null) {
+        if (playerOpt.isPresent()) {
+            Player player = playerOpt.get();
             service.GameSessionManagement.getInstance().setCurrentPlayer(player);
             try {
                 loadViewForRole(player.getRole());
@@ -104,24 +110,23 @@ public class LoginController {
      * @throws IOException if an error occurs while loading the FXML file for the specified role.
      */
     private void loadViewForRole(Role role) throws IOException {
-            FXMLLoader loader;
-            Parent root;
+        FXMLLoader loader = new FXMLLoader();
 
-            switch (role) {
-                case BASE:
-                    loader = new FXMLLoader(getClass().getResource("/view/MainMenu.fxml"));
-                    break;
-                case ADMIN:
-                    loader = new FXMLLoader(getClass().getResource("/view/AdminView.fxml"));
-                    break;
-                default:
-                    throw new IllegalArgumentException("Ruolo utente non riconosciuto.");
-            }
+        String fxmlPath = Optional.ofNullable(role)
+                .map(r -> {
+                    switch (r) {
+                        case BASE: return "/view/MainMenu.fxml";
+                        case ADMIN: return "/view/AdminView.fxml";
+                        default: throw new IllegalArgumentException("Ruolo utente non riconosciuto.");
+                    }
+                }).orElseThrow(() -> new IllegalArgumentException("Ruolo utente non specificato."));
 
-            root = loader.load();
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+        loader.setLocation(getClass().getResource(fxmlPath));
+        Parent root = loader.load();
+
+        Stage stage = (Stage) loginButton.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
     /**
@@ -133,26 +138,29 @@ public class LoginController {
      */
     @FXML
     private void onRegister(ActionEvent event) {
+        Optional<String> usernameOpt = Optional.ofNullable(usernameField.getText()).filter(s -> !s.trim().isEmpty());
+        Optional<String> passwordOpt = Optional.ofNullable(passwordField.getText()).filter(s -> !s.trim().isEmpty());
 
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-
-        if (username.isEmpty() || password.isEmpty()) {
+        if (!usernameOpt.isPresent() || !passwordOpt.isPresent()) {
             messageLabel.setText("Campi username e password obbligatori.");
             return;
         }
 
-        if(Login.isUsernameTaken(username)) {
+        String username = usernameOpt.get();
+
+        if (Login.isUsernameTaken(username)) {
             messageLabel.setText("Username già esistente. Scegline un altro.");
             return;
         }
 
-        else {
-            Login.userRegister(username, password, Role.BASE);
-            messageLabel.setText("Utente registrato con successo!");
-        }
-        usernameField.clear();
-        passwordField.clear();
-    }
+        Login.userRegister(username, passwordOpt.get(), Role.BASE);
+        messageLabel.setText("Utente registrato con successo!");
 
+        // usa method reference per pulire i campi
+        Runnable clearFields = () -> {
+            usernameField.clear();
+            passwordField.clear();
+        };
+        clearFields.run();
+    }
 }

@@ -12,6 +12,10 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Controller class for managing the difficulty selection screen.
@@ -90,9 +94,7 @@ public class LevelsController {
     public void initialize() {
         difficultyGroup = new ToggleGroup();
 
-        rbEasy.setToggleGroup(difficultyGroup);
-        rbMedium.setToggleGroup(difficultyGroup);
-        rbHard.setToggleGroup(difficultyGroup);
+        Stream.of(rbEasy, rbMedium, rbHard).forEach(rb -> rb.setToggleGroup(difficultyGroup));
     }
 
     /**
@@ -105,43 +107,17 @@ public class LevelsController {
      */
     @FXML
     private void onStartGame(ActionEvent event) {
-       RadioButton selected = (RadioButton) difficultyGroup.getSelectedToggle();
+        Optional<RadioButton> selected = Optional.ofNullable((RadioButton) difficultyGroup.getSelectedToggle());
 
-        if (selected == null) {
+        if (selected.isPresent()) {
+            RadioButton radio = selected.get();
+            selectedDifficulty = mapDifficulty(radio.getText());
+            messageLabel.setText("Hai selezionato il livello: " + radio.getText());
+
+            loadScene(event, "/view/DocumentReadView.fxml",
+                    () -> messageLabel.setText("Errore nel caricamento del quiz."));
+        } else {
             messageLabel.setText("Seleziona un livello di difficoltà per iniziare.");
-            return;
-        }
-
-        String difficulty = selected.getText();
-        messageLabel.setText("Hai selezionato il livello: " + difficulty);
-
-        switch (difficulty) {
-            case "Facile":
-                selectedDifficulty = "EASY";
-                break;
-            case "Medio":
-                selectedDifficulty = "MEDIUM";
-                break;
-            case "Difficile":
-                selectedDifficulty = "HARD";
-                break;
-            default:
-                selectedDifficulty = "EASY";
-                break;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DocumentReadView.fxml"));
-            Parent quizView = loader.load();
-
-            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-            Scene scene = new Scene(quizView);
-            stage.setScene(scene);
-            stage.show();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            messageLabel.setText("Errore nel caricamento del quiz.");
         }
     }
 
@@ -155,19 +131,36 @@ public class LevelsController {
      */
     @FXML
     private void onBack(ActionEvent event) {
+        loadScene(event, "/view/MainMenu.fxml", () -> messageLabel.setText("Errore nel tornare al Menu principale."));
+    }
+
+
+    private void loadScene(ActionEvent event, String fxmlPath, Runnable onError) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainMenu.fxml"));
-            Parent loginView = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
 
-            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-            Scene scene = new Scene(loginView);
-            stage.setScene(scene);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
-            messageLabel.setText("Errore nel tornare al Menu principale.");
+            onError.run();
         }
+    }
+
+
+    private String mapDifficulty(String text) {
+        List<String> labels = Arrays.asList("Facile", "Medio", "Difficile");
+        List<String> codes = Arrays.asList("EASY", "MEDIUM", "HARD");
+
+        return Stream.iterate(0, i -> i + 1)
+                .limit(labels.size())
+                .filter(i -> labels.get(i).equalsIgnoreCase(text))
+                .findFirst()
+                .map(codes::get)
+                .orElse("EASY");  // default
     }
 
     /**
