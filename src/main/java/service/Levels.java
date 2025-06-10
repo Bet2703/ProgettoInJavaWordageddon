@@ -57,7 +57,7 @@ public class Levels {
      *         string is provided.
      */
     public static int getSecondsByDifficulty(String difficulty) {
-        switch (difficulty.toUpperCase()) {
+        switch (difficulty) {
             case "EASY":
                 return 30;
             case "MEDIUM":
@@ -118,6 +118,20 @@ public class Levels {
             return true;
         } catch (IllegalArgumentException | NullPointerException e) {
             return false;
+        }
+    }
+
+
+    public static int getDocumentCountByDifficulty(String difficulty) {
+        switch (difficulty.toUpperCase()) {
+            case "EASY":
+            return 10;
+            case "MEDIUM":
+                return 20;
+            case "HARD":
+                return 30;
+            default:
+                return 0;
         }
     }
 }
