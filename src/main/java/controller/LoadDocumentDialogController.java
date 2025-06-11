@@ -15,54 +15,57 @@ import service.DocumentsManagement;
 import service.Levels;
 
 /**
- * Controller responsabile della gestione della finestra di dialogo per il caricamento di documenti.
+ * Controller responsabile della gestione della finestra di dialogo per il caricamento dei documenti.
  *
- * Questa classe gestisce le interazioni e la logica associate alla finestra di caricamento dei documenti,
- * inclusa la selezione del file, la scelta del livello di difficoltà e le azioni associate ai pulsanti
- * di conferma e annullamento. Integra i componenti dell'interfaccia grafica definiti nel file FXML.
+ * <p>Consente all'utente di:
+ * <ul>
+ *     <li>Selezionare un file di testo dal file system</li>
+ *     <li>Scegliere un livello di difficoltà</li>
+ *     <li>Caricare il file nel sistema associandolo alla difficoltà</li>
+ *     <li>Chiudere la finestra confermando o annullando l'operazione</li>
+ * </ul>
+ * </p>
+ *
+ * <p>Integra i componenti grafici definiti nel file FXML associato.</p>
  */
 public class LoadDocumentDialogController {
 
     /**
-     * Etichetta utilizzata per mostrare il nome del file selezionato dall’utente.
-     *
-     * Una volta scelto un file, il nome viene visualizzato per fornire un riscontro all’utente.
+     * Etichetta che mostra all'utente il nome del file selezionato.
      */
     @FXML
     private Label fileNameLabel;
 
     /**
-     * Pulsanti radio per la selezione del livello di difficoltà.
+     * Pulsanti radio associati ai tre livelli di difficoltà disponibili.
      *
-     * Appartengono a un gruppo esclusivo che consente di selezionarne solo uno alla volta.
-     * Il livello scelto viene usato per classificare il documento caricato.
+     * Solo uno può essere selezionato alla volta grazie al gruppo di toggle.
      */
     @FXML
     private RadioButton easyRadio, mediumRadio, hardRadio;
 
     /**
-     * Riferimento al file selezionato dall’utente.
-     *
-     * Se nessun file è stato selezionato, rimane null.
+     * File selezionato dall'utente tramite il file chooser.
+     * Inizialmente è null finché l'utente non seleziona un file.
      */
     private File selectedFile;
 
     /**
-     * Finestra di dialogo corrente associata a questo controller.
-     *
-     * Serve per gestire e chiudere la finestra al termine delle operazioni.
+     * Riferimento alla finestra di dialogo corrente.
+     * Utilizzato per chiudere la finestra al termine delle operazioni.
      */
     private Stage dialogStage;
 
     /**
-     * Gruppo di selezione esclusiva per i pulsanti radio (un solo elemento selezionabile).
+     * Gruppo di toggle per garantire la selezione esclusiva tra i RadioButton.
      */
     private ToggleGroup group;
 
     /**
-     * Inizializza il controller impostando il gruppo di toggle per i livelli di difficoltà.
-     *
      * Metodo invocato automaticamente dopo il caricamento del file FXML.
+     *
+     * <p>Associa i tre RadioButton al gruppo di selezione esclusiva
+     * per garantire che solo uno possa essere selezionato alla volta.</p>
      */
     @FXML
     public void initialize() {
@@ -72,18 +75,19 @@ public class LoadDocumentDialogController {
     }
 
     /**
-     * Imposta lo stage (finestra) per il dialogo.
+     * Metodo pubblico per impostare lo stage associato a questa finestra di dialogo.
      *
-     * @param stage lo stage da associare al controller.
+     * @param stage Finestra corrente da associare.
      */
     public void setDialogStage(Stage stage) {
         this.dialogStage = stage;
     }
 
     /**
-     * Apre un file chooser per permettere la selezione di un file di testo.
+     * Apre una finestra di selezione file (FileChooser) per scegliere un file di testo.
      *
-     * Aggiorna l’etichetta con il nome del file selezionato.
+     * <p>Se l'utente seleziona un file, viene aggiornato il campo {@code selectedFile}
+     * e l'etichetta mostra il nome del file scelto.</p>
      */
     @FXML
     private void onChooseFile() {
@@ -91,17 +95,21 @@ public class LoadDocumentDialogController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt"));
 
         selectedFile = fileChooser.showOpenDialog(dialogStage);
+
+        // Se un file è stato selezionato, aggiorna l'etichetta con il nome del file
         Optional.ofNullable(selectedFile)
                 .map(File::getName)
                 .ifPresent(fileNameLabel::setText);
     }
 
     /**
-     * Gestisce l’azione di conferma (pulsante "Conferma").
+     * Azione associata al pulsante "Conferma".
      *
-     * Verifica che siano stati selezionati sia un file che un livello di difficoltà.
-     * Se sì, carica il documento nel database e mostra un messaggio di successo.
-     * Altrimenti, mostra un avviso per informare l’utente che mancano dati.
+     * <p>Verifica che siano stati selezionati sia un file che un livello di difficoltà.</p>
+     * <ul>
+     *     <li>Se entrambi sono presenti, carica il documento nel database e chiude la finestra</li>
+     *     <li>Se manca uno dei due, mostra un messaggio di avviso all'utente</li>
+     * </ul>
      */
     @FXML
     private void onConfirm() {
@@ -109,18 +117,24 @@ public class LoadDocumentDialogController {
         Optional<Levels.Difficulty> diffOpt = Optional.ofNullable(getSelectedDifficulty());
 
         if (fileOpt.isPresent() && diffOpt.isPresent()) {
+            // Caricamento del file nel database con la difficoltà selezionata
             fileOpt.ifPresent(file -> DocumentsManagement.loadToDB(file, diffOpt.get()));
+
+            // Messaggio di successo
             new Alert(Alert.AlertType.INFORMATION, "Documento caricato con successo!").showAndWait();
+
+            // Chiude la finestra di dialogo
             Optional.ofNullable(dialogStage).ifPresent(Stage::close);
         } else {
+            // Avvisa l'utente che non ha selezionato file o difficoltà
             new Alert(Alert.AlertType.WARNING, "Seleziona file e difficoltà.").showAndWait();
         }
     }
 
     /**
-     * Chiude la finestra di dialogo senza eseguire ulteriori operazioni.
+     * Azione associata al pulsante "Annulla".
      *
-     * Utilizzato principalmente per l’azione del pulsante "Annulla".
+     * <p>Chiude semplicemente la finestra senza eseguire altre operazioni.</p>
      */
     @FXML
     private void onCancel() {
@@ -128,9 +142,12 @@ public class LoadDocumentDialogController {
     }
 
     /**
-     * Restituisce il livello di difficoltà selezionato tramite i pulsanti radio.
+     * Recupera il livello di difficoltà selezionato dall'utente.
      *
-     * @return livello di difficoltà selezionato, oppure null se nessuno è selezionato.
+     * <p>Controlla quale RadioButton è selezionato e lo mappa in un valore
+     * dell'enumerazione {@link Levels.Difficulty}.</p>
+     *
+     * @return Difficoltà selezionata o {@code null} se nessuna è selezionata.
      */
     private Levels.Difficulty getSelectedDifficulty() {
         return Arrays.asList(
@@ -138,9 +155,9 @@ public class LoadDocumentDialogController {
                         new AbstractMap.SimpleEntry<>(mediumRadio, Levels.Difficulty.MEDIUM),
                         new AbstractMap.SimpleEntry<>(hardRadio, Levels.Difficulty.HARD)
                 ).stream()
-                .filter(entry -> entry.getKey().isSelected())
-                .map(AbstractMap.SimpleEntry::getValue)
+                .filter(entry -> entry.getKey().isSelected()) // Verifica quale radio è attiva
+                .map(AbstractMap.SimpleEntry::getValue)       // Ottiene il valore associato (EASY, MEDIUM, HARD)
                 .findFirst()
-                .orElse(null);
+                .orElse(null); // Se nessuna radio è selezionata, restituisce null
     }
 }

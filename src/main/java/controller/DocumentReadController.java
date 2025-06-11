@@ -30,126 +30,101 @@ import java.util.function.Consumer;
  *   <li>Recupero casuale di documenti in base alla difficoltà</li>
  * </ul>
  * </p>
- *
- * @author Gruppo6
+ * 
+ * Autore: Gruppo6
  */
 public class DocumentReadController {
 
-    /**
-     * Area di testo per la visualizzazione del contenuto del documento.
-     * Viene popolata automaticamente con il testo del documento selezionato.
-     */
+    // Interfaccia utente
+
+    /** Area testuale per la lettura del documento */
     @FXML
     private TextArea documentTextArea;
 
-    /**
-     * Etichetta per la visualizzazione del timer di lettura.
-     * Mostra il tempo rimanente in secondi in formato "Tempo restante: Xs".
-     */
+    /** Etichetta che mostra il tempo rimanente */
     @FXML
     private Label timerLabel;
 
-    /**
-     * ID univoco del documento corrente.
-     * Viene utilizzato per identificare il documento nel database e per
-     * recuperare le domande associate durante la fase di quiz.
-     */
+    // Variabili interne
+
+    /** ID del documento selezionato dal DB */
     private int documentId;
 
-    /**
-     * Timeline per la gestione del countdown.
-     * Viene utilizzata per aggiornare il timer ogni secondo.
-     */
+    /** Oggetto per il countdown */
     private Timeline timeline;
 
-    /**
-     * Tempo rimanente in secondi per la lettura del documento.
-     * Il valore iniziale viene determinato in base alla difficoltà del documento.
-     */
+    /** Secondi rimanenti per la lettura (default 30, modificato in base alla difficoltà) */
     private int secondsLeft = 30;
 
-    /**
-     * Livello di difficoltà del documento corrente.
-     * Può assumere i valori "EASY", "MEDIUM" o "HARD".
-     */
+    /** Difficoltà attuale del documento ("EASY", "MEDIUM", "HARD") */
     private String difficulty;
 
     /**
-     * Metodo di inizializzazione del controller.
-     * Viene chiamato automaticamente dopo il caricamento del file FXML associato.
-     * 
-     * <p>Si occupa di:
-     * <ol>
-     *   <li>Recuperare un documento casuale in base alla difficoltà</li>
-     *   <li>Visualizzare il testo nell'area dedicata</li>
-     *   <li>Avviare il timer di lettura</li>
-     * </ol>
-     * </p>
+     * Metodo chiamato all'inizializzazione del controller (automaticamente da JavaFX).
+     * 1. Recupera un documento casuale in base alla difficoltà selezionata.
+     * 2. Mostra il contenuto nella TextArea.
+     * 3. Avvia il timer countdown.
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         String text = fetchRandomDocumentByDifficulty();
-        documentTextArea.setText(text);
-        startTimer();
+        documentTextArea.setText(text); // Popola l'area di testo con il documento
+        startTimer();                   // Avvia il conto alla rovescia
     }
 
     /**
-     * Avvia il countdown per la lettura del documento.
-     * 
-     * <p>Il timer:
-     * <ul>
-     *   <li>Viene aggiornato ogni secondo</li>
-     *   <li>Mostra il tempo rimanente nell'etichetta dedicata</li>
-     *   <li>Al termine del tempo, avvia automaticamente la fase di quiz</li>
-     * </ul>
-     * </p>
+     * Avvia un timer che conta i secondi rimanenti, aggiornando la label ogni secondo.
+     * Quando il tempo scade, passa automaticamente alla fase di quiz.
      */
     private void startTimer() {
         timerLabel.setText("Tempo restante: " + secondsLeft + "s");
+
+        // Crea una Timeline che ogni 1s aggiorna la label
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            secondsLeft--;
+            secondsLeft--; // Decrementa il tempo
             timerLabel.setText("Tempo restante: " + secondsLeft + "s");
 
             if (secondsLeft <= 0) {
-                timeline.stop();
+                // Tempo finito
+                timeline.stop(); // Ferma la Timeline
                 timerLabel.setText("Tempo scaduto!");
-                goToQuestionsView();
+                goToQuestionsView(); // Avvia la schermata successiva
             }
         }));
-        timeline.setCycleCount(secondsLeft);
-        timeline.play();
+
+        timeline.setCycleCount(secondsLeft); // Numero di esecuzioni = tempo iniziale
+        timeline.play(); // Avvia il countdown
     }
 
     /**
-     * Gestisce il passaggio alla schermata delle domande.
-     * 
-     * <p>Questa operazione:
-     * <ol>
-     *   <li>Carica la schermata delle domande</li>
-     *   <li>Passa l'ID del documento al controller delle domande</li>
-     *   <li>Avvia il quiz</li>
-     *   <li>Chiude la schermata corrente</li>
-     * </ol>
-     * </p>
-     * 
-     * <p>In caso di errore durante il caricamento della schermata,
-     * viene stampato lo stack trace dell'errore.</p>
+     * Passa alla schermata di quiz dopo la lettura del documento.
+     * 1. Carica la schermata quiz.
+     * 2. Passa l'ID del documento al controller successivo.
+     * 3. Avvia la generazione delle domande.
+     * 4. Chiude la schermata di lettura.
      */
     private void goToQuestionsView() {
         try {
+            // Carica la schermata quiz da FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/quizView.fxml"));
             Parent root = loader.load();
 
+            // Ottiene lo stage corrente
             Stage stage = (Stage) documentTextArea.getScene().getWindow();
 
+            // Imposta la nuova scena
             stage.setScene(new Scene(root));
             stage.show();
 
+            // Passa l'ID del documento al nuovo controller
             QuestionsController controller = loader.getController();
-            Consumer<Integer> startGame = controller::startGame;
             controller.setDocumentId(documentId);
+
+            // Avvia il quiz passando l'ID
+            Consumer<Integer> startGame = controller::startGame;
             startGame.accept(documentId);
 
+            // Chiude la finestra attuale (opzionale)
             Optional.ofNullable(documentTextArea.getScene())
                     .map(Scene::getWindow)
                     .map(Stage.class::cast)
@@ -162,18 +137,12 @@ public class DocumentReadController {
     }
 
     /**
-     * Recupera un documento casuale dal database in base alla difficoltà.
+     * Recupera un documento casuale dal database, filtrando per difficoltà.
+     * Se trovato:
+     * - imposta l'ID, la difficoltà
+     * - aggiorna il tempo di lettura in base alla difficoltà
      * 
-     * <p>La query SQL:
-     * <ul>
-     *   <li>Seleziona un documento random con la difficoltà specificata</li>
-     *   <li>Imposta l'ID del documento, la difficoltà e il tempo disponibile</li>
-     *   <li>Restituisce il testo del documento</li>
-     * </ul>
-     * </p>
-     * 
-     * @return Il testo del documento selezionato, oppure una stringa vuota se non trovato
-     * @throws SQLException in caso di errori di connessione al database
+     * @return testo del documento oppure stringa vuota in caso di errore
      */
     private String fetchRandomDocumentByDifficulty() {
         String query = "SELECT id, text, difficulty FROM documents WHERE difficulty = ? ORDER BY RANDOM() LIMIT 1";
@@ -181,14 +150,15 @@ public class DocumentReadController {
         try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
+            // Ottiene la difficoltà selezionata dal controller precedente
             pstmt.setString(1, LevelsController.getDifficulty());
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    documentId = rs.getInt("id");
-                    difficulty = rs.getString("difficulty");
-                    secondsLeft = service.Levels.getSecondsByDifficulty(difficulty.toUpperCase());
-                    return rs.getString("text");
+                    documentId = rs.getInt("id"); // salva ID del documento
+                    difficulty = rs.getString("difficulty"); // imposta la difficoltà
+                    secondsLeft = service.Levels.getSecondsByDifficulty(difficulty.toUpperCase()); // imposta tempo
+                    return rs.getString("text"); // ritorna il testo
                 }
             }
 
@@ -197,6 +167,6 @@ public class DocumentReadController {
             e.printStackTrace();
         }
 
-        return "";
+        return ""; // Nessun documento trovato o errore
     }
 }

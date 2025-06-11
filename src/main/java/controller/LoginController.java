@@ -18,57 +18,53 @@ import users.Player;
 import users.Role;
 
 /**
- * La classe LoginController gestisce le interazioni legate all'autenticazione
- * e alla registrazione degli utenti. Controlla i dati inseriti, avvia il processo
- * di autenticazione, carica le schermate appropriate in base al ruolo dell'utente,
- * e fornisce feedback tramite l'interfaccia utente.
+ * Controller responsabile della gestione dell'autenticazione e della registrazione degli utenti.
  *
- * Questa classe è collegata a una vista FXML.
- * 
- * Autore: Gruppo6
+ * Questa classe è associata alla schermata di login e consente di:
+ * <ul>
+ *     <li>Effettuare il login mediante verifica delle credenziali.</li>
+ *     <li>Registrare nuovi utenti come giocatori di ruolo BASE.</li>
+ *     <li>Caricare la schermata corrispondente in base al ruolo dell'utente autenticato.</li>
+ * </ul>
+ *
+ * Collegata a una vista FXML, integra componenti grafici come campi di testo, pulsanti e messaggi di stato.
+ *
+ * @author Gruppo6
  */
 public class LoginController {
 
     /**
-     * Campo di testo per l'inserimento del nome utente.
-     * Associato all'interfaccia utente tramite FXML, serve per raccogliere il nome utente
-     * durante le operazioni di login o registrazione.
+     * Campo di input per l'inserimento dello username da parte dell'utente.
      */
     @FXML
     private TextField usernameField;
 
     /**
-     * Campo password per l'inserimento sicuro della password.
-     * Visualizza i caratteri in forma mascherata per proteggere i dati sensibili.
-     * Associato tramite FXML all'interfaccia grafica.
+     * Campo di input per l'inserimento della password da parte dell'utente (mascherato).
      */
     @FXML
     private PasswordField passwordField;
 
     /**
-     * Pulsante che avvia il processo di login quando viene premuto.
-     * Valida i dati inseriti e, se corretti, tenta di autenticare l'utente
-     * e carica la schermata corrispondente al suo ruolo.
+     * Pulsante per avviare il processo di login.
      */
     @FXML
     private Button loginButton;
 
     /**
-     * Etichetta per mostrare messaggi all'utente.
-     * Viene utilizzata per comunicare errori, avvisi o conferme
-     * durante il login o la registrazione.
+     * Etichetta per mostrare messaggi informativi o di errore all'utente.
      */
     @FXML
     private Label messageLabel;
 
     /**
-     * Metodo invocato quando viene premuto il pulsante di login.
+     * Metodo invocato quando l'utente preme il pulsante di login.
      *
-     * Esegue le seguenti operazioni:
-     * - Verifica che i campi username e password non siano vuoti.
-     * - Chiama il metodo di autenticazione dal servizio Login.
-     * - Se l'autenticazione ha successo, imposta l'utente attuale nella sessione e carica la schermata adatta.
-     * - In caso di errore, mostra un messaggio di errore all'utente.
+     * <p>
+     * Verifica la presenza di username e password, tenta l'autenticazione tramite il servizio {@link Login},
+     * e in caso di successo carica la vista corrispondente al ruolo dell'utente.
+     * Se l'autenticazione fallisce, viene mostrato un messaggio di errore.
+     * </p>
      *
      * @param event evento generato dal click sul pulsante di login.
      */
@@ -102,17 +98,20 @@ public class LoginController {
     }
 
     /**
-     * Carica la schermata corretta in base al ruolo dell’utente autenticato.
+     * Carica la schermata associata al ruolo dell'utente autenticato.
      *
-     * In base al ruolo restituito dall'oggetto Player, il metodo decide quale vista FXML caricare:
-     * - `Role.BASE` → carica il menu principale dell’utente.
-     * - `Role.ADMIN` → carica la vista amministratore.
+     * <p>
+     * I ruoli gestiti sono:
+     * <ul>
+     *     <li>{@link Role#BASE}: viene caricata la vista principale dell'utente (MainMenu).</li>
+     *     <li>{@link Role#ADMIN}: viene caricata la vista amministratore (AdminView).</li>
+     * </ul>
+     * Se il ruolo è nullo o sconosciuto, viene sollevata un'eccezione.
+     * </p>
      *
-     * Se il ruolo è nullo o non riconosciuto, viene sollevata un’eccezione.
-     * Dopo il caricamento, imposta la nuova scena nello stage attuale.
-     *
-     * @param role ruolo dell’utente autenticato.
-     * @throws IOException se si verifica un errore durante il caricamento del file FXML.
+     * @param role ruolo dell'utente autenticato.
+     * @throws IOException se si verifica un errore nel caricamento della vista.
+     * @throws IllegalArgumentException se il ruolo è nullo o non riconosciuto.
      */
     private void loadViewForRole(Role role) throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -135,13 +134,16 @@ public class LoginController {
     }
 
     /**
-     * Gestisce la registrazione di un nuovo utente quando viene premuto il pulsante "Registrati".
+     * Metodo invocato quando l'utente preme il pulsante "Registrati".
      *
-     * Esegue le seguenti operazioni:
-     * - Verifica che i campi username e password siano compilati.
-     * - Controlla che l’username non sia già presente nel sistema.
-     * - Registra il nuovo utente come giocatore base (`Role.BASE`) tramite il servizio Login.
-     * - Mostra un messaggio di conferma all’utente e svuota i campi di input.
+     * <p>
+     * Esegue la registrazione di un nuovo utente dopo aver verificato:
+     * <ul>
+     *     <li>Che entrambi i campi username e password siano compilati.</li>
+     *     <li>Che lo username non sia già registrato nel sistema.</li>
+     * </ul>
+     * Se la registrazione ha successo, viene mostrato un messaggio e i campi vengono puliti.
+     * </p>
      *
      * @param event evento generato dal click sul pulsante di registrazione.
      */
@@ -166,10 +168,7 @@ public class LoginController {
         messageLabel.setText("Utente registrato con successo!");
 
         // Pulisce i campi di input
-        Runnable clearFields = () -> {
-            usernameField.clear();
-            passwordField.clear();
-        };
-        clearFields.run();
+        usernameField.clear();
+        passwordField.clear();
     }
 }

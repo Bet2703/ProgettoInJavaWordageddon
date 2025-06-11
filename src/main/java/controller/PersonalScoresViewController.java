@@ -303,21 +303,24 @@ public class PersonalScoresViewController implements Initializable {
      * la visualizzazione delle tabelle dei punteggi iniziali e l'applicazione dell'ordinamento a tutte le tabelle.
      *
      * @param url la posizione utilizzata per risolvere i percorsi relativi per l'oggetto root, o null se sconosciuta.
-     *
      * @param rb  il resource bundle che fornisce funzionalità di localizzazione per questo controller o null se non necessario.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Configura le colonne per tutte le tabelle (facile, medio, difficile)
         setupTableColumns(easyTitleColumn, easyScoreColumn, easyDateColumn);
         setupTableColumns(mediumTitleColumn, mediumScoreColumn, mediumDateColumn);
         setupTableColumns(hardTitleColumn, hardScoreColumn, hardDateColumn);
 
+        // Carica i dati delle sessioni dal database
         loadDataFromDatabase();
 
+        // Mostra i dati nelle rispettive tabelle
         showEasyScore(null);
         showMediumScore(null);
         showHardScore(null);
 
+        // Applica l'ordinamento iniziale a tutte le tabelle
         applySortToAllTables();
     }
 
@@ -336,13 +339,16 @@ public class PersonalScoresViewController implements Initializable {
     private void setupTableColumns(TableColumn<service.GameSession, String> titleCol,
                                    TableColumn<service.GameSession, Integer> scoreCol,
                                    TableColumn<service.GameSession, String> dateCol) {
-
+        
+        // Configura la colonna del titolo per mostrare il titolo del documento basato sull'ID
         titleCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(DocumentsManagement.getTitleFromId(cellData.getValue().getDocumentID())));
 
+        // Configura la colonna del punteggio per mostrare il punteggio come intero
         scoreCol.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
 
+        // Configura la colonna della data per mostrare il timestamp come stringa
         dateCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getTimestamp()));
     }
@@ -360,7 +366,10 @@ public class PersonalScoresViewController implements Initializable {
      * - {@link SQLException} indirettamente, se si verifica un problema di accesso al database durante l'operazione.
      */
     private void loadDataFromDatabase() {
+        // Ottiene l'username dell'utente corrente
         String username = service.GameSessionManagement.getInstance().getUsername();
+        
+        // Recupera tutte le sessioni dell'utente
         List<service.GameSession> userSessions = service.GameSessionManagement.getSessionsByUsername(username);
 
         if (userSessions.isEmpty()) {
@@ -368,6 +377,7 @@ public class PersonalScoresViewController implements Initializable {
             return;
         }
 
+        // Divide le sessioni per difficoltà e le aggiunge alle rispettive liste osservabili
         userSessions.stream().forEach(session -> {
             switch (session.getDifficulty()) {
                 case "EASY":
@@ -394,6 +404,7 @@ public class PersonalScoresViewController implements Initializable {
      * colonne punteggio e data.
      */
     private void applySortToAllTables() {
+        // Applica l'ordinamento a tutte e tre le tabelle di difficoltà
         applySort(easyTable, easyScoreColumn, easyDateColumn);
         applySort(mediumTable, mediumScoreColumn, mediumDateColumn);
         applySort(hardTable, hardScoreColumn, hardDateColumn);
@@ -415,8 +426,13 @@ public class PersonalScoresViewController implements Initializable {
     private void applySort(TableView<service.GameSession> table,
                            TableColumn<service.GameSession, Integer> scoreCol,
                            TableColumn<service.GameSession, String> dateCol) {
+        // Pulisce gli ordinamenti esistenti
         table.getSortOrder().clear();
+        
+        // Aggiunge la colonna di ordinamento appropriata in base alla modalità corrente
         table.getSortOrder().add(currentSort == SortMode.BY_SCORE ? scoreCol : dateCol);
+        
+        // Applica l'ordinamento
         table.sort();
     }
 
@@ -431,7 +447,10 @@ public class PersonalScoresViewController implements Initializable {
      */
     @FXML
     private void handleChangeSort(ActionEvent event) {
+        // Alterna tra le modalità di ordinamento
         currentSort = (currentSort == SortMode.BY_SCORE) ? SortMode.BY_DATE : SortMode.BY_SCORE;
+        
+        // Applica il nuovo ordinamento a tutte le tabelle
         applySortToAllTables();
     }
 
@@ -457,7 +476,10 @@ public class PersonalScoresViewController implements Initializable {
      */
     @FXML
     private void showEasyScore(Event event) {
-        if (easyTable != null) easyTable.setItems(easySessions);
+        if (easyTable != null) {
+            // Imposta i dati nella tabella facile
+            easyTable.setItems(easySessions);
+        }
     }
 
     /**
@@ -470,7 +492,10 @@ public class PersonalScoresViewController implements Initializable {
      */
     @FXML
     private void showMediumScore(Event event) {
-        if (mediumTable != null) mediumTable.setItems(mediumSessions);
+        if (mediumTable != null) {
+            // Imposta i dati nella tabella medio
+            mediumTable.setItems(mediumSessions);
+        }
     }
 
     /**
@@ -483,13 +508,26 @@ public class PersonalScoresViewController implements Initializable {
      */
     @FXML
     private void showHardScore(Event event) {
-        if (hardTable != null) hardTable.setItems(hardSessions);
+        if (hardTable != null) {
+            // Imposta i dati nella tabella difficile
+            hardTable.setItems(hardSessions);
+        }
     }
 
+    /**
+     * Metodo helper per caricare una vista FXML e mostrarla nella finestra corrente
+     * @param event L'evento che ha triggerato il cambio di vista
+     * @param fxmlPath Il percorso del file FXML da caricare
+     */
     private void loadView(ActionEvent event, String fxmlPath) {
         try {
+            // Carica il file FXML
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            
+            // Ottiene lo stage corrente
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            // Imposta la nuova scena e la mostra
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {

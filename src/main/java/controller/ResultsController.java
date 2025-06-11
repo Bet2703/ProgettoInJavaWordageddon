@@ -80,6 +80,7 @@ public class ResultsController {
      * Configura l'etichetta dei risultati visualizzando il numero iniziale di risposte corrette.
      */
     private void initialize() {
+        // Aggiorna l'etichetta con il conteggio iniziale delle risposte corrette
         correctCountLabel.setText("Risposte corrette: " + correctAnswers + " su " + totalAnswers + " domande totali.");
     }
 
@@ -89,7 +90,10 @@ public class ResultsController {
      * @param correctAnswers Numero di risposte corrette da aggiornare e visualizzare.
      */
     public void setCorrectAnswers(int correctAnswers) {
+        // Memorizza il nuovo valore delle risposte corrette
         this.correctAnswers = correctAnswers;
+        
+        // Se l'etichetta è già stata inizializzata, aggiorna il testo
         if (correctCountLabel != null) {
             correctCountLabel.setText("Risposte corrette: " + correctAnswers + " su " + totalAnswers + " domande totali.");
         }
@@ -101,7 +105,10 @@ public class ResultsController {
      * @param totalAnswers Numero totale di risposte da impostare e mostrare.
      */
     public void setTotalAnswers(int totalAnswers) {
+        // Memorizza il nuovo valore del totale delle risposte
         this.totalAnswers = totalAnswers;
+        
+        // Se l'etichetta è già stata inizializzata, aggiorna il testo
         if (correctCountLabel != null) {
             correctCountLabel.setText("Risposte corrette: " + correctAnswers + " su " + totalAnswers + " domande totali.");
         }
@@ -115,16 +122,20 @@ public class ResultsController {
     @FXML
     private void onRetryQuiz(ActionEvent event) {
         try {
+            // Carica la vista del quiz
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/quizView.fxml"));
             Parent root = loader.load();
 
+            // Ottiene il controller e avvia una nuova sessione di gioco
             QuestionsController questionsController = loader.getController();
             questionsController.startGame(service.GameSessionManagement.getInstance().getDocumentId());
 
+            // Mostra la nuova scena
             Stage stage = (Stage) feedbackMessage.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
+            // Gestione degli errori durante il caricamento
             System.err.println("Errore durante il caricamento della schermata del quiz: " + e.getMessage());
             e.printStackTrace();
         }
@@ -138,6 +149,7 @@ public class ResultsController {
      */
     @FXML
     private void onPersonalScores(ActionEvent event) {
+        // Utilizza il metodo generico per caricare la vista
         loadView(event, "/view/PersonalScoresView.fxml");
     }
 
@@ -148,6 +160,7 @@ public class ResultsController {
      */
     @FXML
     private void onBackToMenu(ActionEvent event) {
+        // Utilizza il metodo generico per caricare la vista del menu
         loadView(event, "/view/MainMenu.fxml");
     }
 
@@ -160,13 +173,16 @@ public class ResultsController {
      */
     private void loadView(ActionEvent event, String fxmlPath) {
         try {
+            // Carica la vista FXML specificata
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
+            // Ottiene lo stage corrente e imposta la nuova scena
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
+            // Gestione degli errori durante il caricamento
             System.err.println("Errore durante il caricamento della schermata: " + e.getMessage());
             e.printStackTrace();
         }

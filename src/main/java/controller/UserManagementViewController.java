@@ -91,7 +91,9 @@ public class UserManagementViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Inizializzazione del gestore degli utenti
         usersManagement = new UsersManagement();
+        // Reset del label di stato a vuoto
         lblStatus.setText("");
     }
 
@@ -105,21 +107,27 @@ public class UserManagementViewController implements Initializable {
      */
     @FXML
     private void onSaveProfile(ActionEvent event) {
-        String username = tfUsername.getText();
+        // Recupero dei valori dai campi di input
+        String username = tfUsername.getText().trim();
         String password = pfPassword.getText();
         String confirmPassword = pfConfirm.getText();
 
+        // Validazione campi obbligatori
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             lblStatus.setText("Tutti i campi devono essere compilati.");
             return;
         }
 
+        // Controllo corrispondenza password
         if (!password.equals(confirmPassword)) {
             lblStatus.setText("Le password non coincidono.");
             return;
         }
 
+        // Chiamata al servizio per l'aggiornamento
         boolean updated = usersManagement.updateUser(userId, username, password);
+        
+        // Feedback all'utente basato sull'esito
         if (updated) {
             lblStatus.setText("Profilo aggiornato con successo!");
         } else {
@@ -136,10 +144,12 @@ public class UserManagementViewController implements Initializable {
      */
     @FXML
     private void onCancel(ActionEvent event) {
-        // Ripristina i campi vuoti o da DB
+        // Pulizia di tutti i campi di input
         tfUsername.clear();
         pfPassword.clear();
         pfConfirm.clear();
+        
+        // Notifica all'utente dell'avvenuto annullamento
         lblStatus.setText("Modifiche annullate.");
     }
 
@@ -154,30 +164,39 @@ public class UserManagementViewController implements Initializable {
      */
     @FXML
     private void onExportCsv(ActionEvent event) {
+        // Recupero username corrente da GameSessionManagement
         String username = service.GameSessionManagement.getInstance().getUsername();
+        
+        // Recupero tutte le sessioni per l'utente
         List<GameSession> sessions = service.GameSessionManagement.getSessionsByUsername(username);
 
+        // Controllo presenza sessioni da esportare
         if (sessions.isEmpty()) {
             lblStatus.setText("Nessuna sessione trovata per l'esportazione.");
             return;
         }
 
+        // Creazione file CSV con nome personalizzato
         File file = new File("sessioni_" + username + ".csv");
 
         try (PrintWriter writer = new PrintWriter(file)) {
+            // Scrittura intestazione CSV
             writer.println("DocumentID,Difficulty,Score,Timestamp");
 
-            sessions.stream()
-                    .map(s -> String.format("%d,%s,%d,%s",
-                            s.getDocumentId(),
-                            s.getDifficulty(),
-                            s.getScore(),
-                            s.getTimestamp()))
-                    .forEach(writer::println);
+            // Scrittura di ogni sessione come riga nel file
+            for (GameSession session : sessions) {
+                writer.printf("%d,%s,%d,%s%n",
+                    session.getDocumentId(),
+                    session.getDifficulty(),
+                    session.getScore(),
+                    session.getTimestamp());
+            }
 
+            // Notifica successo con path completo del file
             lblStatus.setText("Sessioni esportate in " + file.getAbsolutePath());
 
         } catch (IOException e) {
+            // Gestione errori di I/O
             lblStatus.setText("Errore durante l'esportazione.");
             e.printStackTrace();
         }
@@ -195,14 +214,21 @@ public class UserManagementViewController implements Initializable {
     @FXML
     private void onGoBack(ActionEvent event) {
         try {
+            // Caricamento della scena del menu principale
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainMenu.fxml"));
+            
+            // Creazione della nuova scena
             Scene scene = new Scene(loader.load());
-
+            
+            // Recupero dello stage corrente
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            // Impostazione della nuova scena e visualizzazione
             stage.setScene(scene);
             stage.show();
 
         } catch (IOException e) {
+            // Log dell'errore nel caso il caricamento fallisca
             System.err.println("Errore durante il ritorno al menu: " + e.getMessage());
         }
     }

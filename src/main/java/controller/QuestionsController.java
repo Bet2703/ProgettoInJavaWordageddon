@@ -197,7 +197,10 @@ public class QuestionsController {
      */
     @FXML
     public void initialize() {
+        // Crea un nuovo gruppo di toggle per gestire la selezione singola delle opzioni
         answerGroup = new ToggleGroup();
+        
+        // Aggiunge tutti i RadioButton al gruppo per garantire mutua esclusività
         Stream.of(optionA, optionB, optionC, optionD).forEach(rb -> rb.setToggleGroup(answerGroup));
     }
 
@@ -212,24 +215,31 @@ public class QuestionsController {
      */
     @FXML
     public void startGame(int documentId) {
+        // Imposta l'ID del documento corrente
         this.documentId = documentId;
+        
+        // Recupera la lista di parole dal generatore di domande
         wordList = service.QuestionGenerator.getWords(documentId);
 
+        // Gestisce il caso in cui il documento non sia valido
         if (wordList == null) {
             feedbackLabel.setText("Documento non valido o insufficiente.");
             disableInteraction();
             return;
         }
 
+        // Verifica che ci siano abbastanza parole per generare domande
         if (wordList.size() < 4) {
             feedbackLabel.setText("Non ci sono abbastanza parole per generare una domanda.");
             return;
         }
 
+        // Recupera la difficoltà selezionata e avvia la sessione di gioco
         String difficulty = LevelsController.getDifficulty();
         session.startSession(session.getCurrentPlayer(), documentId, difficulty);
         maxQuestions = session.getMaxQuestions();
 
+        // Imposta il timeout in base alla difficoltà
         switch (difficulty.toUpperCase()) {
             case "EASY":
                 questionTimeout = Duration.seconds(30);
@@ -242,6 +252,7 @@ public class QuestionsController {
                 break;
         }
 
+        // Carica la prima domanda
         loadNextQuestion(maxQuestions);
     }
 
@@ -280,9 +291,11 @@ public class QuestionsController {
      * @param maxQuestions il numero totale di domande consentite nella sessione.
      */
     private void loadNextQuestion(int maxQuestions) {
+        // Reimposta lo stile e il testo del feedback
         feedbackLabel.setStyle("-fx-text-fill: black;");
         feedbackLabel.setText("");
 
+        // Verifica se il quiz è completato
         if (session.getQuestionsAnswered() >= maxQuestions) {
             feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
             session.saveSession();
@@ -291,24 +304,32 @@ public class QuestionsController {
             return;
         }
 
+        // Genera una nuova domanda
         service.Question question = service.QuestionGenerator.generateNextQuestion(wordList, session.getQuestionsAnswered());
 
+        // Imposta il testo della domanda e la risposta corretta
         questionLabel.setText(question.getQuestionText());
         correctAnswerText = question.getCorrectAnswer();
 
+        // Imposta le opzioni di risposta
         setOptions(question.getOptions());
 
+        // Deseleziona tutte le opzioni
         answerGroup.selectToggle(null);
 
+        // Ferma il timer esistente se presente
         if (questionTimer != null) {
             questionTimer.stop();
         }
 
+        // Imposta e avvia il timer per la nuova domanda
         remainingTimeSeconds = (int) questionTimeout.toSeconds();
 
         countdownTimeline = new Timeline(new javafx.animation.KeyFrame(Duration.seconds(1), e -> {
             remainingTimeSeconds--;
             timerLabel.setText("Tempo Rimasto: " + remainingTimeSeconds + " secondi");
+            
+            // Gestisce lo scadere del tempo
             if (remainingTimeSeconds <= 0) {
                 countdownTimeline.stop();
                 feedbackLabel.setStyle("-fx-text-fill: red;");
@@ -316,6 +337,7 @@ public class QuestionsController {
                 session.recordAnswer(false);
                 setInteractionEnabled(false);
 
+                // Crea una pausa prima di passare alla prossima domanda
                 PauseTransition pause = new PauseTransition(Duration.seconds(2));
                 pause.setOnFinished(ev -> {
                     setInteractionEnabled(true);
@@ -327,6 +349,7 @@ public class QuestionsController {
         countdownTimeline.setCycleCount(remainingTimeSeconds);
         countdownTimeline.play();
 
+        // Aggiorna l'etichetta del timer e abilita l'interazione
         timerLabel.setText("Tempo Rimasto: " + remainingTimeSeconds + " secondi");
         setInteractionEnabled(true);
     }
@@ -345,7 +368,10 @@ public class QuestionsController {
      *                 Se la lista contiene meno di quattro elementi, può verificarsi un'eccezione.
      */
     private void setOptions(List<String> options) {
+        // Crea una lista di pulsanti per semplificare l'accesso
         List<RadioButton> optionsButtons = Arrays.asList(optionA, optionB, optionC, optionD);
+        
+        // Imposta il testo per ogni pulsante in base alle opzioni fornite
         IntStream.range(0, optionsButtons.size())
                 .forEach(i -> optionsButtons.get(i).setText(options.get(i)));
     }
@@ -358,19 +384,23 @@ public class QuestionsController {
      */
     @FXML
     private void onSubmitAnswer() {
+        // Trova l'opzione selezionata dall'utente
         Optional<RadioButton> selectedOpt = Stream.of(optionA, optionB, optionC, optionD)
                 .filter(RadioButton::isSelected)
                 .findFirst();
 
+        // Verifica se è stata selezionata un'opzione
         if (!selectedOpt.isPresent()) {
             feedbackLabel.setText("Seleziona una risposta prima di inviare.");
             return;
         }
 
+        // Valuta la risposta
         String selectedText = selectedOpt.get().getText();
         boolean isCorrect = selectedText.equals(correctAnswerText);
         session.recordAnswer(isCorrect);
 
+        // Prepara i messaggi e gli stili per il feedback
         Map<Boolean, String> messages = new HashMap<>();
         messages.put(true, "Risposta corretta!");
         messages.put(false, "Risposta sbagliata. La risposta corretta era: " + correctAnswerText);
@@ -379,21 +409,26 @@ public class QuestionsController {
         styles.put(true, "-fx-text-fill: green;");
         styles.put(false, "-fx-text-fill: red;");
 
+        // Mostra il feedback all'utente
         feedbackLabel.setText(messages.get(isCorrect));
         feedbackLabel.setStyle(styles.get(isCorrect));
 
+        // Disabilita l'interazione durante la transizione
         setInteractionEnabled(false);
 
+        // Imposta una pausa prima di passare alla prossima domanda
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
         pause.setOnFinished(e -> {
             setInteractionEnabled(false);
             loadNextQuestion(maxQuestions);
         });
 
+        // Ferma il timer se attivo
         if (countdownTimeline != null) {
             countdownTimeline.stop();
         }
 
+        // Avvia la pausa
         pause.play();
     }
 
@@ -407,7 +442,10 @@ public class QuestionsController {
      *                Se impostato a false, gli elementi saranno disabilitati.
      */
     private void setInteractionEnabled(boolean enabled) {
+        // Crea una lista di controlli da abilitare/disabilitare
         List<javafx.scene.control.Control> controls = Arrays.asList(submitButton, skipButton, optionA, optionB, optionC, optionD);
+        
+        // Imposta lo stato di ogni controllo
         controls.forEach(c -> c.setDisable(!enabled));
     }
 
@@ -426,12 +464,15 @@ public class QuestionsController {
      */
     @FXML
     public void onSkipQuestion() {
+        // Registra la risposta come errata (domanda saltata)
         session.recordAnswer(false);
 
+        // Ferma il timer se attivo
         if (countdownTimeline != null) {
             countdownTimeline.stop();
         }
 
+        // Verifica se il quiz è completato
         if (session.getQuestionsAnswered() >= maxQuestions) {
             feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
             session.saveSession();
@@ -440,6 +481,7 @@ public class QuestionsController {
             return;
         }
 
+        // Carica la prossima domanda
         loadNextQuestion(maxQuestions);
     }
 
@@ -461,13 +503,16 @@ public class QuestionsController {
      */
     private void concludeQuiz() {
         try {
+            // Carica la vista dei risultati
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ResultView.fxml"));
             Parent root = loader.load();
 
+            // Imposta i risultati nel controller
             ResultsController resultsController = loader.getController();
             resultsController.setCorrectAnswers(session.getCorrectAnswers());
             resultsController.setTotalAnswers(session.getQuestionsAnswered());
 
+            // Cambia la scena corrente per mostrare i risultati
             Scene currentScene = questionLabel.getScene();
             currentScene.setRoot(root);
 
