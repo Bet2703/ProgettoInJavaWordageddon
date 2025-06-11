@@ -10,13 +10,13 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * La classe {@code QuestionGenerator} fornisce funzionalità per recuperare parole da un database
+ * La classe {@code QuestionManagement} fornisce funzionalità per recuperare parole da un database
  * in base all'ID di un documento e per generare domande basate su tali parole.
  * Le domande possono essere utilizzate in quiz o attività educative basate sul contenuto testuale analizzato.
  * 
  * @author Gruppo6
  */
-public class QuestionGenerator {
+public class QuestionManagement {
 
     /**
      * Recupera una lista di oggetti {@link Word} dal database relativi a un documento specifico.

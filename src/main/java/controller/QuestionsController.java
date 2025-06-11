@@ -220,7 +220,7 @@ public class QuestionsController {
         this.documentId = documentId;
         
         // Recupera la lista di parole dal generatore di domande
-        wordList = management.QuestionGenerator.getWords(documentId);
+        wordList = management.QuestionManagement.getWords(documentId);
 
         // Gestisce il caso in cui il documento non sia valido
         if (wordList == null) {
@@ -288,7 +288,7 @@ public class QuestionsController {
         }
 
         // Genera una nuova domanda
-        Question question = management.QuestionGenerator.generateNextQuestion(wordList, session.getQuestionsAnswered());
+        Question question = management.QuestionManagement.generateNextQuestion(wordList, session.getQuestionsAnswered());
 
         // Imposta il testo della domanda e la risposta corretta
         questionLabel.setText(question.getQuestionText());
