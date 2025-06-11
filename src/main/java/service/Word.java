@@ -1,21 +1,25 @@
 package service;
 
 /**
- * Represents a word with its associated frequency.
- * This class provides methods to retrieve the text of the word,
- * its frequency, and a string representation of both.
- *
- * @author Gruppo6
+ * Rappresenta una parola con la relativa frequenza di apparizione in un testo.
+ * Fornisce metodi per accedere al testo della parola, alla sua frequenza
+ * e per ottenere una rappresentazione in formato stringa dell'oggetto.
+ * 
+ * Autore: Gruppo6
  */
 public class Word {
+    // Testo della parola
     private final String text;
+
+    // Frequenza con cui la parola appare (numero di occorrenze)
     private final int frequency;
 
     /**
-     * Constructs a Word object with the specified text and frequency.
+     * Costruttore della classe Word.
+     * Crea un nuovo oggetto Word con il testo e la frequenza specificati.
      *
-     * @param text the text of the word
-     * @param frequency the frequency of the word
+     * @param text testo della parola
+     * @param frequency frequenza di apparizione della parola
      */
     public Word(String text, int frequency) {
         this.text = text;
@@ -23,37 +27,38 @@ public class Word {
     }
 
     /**
-     * Returns the text of the Word.
+     * Restituisce il testo della parola.
      *
-     * @return the text of the Word as a String.
+     * @return testo della parola come {@code String}
      */
     public String getText() {
         return text;
     }
 
     /**
-     * Retrieves the frequency associated with the Word.
+     * Restituisce la frequenza di apparizione della parola.
      *
-     * @return the frequency of the Word as an integer.
+     * @return frequenza come {@code int}
      */
     public int getFrequency() {
         return frequency;
     }
 
     /**
-     * Converts the frequency of the Word into a string representation.
+     * Restituisce la frequenza della parola come stringa.
+     * Utile per visualizzazioni testuali o UI.
      *
-     * @return the string representation of the frequency.
+     * @return frequenza come {@code String}
      */
     public String getFrequencyString() {
         return Integer.toString(frequency);
     }
 
     /**
-     * Returns a string representation of the Word object, including its text
-     * and frequency in the format "text (frequency)".
+     * Fornisce una rappresentazione in formato stringa dell'oggetto Word.
+     * Formato: "parola (frequenza)".
      *
-     * @return the string representation of the Word object.
+     * @return stringa rappresentativa della parola e della sua frequenza
      */
     @Override
     public String toString() {

@@ -1,47 +1,48 @@
 package service;
 
 /**
- * Represents a game session with details such as document ID, difficulty level, score, and timestamp.
- * This class encapsulates the data related to a single instance of a game session.
- *
+ * Rappresenta una sessione di gioco con dettagli come l'ID del documento, 
+ * il livello di difficoltà, il punteggio e il timestamp.
+ * Questa classe incapsula i dati relativi a una singola istanza di sessione di gioco.
+ * 
  * @author Gruppo6
  */
 public class GameSession {
 
     /**
-     * A unique identifier for the document associated with a game session.
-     * This value is used to track and differentiate between individual sessions.
+     * Identificatore univoco per il documento associato a una sessione di gioco.
+     * Questo valore viene utilizzato per tracciare e distinguere le singole sessioni.
      */
     private int documentId;
 
     /**
-     * Represents the difficulty level associated with a game session.
-     * This value indicates the complexity or challenge level selected or encountered during the game.
-     * Common values might include "easy", "medium", or "hard", though specific implementations may vary.
+     * Indica il livello di difficoltà associato a una sessione di gioco.
+     * Questo valore rappresenta la complessità o il livello di sfida selezionato o affrontato durante il gioco.
+     * I valori comuni possono includere "facile", "medio" o "difficile", anche se possono variare in base all'implementazione.
      */
     private String difficulty;
 
     /**
-     * Represents the score achieved in a game session.
-     * This value is used to record and track the points earned by the player
-     * during a specific instance of gameplay.
+     * Indica il punteggio ottenuto durante una sessione di gioco.
+     * Questo valore viene utilizzato per registrare e tracciare i punti guadagnati dal giocatore
+     * durante una specifica sessione di gioco.
      */
     private int score;
 
     /**
-     * Represents the timestamp associated with a game session.
-     * This value records the date and time at which the session occurred.
-     * The format of the timestamp is expected to align with standard date-time representations.
+     * Rappresenta il timestamp associato a una sessione di gioco.
+     * Questo valore registra la data e l'ora in cui si è svolta la sessione.
+     * Il formato del timestamp dovrebbe essere conforme agli standard di rappresentazione data/ora.
      */
     private String timestamp;
 
     /**
-     * Constructs a new GameSession with the specified details.
+     * Costruisce una nuova istanza di GameSession con i dettagli specificati.
      *
-     * @param documentId the unique identifier for the document associated with the game session
-     * @param difficulty the difficulty level of the game session
-     * @param score the score achieved during the game session
-     * @param timestamp the timestamp indicating when the game session occurred
+     * @param documentId l'identificatore univoco del documento associato alla sessione di gioco
+     * @param difficulty il livello di difficoltà della sessione di gioco
+     * @param score il punteggio ottenuto durante la sessione di gioco
+     * @param timestamp il timestamp che indica quando si è svolta la sessione di gioco
      */
     public GameSession(int documentId, String difficulty, int score, String timestamp) {
         this.documentId = documentId;
@@ -51,37 +52,38 @@ public class GameSession {
     }
 
     /**
-     * Retrieves the document ID associated with the game session.
+     * Restituisce l'ID del documento associato alla sessione di gioco.
      *
-     * @return the unique identifier for the document, as an integer.
+     * @return l'identificatore univoco del documento, come intero.
      */
     public int getDocumentId() { return documentId; }
 
     /**
-     * Retrieves the difficulty level associated with the game session.
+     * Restituisce il livello di difficoltà associato alla sessione di gioco.
      *
-     * @return the difficulty level of the game session as a String.
+     * @return il livello di difficoltà della sessione di gioco come stringa.
      */
     public String getDifficulty() { return difficulty; }
 
     /**
-     * Retrieves the score achieved in the game session.
+     * Restituisce il punteggio ottenuto nella sessione di gioco.
      *
-     * @return the score of the game session as an integer.
+     * @return il punteggio della sessione di gioco come intero.
      */
     public int getScore() { return score; }
 
     /**
-     * Retrieves the timestamp associated with the game session.
+     * Restituisce il timestamp associato alla sessione di gioco.
      *
-     * @return the timestamp of the game session as a String.
+     * @return il timestamp della sessione di gioco come stringa.
      */
     public String getTimestamp() { return timestamp; }
 
     /**
-     * Retrieves the document ID associated with the game session.
+     * Restituisce l'ID del documento associato alla sessione di gioco.
+     * (Metodo duplicato di getDocumentId; può essere considerato superfluo.)
      *
-     * @return the unique identifier for the document as an integer.
+     * @return l'identificatore univoco del documento come intero.
      */
     public int getDocumentID() { return documentId; }
 }

@@ -3,83 +3,83 @@ package service;
 import java.util.List;
 
 /**
- * Represents a Question with its text, correct answer, and a list of possible options.
- * This class provides getter and setter methods for managing the question text,
- * correct answer, and the options available to the question.
+ * Rappresenta una domanda con il relativo testo, la risposta corretta e una lista di opzioni di risposta possibili.
+ * Questa classe fornisce metodi getter e setter per gestire il testo della domanda,
+ * la risposta corretta e le opzioni disponibili per la risposta.
  */
 public class Question {
 
     /**
-     * Stores the text of the question being asked.
-     * This variable represents the main content of a question,
-     * which could be a prompt or statement that requires a user response.
+     * Memorizza il testo della domanda.
+     * Questa variabile rappresenta il contenuto principale della domanda,
+     * che può essere un'affermazione o un quesito che richiede una risposta da parte dell’utente.
      */
     private String questionText;
 
     /**
-     * Stores the correct answer to the question.
-     * This variable represents the expected or accurate response
-     * that validates a user's input against the question.
+     * Memorizza la risposta corretta alla domanda.
+     * Questa variabile rappresenta la risposta attesa, che verrà utilizzata
+     * per verificare la correttezza della risposta fornita dall’utente.
      */
     private String correctAnswer;
 
     /**
-     * Represents a list of possible answer options for the question.
-     * Each option is a string and provides users with pre-defined choices
-     * for answering the question.
+     * Rappresenta una lista di possibili risposte alla domanda.
+     * Ogni opzione è una stringa e fornisce all’utente delle scelte predefinite
+     * tra cui selezionare la risposta.
      */
     private List<String> options;
 
     /**
-     * Retrieves the text of the question.
+     * Restituisce il testo della domanda.
      *
-     * @return the text of the question as a String.
+     * @return il testo della domanda come stringa.
      */
     public String getQuestionText() {
         return questionText;
     }
 
     /**
-     * Updates the text of the question.
+     * Imposta o aggiorna il testo della domanda.
      *
-     * @param questionText the new text of the question to be set
+     * @param questionText il nuovo testo da assegnare alla domanda.
      */
     public void setQuestionText(String questionText) {
         this.questionText = questionText;
     }
 
     /**
-     * Retrieves the correct answer associated with a question.
+     * Restituisce la risposta corretta associata alla domanda.
      *
-     * @return the correct answer as a String.
+     * @return la risposta corretta come stringa.
      */
     public String getCorrectAnswer() {
         return correctAnswer;
     }
 
     /**
-     * Sets the correct answer for the question.
+     * Imposta o aggiorna la risposta corretta per la domanda.
      *
-     * @param correctAnswer the correct answer to be set for the question
+     * @param correctAnswer la risposta corretta da assegnare alla domanda.
      */
     public void setCorrectAnswer(String correctAnswer) {
         this.correctAnswer = correctAnswer;
     }
 
     /**
-     * Retrieves the list of possible answer options for the question.
+     * Restituisce la lista delle opzioni di risposta disponibili per la domanda.
      *
-     * @return a list of strings representing the possible answer options.
+     * @return una lista di stringhe rappresentanti le possibili risposte.
      */
     public List<String> getOptions() {
         return options;
     }
 
     /**
-     * Updates the list of possible answer options for the question.
-     * Replaces the current list of options with the provided list.
+     * Imposta o aggiorna la lista delle opzioni di risposta per la domanda.
+     * Sostituisce l’elenco attuale con quello fornito.
      *
-     * @param options the new list of possible answer options to set
+     * @param options la nuova lista di opzioni da assegnare alla domanda.
      */
     public void setOptions(List<String> options) {
         this.options = options;

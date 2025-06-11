@@ -5,85 +5,100 @@
  */
 package service;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import alert.Messages;
 
 /**
- * Provides functionality for managing an SQLite database connection.
- * Facilitates establishing and closing a connection to the database file {@code wordageddon.db}.
+ * Fornisce funzionalità per la gestione della connessione a un database SQLite.
+ * Facilita l'instaurazione e la chiusura di una connessione al file di database {@code wordageddon.db}.
+ * Utilizza il pattern singleton per gestire la connessione e fornisce feedback all'utente
+ * tramite messaggi di dialogo grafici.
  *
  * @author Gruppo6
  */
 public class DatabaseManagement {
 
     /**
-     * The URL representing the database connection string for an SQLite database.
-     * This constant is used to specify the path of the SQLite database file "wordageddon.db".
-     * The value is set to use a relative path in conjunction with the JDBC SQLite driver.
+     * URL che rappresenta la stringa di connessione al database SQLite.
+     * Questa costante specifica il percorso relativo del file di database "wordageddon.db"
+     * da utilizzare in congiunzione con il driver JDBC per SQLite.
      *
-     * Format: jdbc:sqlite:<relative_path_to_db_file>
-     *
-     * Example Value: "jdbc:sqlite:./wordageddon.db"
+     * Formato: jdbc:sqlite:&lt;percorso_relativo_al_file_db&gt;
+     * Esempio: "jdbc:sqlite:./wordageddon.db"
      */
-    private static final String URL="jdbc:sqlite:./wordageddon.db";
+    private static final String URL = "jdbc:sqlite:./wordageddon.db";
 
     /**
-     * Represents the single shared connection instance used for interactions
-     * with the SQLite database {@code wordageddon.db}. This variable is initialized
-     * and managed within the {@code DatabaseManagement} class.
+     * Rappresenta l'unica istanza condivisa della connessione utilizzata per interagire
+     * con il database SQLite {@code wordageddon.db}. Questa variabile viene inizializzata
+     * e gestita all'interno della classe {@code DatabaseManagement}.
      *
-     * The {@code connection} is lazy-initialized and reused throughout the application lifecycle,
-     * ensuring efficient resource utilization and avoiding multiple instances per database connection.
+     * La {@code connection} viene inizializzata in modo lazy e riutilizzata durante tutto
+     * il ciclo di vita dell'applicazione, garantendo un utilizzo efficiente delle risorse
+     * ed evitando multiple istanze per la stessa connessione al database.
      *
-     * It is set to {@code null} initially and should only be accessed or modified
-     * through the appropriate methods within the {@code DatabaseManagement} class,
-     * such as {@link DatabaseManagement#getConnection()} and {@link DatabaseManagement#closeConnection()}.
+     * Inizialmente impostata a {@code null}, dovrebbe essere accessibile o modificata solo
+     * tramite i metodi appropriati all'interno della classe {@code DatabaseManagement},
+     * come {@link DatabaseManagement#getConnection()} e {@link DatabaseManagement#closeConnection()}.
      */
     private static Connection connection = null;
 
     /**
-     * Establishes a connection to the SQLite database specified by the {@code URL}.
-     * If the connection object is null or already closed, it initializes a new connection.
-     * The connection is managed as a singleton to ensure efficient resource usage.
+     * Stabilisce una connessione al database SQLite specificato dall'{@code URL}.
+     * Se l'oggetto connection è null o già chiuso, inizializza una nuova connessione.
+     * La connessione è gestita come singleton per garantire un uso efficiente delle risorse.
+     * In caso di successo, mostra un messaggio informativo all'utente.
      *
-     * @return a {@link Connection} object representing the connection to the database,
-     *         or {@code null} if an error occurred during the connection process.
+     * @return un oggetto {@link Connection} che rappresenta la connessione al database,
+     *         oppure {@code null} se si è verificato un errore durante il processo di connessione.
+     * @see Messages#showInfo(String, String) Messaggio di successo visualizzato
+     * @see Messages#showError(String, String) Messaggio di errore visualizzato
      */
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
                 Class.forName("org.sqlite.JDBC");
                 connection = DriverManager.getConnection(URL);
-                System.out.println("Connessione al database.");
+                Messages.showInfo("Connessione Database", "Connessione al database stabilita con successo.");
             }
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Errore nella connessione al database: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            Messages.showError("Errore Driver JDBC", "Driver SQLite non trovato: " + e.getMessage());
+            e.printStackTrace();
+        } catch (SQLException e) {
+            Messages.showError("Errore Connessione", "Errore nella connessione al database: " + e.getMessage());
             e.printStackTrace();
         }
         return connection;
     }
 
     /**
-     * Closes the active connection to the SQLite database if it exists and is open.
-     * This method ensures that any established connection to the database is properly closed,
-     * releasing associated resources.
+     * Chiude la connessione attiva al database SQLite se esiste ed è aperta.
+     * Questo metodo garantisce che qualsiasi connessione stabilita al database venga
+     * chiusa correttamente, rilasciando le risorse associate.
+     * In caso di successo, mostra un messaggio informativo all'utente.
      *
-     * If the connection is already closed or null, the method does nothing.
-     * If an error occurs during the closure, it logs the error message to the standard error stream.
+     * Se la connessione è già chiusa o null, il metodo non fa nulla.
+     * Se si verifica un errore durante la chiusura, mostra un messaggio di errore
+     * all'utente e lo registra nello standard error stream.
      *
-     * Even if useless with the use of try-with-resources, this method is implemented anyway.
+     * Sebbene ridondante con l'uso di try-with-resources, questo metodo è implementato
+     * per garantire un controllo esplicito della chiusura della connessione.
+     *
+     * @see Messages#showInfo(String, String) Messaggio di successo visualizzato
+     * @see Messages#showError(String, String) Messaggio di errore visualizzato
      */
     public static void closeConnection() {
         if (connection != null) {
             try {
                 if (!connection.isClosed()) {
                     connection.close();
-                    System.out.println("Connessione al database chiusa.");
+                    Messages.showInfo("Chiusura Connessione", "Connessione al database chiusa correttamente.");
                 }
             } catch (SQLException e) {
-                System.err.println("Errore durante la chiusura della connessione: " + e.getMessage());
+                Messages.showError("Errore Chiusura", "Errore durante la chiusura della connessione: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }

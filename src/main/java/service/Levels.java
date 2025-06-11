@@ -3,34 +3,34 @@ package service;
 import java.util.List;
 
 /**
- * Provides methods to manage different levels of difficulty available in a game.
- * Each level can define specific attributes such as the number of questions, time limits,
- * scoring rules, and other customized properties.
+ * Fornisce metodi per gestire i diversi livelli di difficoltà disponibili in un gioco.
+ * Ogni livello può definire attributi specifici come il numero di domande, limiti di tempo,
+ * regole di punteggio e altre proprietà personalizzate.
  *
- * @author Gruppo6
+ * Autore: Gruppo6
  */
 public class Levels {
 
     /**
-     * Enum of difficulties available in the application.
-     * This enum is used to categorize different levels of game challenge
-     * and is typically associated with properties such as number of questions,
-     * time limits, and scoring mechanisms.
+     * Enum che rappresenta i livelli di difficoltà disponibili nell'applicazione.
+     * Questo enum è usato per categorizzare i diversi livelli di sfida del gioco
+     * ed è tipicamente associato a proprietà come il numero di domande, limiti di tempo
+     * e meccanismi di punteggio.
      *
-     * The available difficulty levels are:
-     * - EASY: Represents a basic or beginner level.
-     * - MEDIUM: Represents an intermediate challenge level.
-     * - HARD: Represents an advanced or expert level.
+     * I livelli disponibili sono:
+     * - EASY: rappresenta un livello base o per principianti.
+     * - MEDIUM: rappresenta un livello di difficoltà intermedia.
+     * - HARD: rappresenta un livello avanzato o per esperti.
      */
     public enum Difficulty {
         EASY, MEDIUM, HARD
     }
 
     /**
-     * Returns the number of questions for a specified difficulty level.
+     * Restituisce il numero di domande previste per uno specifico livello di difficoltà.
      *
-     * @param difficulty the difficulty level for which the number of questions is determined
-     * @return the number of questions associated with the specified difficulty level
+     * @param difficulty il livello di difficoltà per cui determinare il numero di domande
+     * @return il numero di domande associato al livello specificato
      */
     public static int getNumberOfQuestions(Difficulty difficulty) {
         switch (difficulty) {
@@ -46,15 +46,13 @@ public class Levels {
     }
 
     /**
-     * Determines the time limit in seconds based on the specified difficulty level.
-     * The method returns a default value of 20 seconds if the difficulty level
-     * is unrecognized.
+     * Determina il limite di tempo in secondi in base al livello di difficoltà specificato.
+     * Se il livello di difficoltà non è riconosciuto, viene restituito un valore di default pari a 15 secondi.
      *
-     * @param difficulty the difficulty level as a string. Expected values are
-     *                   "EASY", "MEDIUM", or "HARD". The comparison is case-insensitive.
-     * @return the time limit in seconds for the specified difficulty. Returns 30 for "EASY",
-     *         20 for "MEDIUM", 10 for "HARD", and defaults to 15 if an invalid difficulty
-     *         string is provided.
+     * @param difficulty il livello di difficoltà come stringa.
+     *                   I valori attesi sono "EASY", "MEDIUM" o "HARD" (il confronto è case-insensitive).
+     * @return il limite di tempo in secondi per il livello specificato:
+     *         30 per "EASY", 20 per "MEDIUM", 10 per "HARD", 15 per valori non validi.
      */
     public static int getSecondsByDifficulty(String difficulty) {
         switch (difficulty.toUpperCase()) {
@@ -70,12 +68,12 @@ public class Levels {
     }
 
     /**
-     * Determines the maximum score allocated for a question based on the specified difficulty level.
+     * Restituisce il punteggio massimo assegnabile per una domanda, in base al livello di difficoltà.
      *
-     * @param difficulty the difficulty level of the question, represented by the {@code Difficulty} enum.
-     *                   Possible values include {@code EASY}, {@code MEDIUM}, and {@code HARD}.
-     * @return the maximum score for a question corresponding to the provided difficulty level.
-     *         Returns {@code 0} if the difficulty level is not recognized or is null.
+     * @param difficulty il livello di difficoltà della domanda, rappresentato dall'enum {@code Difficulty}.
+     *                   I valori possibili sono {@code EASY}, {@code MEDIUM} e {@code HARD}.
+     * @return il punteggio massimo per una domanda in base al livello di difficoltà.
+     *         Restituisce {@code 0} se il livello non è riconosciuto o è null.
      */
     public static int getMaxScorePerQuestion(Difficulty difficulty) {
         switch (difficulty) {
@@ -91,26 +89,25 @@ public class Levels {
     }
 
     /**
-     * Retrieves a list of question types associated with a specific difficulty level.
+     * Restituisce una lista di tipi di domande associati a un determinato livello di difficoltà.
+     * (Metodo da implementare)
      *
-     * @param difficulty the difficulty level for which the question types are requested.
-     *                    This must be a value from the {@code Difficulty} enum, such as {@code EASY}, {@code MEDIUM}, or {@code HARD}.
-     * @return a {@code List} of {@code String} representing the question types for the provided difficulty level.
-     *         Returns an empty list if there are no question types available for the specified difficulty level or if the difficulty level is invalid.
+     * @param difficulty il livello di difficoltà per cui richiedere i tipi di domanda.
+     *                   Deve essere un valore valido dell'enum {@code Difficulty}, come {@code EASY}, {@code MEDIUM} o {@code HARD}.
+     * @return una {@code List} di {@code String} che rappresentano i tipi di domande disponibili per quel livello,
+     *         oppure una lista vuota/null se il livello non ha tipi associati o non è valido.
      */
     public static List<String> getQuestionTypesByDifficulty(Difficulty difficulty) {
         return null;
     }
 
     /**
-     * Validates if the provided difficulty string corresponds to a valid
-     * {@code Difficulty} enum value.
+     * Verifica se una stringa rappresenta un livello di difficoltà valido dell'enum {@code Difficulty}.
      *
-     * @param difficulty the difficulty level as a string. This should represent
-     *                   one of the valid enum values in {@code Difficulty}, such as
-     *                   "EASY", "MEDIUM", or "HARD". The comparison is case-insensitive.
-     * @return {@code true} if the input string matches a valid {@code Difficulty} enum value,
-     *         {@code false} otherwise, including cases where the input is null.
+     * @param difficulty stringa che rappresenta il livello di difficoltà.
+     *                   Deve corrispondere (ignorando il case) a uno dei valori validi dell'enum:
+     *                   "EASY", "MEDIUM" o "HARD".
+     * @return {@code true} se la stringa corrisponde a un livello valido, {@code false} altrimenti (incluso null).
      */
     public static boolean isValidDifficulty(String difficulty) {
         try {

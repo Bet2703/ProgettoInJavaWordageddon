@@ -5,28 +5,26 @@ import users.Player;
 import users.Role;
 
 /**
- * Provides functionality for user login, registration, and username availability checks.
- * This class interacts with the database to facilitate user authentication
- * and management processes.
+ * Fornisce funzionalità per il login, la registrazione e la verifica di disponibilità dello username.
+ * Questa classe interagisce con il database per gestire l'autenticazione e le operazioni sugli utenti.
  *
- * @author Gruppo6
+ * Autore: Gruppo6
  */
 public class Login {
 
     /**
-     * Authenticates a user by validating the provided username and password against the database.
-     * If the credentials are valid, returns a {@link Player} object containing user details.
+     * Autentica un utente validando lo username e la password forniti con quelli presenti nel database.
+     * Se le credenziali sono valide, restituisce un oggetto {@link Player} contenente i dati dell’utente.
      *
-     * @param inputUsername the username of the user attempting to log in
-     * @param inputPassword the password of the user attempting to log in
-     * @return a {@link Player} object if authentication is successful, or {@code null} if the credentials are invalid or an error occurs
+     * @param inputUsername lo username dell’utente che tenta di accedere
+     * @param inputPassword la password dell’utente che tenta di accedere
+     * @return un oggetto {@link Player} se l’autenticazione ha successo, oppure {@code null} se le credenziali sono errate o si verifica un errore
      */
-
     public static Player login(String inputUsername, String inputPassword) {
         String sql = "SELECT username, password, role FROM users WHERE username = ? AND password = ?";
 
-        try(Connection conn = DatabaseManagement.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);) {
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, inputUsername);
             pstmt.setString(2, inputPassword);
@@ -53,41 +51,44 @@ public class Login {
     }
 
     /**
-     * Checks if a given username already exists in the database.
+     * Verifica se un determinato username è già presente nel database.
      *
-     * @param inputUsername the username to check for existence in the database
-     * @return {@code true} if the username is already taken, {@code false} otherwise or in case of an error
+     * @param inputUsername lo username da controllare
+     * @return {@code true} se lo username è già utilizzato, {@code false} altrimenti o in caso di errore
      */
     public static boolean isUsernameTaken(String inputUsername) {
         String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
 
-        try(Connection conn = DatabaseManagement.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, inputUsername);
             ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
+
         } catch (SQLException e) {
             System.out.println("Errore di connessione o query su controllo username: " + e.getMessage());
         }
+
         return false;
     }
 
     /**
-     * Registers a new user by adding their username, password, and role to the database.
-     * Uses an SQLite database for storage.
+     * Registra un nuovo utente inserendo username, password e ruolo nel database.
+     * Utilizza un database SQLite per la memorizzazione.
      *
-     * @param inputUsername the username of the new user
-     * @param inputPassword the password of the new user
-     * @param role the role of the new user, specified as a {@link Role} enum
+     * @param inputUsername lo username del nuovo utente
+     * @param inputPassword la password del nuovo utente
+     * @param role il ruolo del nuovo utente, specificato come enum {@link Role}
      */
     public static void userRegister(String inputUsername, String inputPassword, Role role) {
         String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
-        try(Connection conn = DatabaseManagement.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql);){
 
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, inputUsername);
             stmt.setString(2, inputPassword);
@@ -95,9 +96,8 @@ public class Login {
 
             stmt.executeUpdate();
             System.out.println("Registrazione avvenuta con successo.");
-        }
-        catch(SQLException e)
-        {
+
+        } catch (SQLException e) {
             System.out.println("Errore di connessione o query su registrazione: " + e.getMessage());
         }
     }

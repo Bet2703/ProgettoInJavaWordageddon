@@ -5,21 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manages operations related to user data stored in the database.
- * Provides methods for updating, deleting, and retrieving user information,
- * as well as retrieving associated game sessions for a user.
- *
- * @author Gruppo6
+ * Classe responsabile della gestione delle operazioni relative agli utenti memorizzati nel database.
+ * Fornisce metodi per aggiornare, eliminare e recuperare informazioni sugli utenti.
+ * Può essere estesa per includere funzionalità aggiuntive come registrazione o autenticazione.
+ * 
+ * Autore: Gruppo6
  */
 public class UsersManagement {
 
     /**
-     * Updates the user information in the database with the provided username and password for the specified user ID.
+     * Aggiorna le informazioni di un utente nel database, modificando username e password
+     * per l'utente corrispondente all'ID specificato.
      *
-     * @param userId the unique identifier of the user whose information is to be updated
-     * @param newUsername the new username to be set for the user; must not be null or empty
-     * @param newPassword the new password to be set for the user; must not be null or empty
-     * @return true if the user information was successfully updated in the database, false otherwise
+     * @param userId ID univoco dell'utente da aggiornare
+     * @param newUsername nuovo username da assegnare all'utente (non deve essere nullo o vuoto)
+     * @param newPassword nuova password da assegnare all'utente (non deve essere nulla o vuota)
+     * @return {@code true} se l'aggiornamento è andato a buon fine, {@code false} altrimenti
      */
     public boolean updateUser(int userId, String newUsername, String newPassword) {
         String sql = "UPDATE users SET username = ?, password = ? WHERE id = ?";
@@ -38,10 +39,11 @@ public class UsersManagement {
     }
 
     /**
-     * Deletes a user from the database based on the provided username.
+     * Elimina un utente dal database in base allo username fornito.
+     * Se lo username non esiste, non viene effettuata alcuna eliminazione.
      *
-     * @param username the username of the user to be deleted; must not be null or empty
-     * @return true if the user was successfully deleted from the database, false otherwise
+     * @param username username dell'utente da eliminare (non deve essere nullo o vuoto)
+     * @return {@code true} se l'utente è stato eliminato correttamente, {@code false} in caso contrario
      */
     public boolean deleteUser(String username) {
         String sql = "DELETE FROM users WHERE username = ?";
@@ -58,11 +60,10 @@ public class UsersManagement {
     }
 
     /**
-     * Retrieves and prints the user details from the database based on the provided username.
-     * The method connects to the database, executes a query to fetch user data,
-     * and displays the user's ID, username, and password if the user exists.
+     * Recupera e stampa i dettagli di un utente in base allo username specificato.
+     * I dati visualizzati includono ID, username e password (non consigliato in produzione).
      *
-     * @param username the username of the user whose details are to be retrieved; must not be null or empty
+     * @param username username dell'utente da recuperare (non deve essere nullo o vuoto)
      */
     public void getUser(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
@@ -75,7 +76,7 @@ public class UsersManagement {
             while (rs.next()) {
                 System.out.println("ID: " + rs.getInt("id"));
                 System.out.println("Username: " + rs.getString("username"));
-                System.out.println("Password: " + rs.getString("password"));
+                System.out.println("Password: " + rs.getString("password")); // ⚠️ Attenzione: evitare di stampare la password in ambienti reali
             }
         } catch (SQLException e) {
             System.out.println("Errore nella lettura dei dati: " + e.getMessage());
