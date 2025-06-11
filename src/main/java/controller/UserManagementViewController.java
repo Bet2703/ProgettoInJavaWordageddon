@@ -16,8 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import service.GameSession;
-import service.UsersManagement;
+import model.GameSession;
+import management.UsersManagement;
 
 /**
  * La classe UserManagementViewController è responsabile della gestione dell'interfaccia utente per
@@ -165,10 +165,10 @@ public class UserManagementViewController implements Initializable {
     @FXML
     private void onExportCsv(ActionEvent event) {
         // Recupero username corrente da GameSessionManagement
-        String username = service.GameSessionManagement.getInstance().getUsername();
+        String username = management.GameSessionManagement.getInstance().getUsername();
         
         // Recupero tutte le sessioni per l'utente
-        List<GameSession> sessions = service.GameSessionManagement.getSessionsByUsername(username);
+        List<GameSession> sessions = management.GameSessionManagement.getSessionsByUsername(username);
 
         // Controllo presenza sessioni da esportare
         if (sessions.isEmpty()) {
@@ -184,7 +184,7 @@ public class UserManagementViewController implements Initializable {
             writer.println("DocumentID,Difficulty,Score,Timestamp");
 
             // Scrittura di ogni sessione come riga nel file
-            for (GameSession session : sessions) {
+            for (model.GameSession session : sessions) {
                 writer.printf("%d,%s,%d,%s%n",
                     session.getDocumentId(),
                     session.getDifficulty(),

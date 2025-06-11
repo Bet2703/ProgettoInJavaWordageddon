@@ -1,4 +1,4 @@
-package service;
+package model;
 
 /**
  * Rappresenta una parola con la relativa frequenza di apparizione in un testo.

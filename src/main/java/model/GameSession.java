@@ -1,4 +1,4 @@
-package service;
+package model;
 
 /**
  * Rappresenta una sessione di gioco con dettagli come l'ID del documento, 

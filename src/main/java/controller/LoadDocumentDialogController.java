@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import service.DocumentsManagement;
-import service.Levels;
+import management.DocumentsManagement;
+import model.Levels;
 
 /**
  * Controller responsabile della gestione della finestra di dialogo per il caricamento dei documenti.

@@ -1,8 +1,6 @@
-package service;
+package management;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe responsabile della gestione delle operazioni relative agli utenti memorizzati nel database.

@@ -10,12 +10,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import service.DatabaseManagement;
+import model.Levels;
+import management.DatabaseManagement;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * Controller per la gestione della lettura dei documenti nell'applicazione.
@@ -116,13 +116,11 @@ public class DocumentReadController {
             stage.setScene(new Scene(root));
             stage.show();
 
-            // Passa l'ID del documento al nuovo controller
+            // Inizializza il controller
             QuestionsController controller = loader.getController();
-            controller.setDocumentId(documentId);
 
             // Avvia il quiz passando l'ID
-            Consumer<Integer> startGame = controller::startGame;
-            startGame.accept(documentId);
+            controller.startGame(documentId);
 
             // Chiude la finestra attuale (opzionale)
             Optional.ofNullable(documentTextArea.getScene())
@@ -157,7 +155,7 @@ public class DocumentReadController {
                 if (rs.next()) {
                     documentId = rs.getInt("id"); // salva ID del documento
                     difficulty = rs.getString("difficulty"); // imposta la difficoltà
-                    secondsLeft = service.Levels.getSecondsByDifficulty(difficulty.toUpperCase()); // imposta tempo
+                    secondsLeft = Levels.getSecondsByDifficulty(difficulty.toUpperCase()); // imposta tempo
                     return rs.getString("text"); // ritorna il testo
                 }
             }

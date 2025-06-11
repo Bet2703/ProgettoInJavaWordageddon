@@ -1,4 +1,7 @@
-package service;
+package management;
+
+import model.Question;
+import model.Word;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

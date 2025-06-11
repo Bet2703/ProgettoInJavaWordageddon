@@ -1,5 +1,6 @@
 package controller;
 
+import alert.Messages;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,10 +10,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.animation.Timeline;
-import service.Word;
+import model.Question;
+import model.Word;
 
 import java.io.IOException;
 import java.util.*;
@@ -154,7 +155,7 @@ public class QuestionsController {
      * per gestire e interagire con la sessione di gioco, come recuperare lo stato corrente
      * della sessione e applicare configurazioni specifiche per il quiz.
      */
-    private final service.GameSessionManagement session = service.GameSessionManagement.getInstance();
+    private final management.GameSessionManagement session = management.GameSessionManagement.getInstance();
 
     /**
      * Rappresenta il numero massimo di domande che verranno visualizzate o poste
@@ -219,12 +220,12 @@ public class QuestionsController {
         this.documentId = documentId;
         
         // Recupera la lista di parole dal generatore di domande
-        wordList = service.QuestionGenerator.getWords(documentId);
+        wordList = management.QuestionGenerator.getWords(documentId);
 
         // Gestisce il caso in cui il documento non sia valido
         if (wordList == null) {
             feedbackLabel.setText("Documento non valido o insufficiente.");
-            disableInteraction();
+            setInteractionEnabled(false);
             return;
         }
 
@@ -257,24 +258,6 @@ public class QuestionsController {
     }
 
     /**
-     * Disabilita l'interazione dell'utente con gli elementi chiave dell'interfaccia utente.
-     * Questo metodo impedisce l'interazione disabilitando i seguenti componenti dell'interfaccia utente:
-     * - Il pulsante "Invia"
-     * - Il pulsante "Salta"
-     * - Le opzioni di risposta (optionA, optionB, optionC e optionD)
-     * Tipicamente, questo metodo viene utilizzato per impedire l'interazione dell'utente durante azioni
-     * come l'elaborazione di una risposta o il passaggio alla domanda successiva.
-     */
-    private void disableInteraction() {
-        submitButton.setDisable(true);
-        skipButton.setDisable(true);
-        optionA.setDisable(true);
-        optionB.setDisable(true);
-        optionC.setDisable(true);
-        optionD.setDisable(true);
-    }
-
-    /**
      * Carica la prossima domanda nella sessione del quiz o conclude la sessione se tutte le domande
      * sono state risposte o il timer scade.
      *
@@ -299,13 +282,13 @@ public class QuestionsController {
         if (session.getQuestionsAnswered() >= maxQuestions) {
             feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
             session.saveSession();
-            disableInteraction();
+            setInteractionEnabled(false);
             concludeQuiz();
             return;
         }
 
         // Genera una nuova domanda
-        service.Question question = service.QuestionGenerator.generateNextQuestion(wordList, session.getQuestionsAnswered());
+        Question question = management.QuestionGenerator.generateNextQuestion(wordList, session.getQuestionsAnswered());
 
         // Imposta il testo della domanda e la risposta corretta
         questionLabel.setText(question.getQuestionText());
@@ -476,7 +459,7 @@ public class QuestionsController {
         if (session.getQuestionsAnswered() >= maxQuestions) {
             feedbackLabel.setText("Hai completato il quiz! Punteggio: " + session.getScore());
             session.saveSession();
-            disableInteraction();
+            setInteractionEnabled(false);
             concludeQuiz();
             return;
         }
@@ -517,6 +500,7 @@ public class QuestionsController {
             currentScene.setRoot(root);
 
         } catch (IOException e) {
+            Messages.showError("Errore durante la visualizzazione dei risultati.", "Errore");
             e.printStackTrace();
         }
     }
@@ -535,7 +519,6 @@ public class QuestionsController {
      *
      * @param id l'ID del documento da assegnare
      */
-    @FXML
     public void setDocumentId(int id) {
         this.documentId = id;
     }

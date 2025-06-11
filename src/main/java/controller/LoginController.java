@@ -13,7 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import service.Login;
+import model.Login;
 import users.Player;
 import users.Role;
 
@@ -85,7 +85,7 @@ public class LoginController {
 
         if (playerOpt.isPresent()) {
             Player player = playerOpt.get();
-            service.GameSessionManagement.getInstance().setCurrentPlayer(player);
+            management.GameSessionManagement.getInstance().setCurrentPlayer(player);
             try {
                 loadViewForRole(player.getRole());
             } catch (IOException | IllegalArgumentException e) {

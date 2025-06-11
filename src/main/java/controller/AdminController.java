@@ -9,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import service.DocumentsManagement;
+import management.DocumentsManagement;
 
 import java.io.IOException;
 import java.util.List;

@@ -128,7 +128,7 @@ public class ResultsController {
 
             // Ottiene il controller e avvia una nuova sessione di gioco
             QuestionsController questionsController = loader.getController();
-            questionsController.startGame(service.GameSessionManagement.getInstance().getDocumentId());
+            questionsController.startGame(management.GameSessionManagement.getInstance().getDocumentId());
 
             // Mostra la nuova scena
             Stage stage = (Stage) feedbackMessage.getScene().getWindow();

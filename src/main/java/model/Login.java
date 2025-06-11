@@ -1,6 +1,8 @@
-package service;
+package model;
 
 import java.sql.*;
+
+import management.DatabaseManagement;
 import users.Player;
 import users.Role;
 
