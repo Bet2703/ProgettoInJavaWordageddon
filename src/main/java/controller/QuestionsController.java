@@ -463,16 +463,14 @@ public class QuestionsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ResultView.fxml"));
             Parent root = loader.load();
+
             ResultsController resultsController = loader.getController();
             resultsController.setCorrectAnswers(session.getCorrectAnswers());
             resultsController.setTotalAnswers(session.getQuestionsAnswered());
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.show();
+            Scene currentScene = questionLabel.getScene();
+            currentScene.setRoot(root);
 
-            Stage currentStage = (Stage) questionLabel.getScene().getWindow();
-            currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

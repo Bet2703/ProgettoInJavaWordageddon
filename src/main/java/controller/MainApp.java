@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.Objects;
+
 /**
  * La classe MainApp rappresenta il punto di ingresso principale dell'applicazione JavaFX.
  * Estende la classe {@link Application} e ha il compito di inizializzare e mostrare
@@ -36,14 +38,14 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SplashScreen.fxml"));
         Parent root = loader.load();
 
-        primaryStage.getIcons().add(new javafx.scene.image.Image(
-                getClass().getResourceAsStream("/images/icon.png")
-        ));
-
         Stage splashStage = new Stage();
         splashStage.initStyle(StageStyle.UNDECORATED);
         splashStage.initStyle(StageStyle.TRANSPARENT);
         splashStage.centerOnScreen();
+
+        splashStage.getIcons().add(new javafx.scene.image.Image(
+                Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.png"))
+        ));
 
         Scene scene = new Scene(root);
         scene.setFill(null);

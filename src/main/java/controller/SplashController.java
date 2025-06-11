@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class SplashController implements Initializable {
@@ -26,7 +27,7 @@ public class SplashController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            splashImage.setImage(new Image(getClass().getResourceAsStream("/images/splash_screen.png")));
+            splashImage.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/splash_screen.png"))));
         } catch (Exception e) {
             System.err.println("Errore nel caricamento dell'immagine splash_screen.png.");
         }
@@ -62,7 +63,7 @@ public class SplashController implements Initializable {
                 Stage loginStage = new Stage();
                 loginStage.setTitle("Wordageddon");
                 loginStage.getIcons().add(new javafx.scene.image.Image(
-                        getClass().getResourceAsStream("/images/icon.png")
+                        Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.png"))
                 ));
                 loginStage.setScene(loginScene);
                 loginStage.show();
