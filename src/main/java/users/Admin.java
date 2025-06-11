@@ -1,46 +1,46 @@
 package users;
 
 /**
- * Represents an Admin user, extending the base User class.
- * Inherits attributes and operations from the User class and adds
- * the ability to specify and manage the admin status of the user.
- *
- * @author Gruppo6
+ * Rappresenta un utente di tipo Admin, estendendo la classe base User.
+ * In aggiunta agli attributi e metodi della classe User, questa classe
+ * introduce un campo per indicare se l'utente ha privilegi amministrativi.
+ * 
+ * Autore: Gruppo6
  */
-public class Admin extends User{
+public class Admin extends User {
 
     /**
-     * Indicates whether the user has Admin privileges.
-     * This field represents the admin status of the user,
-     * allowing for differentiation between administrative
-     * and regular users.
+     * Indica se l'utente possiede privilegi da amministratore.
+     * Serve a distinguere tra utenti normali e amministratori.
      */
     private boolean isAdmin;
 
     /**
-     * Constructs a new Admin user with the specified username, password, and admin status.
-     * This constructor initializes the admin user by calling the parent class constructor
-     * with the provided username and password and sets the admin status.
+     * Costruttore della classe Admin.
+     * Inizializza un utente amministratore con username, password e stato admin.
      *
-     * @param username the username of the*/
+     * @param username il nome utente
+     * @param password la password dell'utente
+     * @param isAdmin  true se l'utente ha privilegi da amministratore, false altrimenti
+     */
     public Admin(String username, String password, boolean isAdmin) {
-        super(username, password);
+        super(username, password); // Chiamata al costruttore della superclasse User
         this.isAdmin = isAdmin;
     }
 
     /**
-     * Checks whether the user has administrative privileges.
+     * Restituisce true se l'utente ha privilegi da amministratore.
      *
-     * @return true if the user is an admin, false otherwise
+     * @return true se è admin, false altrimenti
      */
     public boolean isIsAdmin() {
         return isAdmin;
     }
 
     /**
-     * Sets the administrative status of the user.
+     * Imposta lo stato amministrativo dell'utente.
      *
-     * @param isAdmin the new administrative status to be set for the user.
+     * @param isAdmin nuovo valore booleano che indica se l'utente è admin
      */
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;

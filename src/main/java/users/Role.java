@@ -1,13 +1,16 @@
 package users;
 
 /**
- * Represents the possible roles a user can have within the system.
- * This enumeration is primarily used to distinguish between different
- * user types, such as administrative users and regular users.
+ * Rappresenta i possibili ruoli che un utente può avere all'interno del sistema.
+ * Questa enumerazione viene utilizzata per distinguere tra utenti amministratori
+ * e utenti regolari, permettendo di applicare permessi e funzionalità differenti
+ * in base al ruolo.
  *
- * The roles are:
- * - ADMIN: Represents a user with administrative privileges.
- * - BASE: Represents a regular user without administrative privileges.
+ * I ruoli definiti sono:
+ * - ADMIN: Utente con privilegi amministrativi (ad esempio, gestione utenti o contenuti).
+ * - BASE: Utente standard, con accesso limitato alle funzionalità del sistema.
  */
-
-public enum Role { ADMIN, BASE; }
+public enum Role {
+    ADMIN, // Ruolo amministratore
+    BASE   // Ruolo base, ovvero utente normale
+}

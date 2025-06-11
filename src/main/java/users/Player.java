@@ -5,56 +5,63 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a Player within the system, extending the User class.
- * The Player class includes additional attributes and behaviors specific
- * to a player, such as their role and personal scores.
- *
- * @author Gruppo6
+ * Rappresenta un Giocatore all'interno del sistema, estendendo la classe base User.
+ * Un Player possiede un ruolo specifico e una lista di punteggi personali,
+ * che permettono di tracciare le sue prestazioni.
+ * 
+ * Autore: Gruppo6
  */
 public class Player extends User {
-    
+
+    /**
+     * Ruolo del giocatore, definito tramite l'enumerazione {@link Role}.
+     * Può essere utile per distinguere diversi tipi di giocatori.
+     */
     private Role role;
+
+    /**
+     * Lista dei punteggi personali del giocatore.
+     * Ogni elemento rappresenta un punteggio ottenuto in una partita.
+     */
     private List<Integer> personalScore;
 
     /**
-     * Constructs a Player object with the specified username, password, and role.
-     * Extends the User class and initializes the player's specific attributes, including
-     * their role and an empty list to store their personal scores.
+     * Costruttore della classe Player.
+     * Inizializza l'username, la password, il ruolo e la lista vuota dei punteggi.
      *
-     * @param username the username of the player
-     * @param password the password of the player
-     * @param role the role of the player, specified as a {@link Role} enum
+     * @param username nome utente del giocatore
+     * @param password password del giocatore
+     * @param role ruolo del giocatore (valore dell'enum {@link Role})
      */
     public Player(String username, String password, Role role) {
         super(username, password);
-        personalScore = new ArrayList<>();
         this.role = role;
+        this.personalScore = new ArrayList<>();
     }
 
     /**
-     * Retrieves the role assigned to this player.
+     * Restituisce il ruolo del giocatore.
      *
-     * @return the role of the player as a {@link Role} enum
+     * @return ruolo del giocatore come enum {@link Role}
      */
     public Role getRole() {
         return role;
     }
 
     /**
-     * Retrieves the personal score list for the player.
+     * Restituisce la lista dei punteggi personali.
      *
-     * @return a list of integers representing the player's personal scores
+     * @return lista di punteggi ottenuti dal giocatore
      */
     public List<Integer> getPersonalScore() {
         return this.personalScore;
     }
 
     /**
-     * Computes the hash code for the Player instance based on the username.
-     * This method overrides the hashCode method from the User class
-     * to include the specific implementation for Player objects.
+     * Genera un hash code per l'oggetto Player, basato sull'username.
+     * Utile per strutture dati come HashMap o HashSet.
      *
-     * @return the hash code value for this Player object
+     * @return hash code dell'oggetto
      */
     @Override
     public int hashCode() {
@@ -64,11 +71,10 @@ public class Player extends User {
     }
 
     /**
-     * Compares this Player instance to another object for equality.
-     * The equality is defined based on the username of the Player.
+     * Confronta due oggetti Player per uguaglianza in base all'username.
      *
-     * @param obj the object to compare with this Player instance
-     * @return true if the specified object is equal to this Player, false otherwise
+     * @param obj oggetto da confrontare
+     * @return true se hanno lo stesso username, false altrimenti
      */
     @Override
     public boolean equals(Object obj) {
@@ -83,13 +89,15 @@ public class Player extends User {
     }
 
     /**
-     * Returns a string representation of the Player object.
-     * The string includes the username, password, and role of the player.
+     * Restituisce una rappresentazione in stringa dell'oggetto Player.
+     * Contiene username, password e ruolo del giocatore.
      *
-     * @return a string containing the player's username, password, and role
+     * @return rappresentazione in stringa del giocatore
      */
     @Override
     public String toString() {
-        return "Username: " + this.getUsername() + ", Password: " + this.getPassword() + ", Ruolo: " + this.getRole();
+        return "Username: " + this.getUsername() +
+               ", Password: " + this.getPassword() +
+               ", Ruolo: " + this.getRole();
     }
 }
