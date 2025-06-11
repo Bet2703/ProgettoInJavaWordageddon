@@ -123,7 +123,6 @@ public class ResultsController {
 
             Stage stage = (Stage) feedbackMessage.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Quiz");
             stage.show();
         } catch (IOException e) {
             System.err.println("Errore durante il caricamento della schermata del quiz: " + e.getMessage());
@@ -139,7 +138,7 @@ public class ResultsController {
      */
     @FXML
     private void onPersonalScores(ActionEvent event) {
-        loadView(event, "/view/PersonalScoresView.fxml", "Punteggi Personali");
+        loadView(event, "/view/PersonalScoresView.fxml");
     }
 
     /**
@@ -149,7 +148,7 @@ public class ResultsController {
      */
     @FXML
     private void onBackToMenu(ActionEvent event) {
-        loadView(event, "/view/UserManagementView.fxml", "Menu Principale");
+        loadView(event, "/view/MainMenu.fxml");
     }
 
     /**
@@ -158,16 +157,14 @@ public class ResultsController {
      *
      * @param event Evento associato all'azione di cambio schermata.
      * @param fxmlPath Percorso del file FXML da caricare.
-     * @param title Titolo della finestra dopo il cambio di scena.
      */
-    private void loadView(ActionEvent event, String fxmlPath, String title) {
+    private void loadView(ActionEvent event, String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle(title);
             stage.show();
         } catch (IOException e) {
             System.err.println("Errore durante il caricamento della schermata: " + e.getMessage());

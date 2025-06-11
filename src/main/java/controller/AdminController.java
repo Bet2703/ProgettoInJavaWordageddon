@@ -60,7 +60,6 @@ public class AdminController {
             Parent root = loader.load();
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Carica Documento");
             dialogStage.setScene(new Scene(root));
             dialogStage.initModality(Modality.APPLICATION_MODAL);
 
@@ -115,7 +114,6 @@ public class AdminController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Login");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

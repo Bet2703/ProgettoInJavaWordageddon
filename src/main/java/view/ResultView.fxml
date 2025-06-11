@@ -18,9 +18,6 @@
 
     <children>
 
-        <!-- Pulsante Torna al Menu in alto a sinistra -->
-        <Button fx:id="btnHomeTop" onAction="#onBackToMenu" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" text="← Menu" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="10" />
-
         <VBox alignment="CENTER" spacing="20" style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0.5, 0, 0);" AnchorPane.bottomAnchor="50" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="50">
             <padding>
                 <Insets bottom="30" left="30" right="30" top="30" />

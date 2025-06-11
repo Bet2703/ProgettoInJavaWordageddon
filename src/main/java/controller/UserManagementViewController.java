@@ -200,7 +200,6 @@ public class UserManagementViewController implements Initializable {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Menu Principale");
             stage.show();
 
         } catch (IOException e) {

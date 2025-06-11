@@ -140,8 +140,8 @@ public class DocumentReadController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/quizView.fxml"));
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setTitle("Domande");
+            Stage stage = (Stage) documentTextArea.getScene().getWindow();
+
             stage.setScene(new Scene(root));
             stage.show();
 
@@ -149,8 +149,6 @@ public class DocumentReadController {
             Consumer<Integer> startGame = controller::startGame;
             controller.setDocumentId(documentId);
             startGame.accept(documentId);
-
-            System.out.println("L'id del Testo nel DB e': " + controller.getDocumentId());
 
             Optional.ofNullable(documentTextArea.getScene())
                     .map(Scene::getWindow)

@@ -46,16 +46,14 @@ public class MainMenuController {
      *
      * @param event evento generato dal pulsante che ha attivato l'azione
      * @param fxmlPath percorso del file FXML da caricare
-     * @param title titolo da assegnare alla finestra
      * @throws IOException se il file FXML non viene trovato o non può essere caricato
      */
-    private void loadView(ActionEvent event, String fxmlPath, String title) throws IOException {
+    private void loadView(ActionEvent event, String fxmlPath) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Scene scene = new Scene(loader.load());
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
-        stage.setTitle(title);
         stage.show();
     }
 
@@ -68,9 +66,9 @@ public class MainMenuController {
     @FXML
     public void onPlayClicked(ActionEvent event) {
         try {
-            loadView(event, "/view/Level.fxml", "Seleziona Difficoltà");
+            loadView(event, "/view/Level.fxml");
         } catch (IOException e) {
-            e.printStackTrace(); // stampa lo stack trace per il debug
+            e.printStackTrace();
         }
     }
 
@@ -83,7 +81,7 @@ public class MainMenuController {
     @FXML
     public void onProfileClicked(ActionEvent event) {
         try {
-            loadView(event, "/view/UserManagementView.fxml", "Profilo");
+            loadView(event, "/view/UserManagementView.fxml");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -98,7 +96,7 @@ public class MainMenuController {
     @FXML
     public void onLeaderboardClicked(ActionEvent event) {
         try {
-            loadView(event, "/view/PersonalScoresView.fxml", "Classifica Personale");
+            loadView(event, "/view/PersonalScoresView.fxml");
         } catch (IOException e) {
             e.printStackTrace();
         }

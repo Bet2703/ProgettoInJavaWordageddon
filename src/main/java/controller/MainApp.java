@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * La classe MainApp rappresenta il punto di ingresso principale dell'applicazione JavaFX.
@@ -23,6 +24,8 @@ public class MainApp extends Application {
      * Questo metodo viene invocato automaticamente dalla piattaforma JavaFX
      * dopo l'inizializzazione, e rappresenta il punto in cui l'interfaccia grafica viene caricata.
      *
+     * Viene configurata anche una semplice icona per l'applicazione, situata nella cartella resources/images.
+     *
      * @param primaryStage lo stage principale dell'applicazione, ovvero la finestra principale.
      *                     È su questo oggetto che viene impostata la scena iniziale.
      *
@@ -30,18 +33,24 @@ public class MainApp extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Caricamento del layout della schermata di login da file FXML
-        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/view/Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SplashScreen.fxml"));
         Parent root = loader.load();
 
-        // Impostazione del titolo della finestra
-        primaryStage.setTitle("Login");
+        primaryStage.getIcons().add(new javafx.scene.image.Image(
+                getClass().getResourceAsStream("/images/icon.png")
+        ));
 
-        // Creazione e impostazione della scena principale
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show(); // Visualizzazione dello stage
+        Stage splashStage = new Stage();
+        splashStage.initStyle(StageStyle.UNDECORATED);
+        splashStage.initStyle(StageStyle.TRANSPARENT);
+        splashStage.centerOnScreen();
+
+        Scene scene = new Scene(root);
+        scene.setFill(null);
+
+        splashStage.setScene(scene);
+        splashStage.show();
     }
-
     /**
      * Metodo main dell'applicazione Java.
      * Questo metodo viene eseguito all'avvio del programma e richiama il metodo {@code launch}
@@ -50,6 +59,6 @@ public class MainApp extends Application {
      * @param args eventuali argomenti da riga di comando (non utilizzati in questa applicazione).
      */
     public static void main(String[] args) {
-        launch(args); // Avvio dell'applicazione JavaFX
+        launch(args);
     }
 }

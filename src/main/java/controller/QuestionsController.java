@@ -469,7 +469,6 @@ public class QuestionsController {
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.setTitle("Risultati del Quiz");
             stage.show();
 
             Stage currentStage = (Stage) questionLabel.getScene().getWindow();
