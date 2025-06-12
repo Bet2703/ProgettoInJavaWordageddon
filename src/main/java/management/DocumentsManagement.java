@@ -153,8 +153,7 @@ public class DocumentsManagement {
 
             String content = contentBuilder.toString();
 
-
-            ps.setString(1, fileName.getName());
+            ps.setString(1, getBaseName(fileName.getName()));
             ps.setString(2, difficulty.toString());
             ps.setString(3, content);
 
