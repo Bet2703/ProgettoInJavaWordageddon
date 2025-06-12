@@ -76,131 +76,169 @@ public class QuestionManagement {
 
 
     public static Question generateNextQuestion(List<Word> wordList, int questionIndex) {
-        Random random = new Random();
-        int domanda = random.nextInt(10) + 1; // per coprire i casi da 1 a 10
+    if (wordList == null || wordList.isEmpty()) {
+        throw new IllegalArgumentException("La lista delle parole non può essere vuota");
+    }
 
+    Random random = new Random();
+    int domanda = random.nextInt(10) + 1; // 1-10
 
-        Question question = new Question();
-        Set<String> options = new LinkedHashSet<>();
-        Word correctWord;
+    Question question = new Question();
+    Set<String> options = new LinkedHashSet<>();
+    Word correctWord;
 
-        switch (domanda) {
-            case 1: // Parola più frequente
-                wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
-                correctWord = wordList.get(0);
-                question.setQuestionText("Qual è la parola più frequente nel testo?");
-                options.add(correctWord.getText());
-                question.setCorrectAnswer(correctWord.getText());
-                break;
-
-            case 2: // Frequenza di una parola casuale
-                correctWord = wordList.get(random.nextInt(wordList.size()));
-                question.setQuestionText("Quante volte appare la parola \"" + correctWord.getText() + "\" nel testo?");
-                options.add(String.valueOf(correctWord.getFrequency()));
-                question.setCorrectAnswer(String.valueOf(correctWord.getFrequency()));
-                break;
-
-            case 3: // Parola meno frequente
-                wordList.sort(Comparator.comparingInt(Word::getFrequency));
-                correctWord = wordList.get(0);
-                question.setQuestionText("Quale parola ha la frequenza più bassa?");
-                options.add(correctWord.getText());
-                question.setCorrectAnswer(correctWord.getText());
-                break;
-
-            case 4: // Lunghezza di una parola
-                correctWord = wordList.get(random.nextInt(wordList.size()));
-                question.setQuestionText("Qual è la lunghezza della parola \"" + correctWord.getText() + "\"?");
-                options.add(String.valueOf(correctWord.getText().length()));
-                question.setCorrectAnswer(String.valueOf(correctWord.getText().length()));
-                break;
-                
-            case 5: // Parola più frequente tra alcune opzioni
-                int optionCount = Math.min(4, wordList.size());
-                Set<Word> candidateWords = new HashSet<>();
-                 while (candidateWords.size() < optionCount) {
-                    candidateWords.add(wordList.get(random.nextInt(wordList.size())));
-                }
-
-                correctWord = Collections.max(candidateWords, Comparator.comparingInt(Word::getFrequency));
-                question.setQuestionText("Quale parola è la più frequente fra queste?");
-
-                candidateWords.forEach(w -> options.add(w.getText()));
-                question.setCorrectAnswer(correctWord.getText());
-                break;
-
-
-                 
-
-                
-             case 6: // Parola più lunga
-                correctWord = Collections.max(wordList, Comparator.comparingInt(w -> w.getText().length()));
-                question.setQuestionText("Qual è la parola più lunga nel testo?");
-                options.add(correctWord.getText());
-                question.setCorrectAnswer(correctWord.getText());
-                break;
-            case 7: // Quale parola ha la lunghezza X?
-                int targetLength = wordList.get(random.nextInt(wordList.size())).getText().length();
-
-                // Filtra parole che hanno proprio quella lunghezza
-                List<Word> matchingWords = wordList.stream()
-                    .filter(w -> w.getText().length() == targetLength)
-                    .collect(Collectors.toList());
-
-            if (matchingWords.isEmpty()) {
-                throw new IllegalStateException("Nessuna parola trovata con lunghezza " + targetLength);
-            }
-
-            correctWord = matchingWords.get(random.nextInt(matchingWords.size()));
-            question.setQuestionText("Quale parola ha lunghezza " + targetLength + "?");
-
+    switch (domanda) {
+        case 1: // Parola più frequente
+            wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
+            correctWord = wordList.get(0);
+            question.setQuestionText("Qual è la parola più frequente nel testo?");
             options.add(correctWord.getText());
             question.setCorrectAnswer(correctWord.getText());
             break;
-            case 8: //Prima parola nel test
+
+        case 2: // Frequenza di una parola casuale
+            correctWord = wordList.get(random.nextInt(wordList.size()));
+            question.setQuestionText("Quante volte appare la parola \"" + correctWord.getText() + "\" nel testo?");
+            options.add(String.valueOf(correctWord.getFrequency()));
+            question.setCorrectAnswer(String.valueOf(correctWord.getFrequency()));
+            break;
+
+        case 3: // Parola meno frequente
+            wordList.sort(Comparator.comparingInt(Word::getFrequency));
+            correctWord = wordList.get(0);
+            question.setQuestionText("Quale parola ha la frequenza più bassa?");
+            options.add(correctWord.getText());
+            question.setCorrectAnswer(correctWord.getText());
+            break;
+
+        case 4: // Lunghezza di una parola
+            correctWord = wordList.get(random.nextInt(wordList.size()));
+            question.setQuestionText("Qual è la lunghezza della parola \"" + correctWord.getText() + "\"?");
+            options.add(String.valueOf(correctWord.getText().length()));
+            question.setCorrectAnswer(String.valueOf(correctWord.getText().length()));
+            break;
+
+        case 5: // Parola più frequente tra alcune opzioni
+            int optionCount = Math.min(4, wordList.size());
+            Set<Word> candidateWords = new HashSet<>();
+            while (candidateWords.size() < optionCount) {
+                candidateWords.add(wordList.get(random.nextInt(wordList.size())));
+            }
+            correctWord = Collections.max(candidateWords, Comparator.comparingInt(Word::getFrequency));
+            question.setQuestionText("Quale parola è la più frequente fra queste?");
+            candidateWords.forEach(w -> options.add(w.getText()));
+            question.setCorrectAnswer(correctWord.getText());
+            break;
+
+        case 6: // Parola più lunga
+            correctWord = Collections.max(wordList, Comparator.comparingInt(w -> w.getText().length()));
+            question.setQuestionText("Qual è la parola più lunga nel testo?");
+            options.add(correctWord.getText());
+            question.setCorrectAnswer(correctWord.getText());
+            break;
+
+        case 7: // Quale parola ha la lunghezza X?
+            Set<Integer> lengths = wordList.stream()
+                    .map(w -> w.getText().length())
+                    .collect(Collectors.toSet());
+            if (lengths.isEmpty()) {
+                throw new IllegalStateException("Nessuna parola trovata nel testo.");
+            }
+            // Scegli una lunghezza valida a caso
+            int targetLength = lengths.stream()
+                    .skip(random.nextInt(lengths.size()))
+                    .findFirst()
+                    .get();
+
+            List<Word> matchingWords = wordList.stream()
+                    .filter(w -> w.getText().length() == targetLength)
+                    .collect(Collectors.toList());
+
+            correctWord = matchingWords.get(random.nextInt(matchingWords.size()));
+            question.setQuestionText("Quale parola ha lunghezza " + targetLength + "?");
+            options.add(correctWord.getText());
+            question.setCorrectAnswer(correctWord.getText());
+            break;
+
+        case 8: // Prima parola nel testo
+            correctWord = wordList.get(0);
+            question.setQuestionText("Quale tra queste parole è apparsa per prima nel testo?");
+            options.add(correctWord.getText());
+            question.setCorrectAnswer(correctWord.getText());
+            break;
+
+        case 9: // Parola che segue una iesima parola
+            if (wordList.size() < 2) {
+                // fallback se lista troppo corta
                 correctWord = wordList.get(0);
-                question.setQuestionText("Quale tra queste parole è apparsa per prima nel testo?");
-                options.add(correctWord.getText());
-                question.setCorrectAnswer(correctWord.getText());
-                break;
-                
-            case 9: // Parola che segue una iesima parola
-                int i = random.nextInt(wordList.size() - 1) + 1; // i va da 1 a size-1, così i-1 è sempre valido
+                question.setQuestionText("Qual è una parola del testo?");
+            } else {
+                int i = random.nextInt(wordList.size() - 1) + 1; // da 1 a size-1
                 correctWord = wordList.get(i);
-                question.setQuestionText("Quale parola seguiva '" + wordList.get(i-1).getText() + "'?");
-                options.add(correctWord.getText());
-                question.setCorrectAnswer(correctWord.getText());
-                break;
-                
-            case 10: 
-                wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
+                question.setQuestionText("Quale parola seguiva '" + wordList.get(i - 1).getText() + "'?");
+            }
+            options.add(correctWord.getText());
+            question.setCorrectAnswer(correctWord.getText());
+            break;
+
+        case 10: // Seconda parola più frequente
+            wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
+            if (wordList.size() < 2) {
+                correctWord = wordList.get(0);
+                question.setQuestionText("Qual è la parola più frequente nel testo?");
+            } else {
                 correctWord = wordList.get(1);
                 question.setQuestionText("Quale tra queste è la seconda parola più frequente nel testo?");
-                options.add(correctWord.getText());
-                question.setCorrectAnswer(correctWord.getText());
-                break;
-            default:
-                throw new IllegalStateException("Tipo di domanda non previsto: " + domanda);
-        }
+            }
+            options.add(correctWord.getText());
+            question.setCorrectAnswer(correctWord.getText());
+            break;
 
-        // Generazione delle opzioni errate (distrattori) fino a un totale di 4 opzioni
-        while (options.size() < 4) {
+        default:
+            throw new IllegalStateException("Tipo di domanda non previsto: " + domanda);
+    }
+
+    // Generazione opzioni distrattori fino a 4 opzioni totali
+        int attempts = 0;
+        final int MAX_ATTEMPTS = 20;
+
+        while (options.size() < 4 && attempts < MAX_ATTEMPTS) {
             String newOption;
-            if (domanda == 2) { // Distrattori per frequenza
-                newOption = String.valueOf(wordList.get(random.nextInt(wordList.size())).getFrequency());
-            } else if (domanda == 4) { // Distrattori per lunghezza
+
+            if (domanda == 2) { // Distrattori per frequenza (numeri)
+                int correctFreq = Integer.parseInt(question.getCorrectAnswer());
+                int candidateFreq;
+                int tries = 0;
+                do {
+                    candidateFreq = correctFreq + random.nextInt(5) - 2; // +/- 2
+                    if (candidateFreq < 1) candidateFreq = 1;
+                    tries++;
+                    if (tries > 10) break; // evita loop infinito
+                } while (options.contains(String.valueOf(candidateFreq)));
+                newOption = String.valueOf(candidateFreq);
+
+            } else if (domanda == 4) { // Distrattori per lunghezza (numeri)
                 newOption = String.valueOf(wordList.get(random.nextInt(wordList.size())).getText().length());
+
             } else { // Distrattori per parole
                 newOption = wordList.get(random.nextInt(wordList.size())).getText();
             }
-            options.add(newOption); // Set evita duplicati
+
+            options.add(newOption);
+            attempts++;
         }
 
-        // Mischia le opzioni per non rendere ovvia la risposta corretta
+        // Se ancora poche opzioni, riempi con "N/A" per evitare problemi
+        while (options.size() < 4) {
+            options.add("N/A");
+        }
+
+        // Mischia opzioni per non rendere ovvia la risposta corretta
         List<String> shuffledOptions = new ArrayList<>(options);
         Collections.shuffle(shuffledOptions);
         question.setOptions(shuffledOptions);
 
         return question;
     }
+
 }
