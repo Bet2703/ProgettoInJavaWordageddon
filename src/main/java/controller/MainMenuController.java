@@ -1,5 +1,7 @@
 package controller;
-
+import java.util.Timer;
+import java.util.TimerTask;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +12,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 /**
  * La classe MainMenuController gestisce le interazioni dell'utente nel menu principale dell'applicazione.
@@ -134,14 +138,32 @@ public class MainMenuController {
     }
 
     /**
-     * Gestisce il click sul pulsante "Esci".
+    * Gestisce il click sul pulsante "Esci".
      * <p>
-     * Chiude immediatamente l'applicazione tramite {@code System.exit(0)}.
-     * </p>
-     */
+    * Carica e mostra la scena dei crediti, poi chiude l'applicazione dopo un ritardo di 5 secondi.
+    * </p>
+    * 
+    * @param event l'evento di azione generato dal click sul pulsante
+    */
     @FXML
-    public void onExitClicked() {
-        // Chiude l'applicazione
-        System.exit(0);
+    public void onExitClicked(ActionEvent event) {
+        try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreditView.fxml"));
+            Scene scene = new Scene(loader.load());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.show();
+
+        // Chiudi dopo 5 secondi
+            PauseTransition delay = new PauseTransition(Duration.seconds(5));
+            delay.setOnFinished(e -> stage.close());
+            delay.play();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    
 }
