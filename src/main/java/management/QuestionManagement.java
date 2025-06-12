@@ -81,7 +81,7 @@ public class QuestionManagement {
     }
 
     Random random = new Random();
-    int domanda = random.nextInt(10) + 1; // 1-10
+    int domanda = random.nextInt(10) + 1; 
 
     Question question = new Question();
     Set<String> options = new LinkedHashSet<>();
