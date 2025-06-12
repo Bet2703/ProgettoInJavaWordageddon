@@ -51,31 +51,34 @@ public class QuestionManagement {
     }
 
     /**
-    * Genera una domanda basata sulla lista di parole fornita. La domanda viene selezionata casualmente
-    * tra sette tipologie disponibili:
+    * Genera una nuova domanda casuale basata su una lista di parole.
+    * <p>
+    * Il tipo di domanda viene scelto casualmente tra vari casi, come:
     * <ul>
-    *     <li>1. Qual è la parola più frequente?</li>
-    *     <li>2. Quante volte appare una parola casuale?</li>
-    *     <li>3. Qual è la parola meno frequente?</li>
-    *     <li>4. Qual è la lunghezza di una parola casuale?</li>
-    *     <li>5. Quale parola è la più frequente fra un gruppo di opzioni?</li>
-    *     <li>6. Qual è la parola più lunga nel testo?</li>
-    *     <li>7. Quale parola ha una lunghezza specifica?</li>
+    *   <li>Parola più frequente</li>
+    *   <li>Frequenza di una parola specifica</li>
+    *   <li>Parola meno frequente</li>
+    *   <li>Lunghezza di una parola</li>
+    *   <li>Parola più frequente tra alcune opzioni</li>
+    *   <li>Parola più lunga</li>
+    *   <li>Parola con una lunghezza specifica</li>
+    *   <li>Prima parola nel testo</li>
+    *   <li>Parola che segue una data parola</li>
+    *   <li>Seconda parola più frequente</li>
     * </ul>
-    * Per ciascun tipo di domanda vengono generate 4 opzioni (una corretta e tre distrattori). Le opzioni
-    * vengono mescolate in modo casuale per evitare che la risposta corretta sia sempre nella stessa posizione.
-    * La risposta corretta viene salvata nell’oggetto {@link Question}.
+    * </p>
     *
-    * @param wordList la lista di parole da cui generare le domande (contenente almeno 1 parola)
-    * @param questionIndex indice della domanda (attualmente non utilizzato, ma disponibile per estensioni future)
-    * @return un oggetto {@link Question} che rappresenta la domanda generata, la risposta corretta e le opzioni disponibili
-    * @throws IllegalStateException se non è possibile generare una domanda valida (es. lista troppo piccola o dati incoerenti)
+    * @param wordList lista di oggetti {@code Word} da cui generare la domanda; deve contenere almeno una parola
+    * @param questionIndex indice della domanda corrente (non usato nel metodo, ma potenzialmente utile per future estensioni)
+    * @return un oggetto {@code Question} con testo della domanda, opzioni e risposta corretta
+    * @throws IllegalStateException se il tipo di domanda generato non è previsto o se non ci sono parole corrispondenti ai criteri specifici
     */
 
 
     public static Question generateNextQuestion(List<Word> wordList, int questionIndex) {
         Random random = new Random();
-        int domanda = random.nextInt(7) + 1; // Seleziona casualmente un tipo di domanda da 1 a 4
+        int domanda = random.nextInt(10) + 1; // per coprire i casi da 1 a 10
+
 
         Question question = new Question();
         Set<String> options = new LinkedHashSet<>();
@@ -154,7 +157,28 @@ public class QuestionManagement {
             options.add(correctWord.getText());
             question.setCorrectAnswer(correctWord.getText());
             break;
-
+            case 8: //Prima parola nel test
+                correctWord = wordList.get(0);
+                question.setQuestionText("Quale tra queste parole è apparsa per prima nel testo?");
+                options.add(correctWord.getText());
+                question.setCorrectAnswer(correctWord.getText());
+                break;
+                
+            case 9: // Parola che segue una iesima parola
+                int i = random.nextInt(wordList.size() - 1) + 1; // i va da 1 a size-1, così i-1 è sempre valido
+                correctWord = wordList.get(i);
+                question.setQuestionText("Quale parola seguiva '" + wordList.get(i-1).getText() + "'?");
+                options.add(correctWord.getText());
+                question.setCorrectAnswer(correctWord.getText());
+                break;
+                
+            case 10: 
+                wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
+                correctWord = wordList.get(1);
+                question.setQuestionText("Quale tra queste è la seconda parola più frequente nel testo?");
+                options.add(correctWord.getText());
+                question.setCorrectAnswer(correctWord.getText());
+                break;
             default:
                 throw new IllegalStateException("Tipo di domanda non previsto: " + domanda);
         }

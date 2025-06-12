@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="450" prefWidth="600" style="-fx-background-color: linear-gradient(to bottom right, #89f7fe, #66a6ff);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreditViewController">
+
+    <children>
+        <!-- Cerchio decorativo top-right -->
+        <StackPane prefHeight="450" prefWidth="600">
+            <children>
+                <Circle fill="rgba(255,255,255,0.1)" radius="180" StackPane.alignment="TOP_RIGHT" />
+            </children>
+            <StackPane.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </StackPane.margin>
+        </StackPane>
+
+        <!-- Card centrale -->
+        <VBox alignment="CENTER" spacing="25" style="-fx-background-color: rgba(255,255,255,0.8);                      -fx-background-radius: 20;                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20,0,0,0);" AnchorPane.bottomAnchor="50" AnchorPane.leftAnchor="100" AnchorPane.rightAnchor="100" AnchorPane.topAnchor="50">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <effect>
+                <DropShadow color="#00000033" offsetY="5" radius="10" />
+            </effect>
+            <children>
+                <Label style="-fx-font-size: 36px;                               -fx-font-weight: bold;                               -fx-letter-spacing: 2px;                               -fx-text-fill: #34495e;" text="CREDITI" />
+            <Label graphicTextGap="2.0" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-letter-spacing: 2px; -fx-text-fill: #34495e;" text="Gruppo 6" underline="true" />
+                
+                <VBox alignment="CENTER_LEFT" maxWidth="320" spacing="10">
+                    <children>
+                        <Label style="-fx-font-size: 18px; -fx-text-fill: #34495e;" text="• Nicolas De Stefano" textAlignment="CENTER" />
+                        <Label style="-fx-font-size: 18px; -fx-text-fill: #34495e;" text="• Christian De Cesare" textAlignment="CENTER" />
+                        <Label style="-fx-font-size: 18px; -fx-text-fill: #34495e;" text="• Benedetta Lucia Dello Russo" textAlignment="CENTER" />
+                        <Label style="-fx-font-size: 18px; -fx-text-fill: #34495e;" text="• Andrea Di Lieto" textAlignment="CENTER" />
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+
+        <!-- Footer -->
+        <Label style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px;" text="© 2025 Wordageddon – Gruppo 6" AnchorPane.bottomAnchor="15" AnchorPane.rightAnchor="20" />
+    </children>
+</AnchorPane>
