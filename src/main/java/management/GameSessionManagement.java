@@ -144,6 +144,64 @@ public class GameSessionManagement {
         }
     }
 
+    public static List<GameSession> getAllSessions() {
+        List<GameSession> sessions = new ArrayList<>();
+        String sql = "SELECT * FROM sessions";
+
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                GameSession session = new GameSession(
+                        rs.getString("username"),
+                        rs.getInt("id_document"),
+                        rs.getString("difficulty"),
+                        rs.getInt("score"),
+                        rs.getString("timestamp")
+                );
+                sessions.add(session);
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore durante il recupero della sessione: " + e.getMessage());
+        }
+        return sessions;
+    }
+
+    /**
+     * Recupera tutte le sessioni di un utente dal database.
+     *
+     * @param username nome utente
+     * @return lista di oggetti GameSession relativi all'utente
+     */
+    public static List<GameSession> getSessionsByUsername(String username) {
+        List<GameSession> sessions = new ArrayList<>();
+
+        String query = "SELECT username, score, timestamp, difficulty, id_document FROM sessions WHERE username = ?";
+
+        try (Connection conn = DatabaseManagement.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                GameSession session = new GameSession(
+                        rs.getString("username"),
+                        rs.getInt("id_document"),
+                        rs.getString("difficulty"),
+                        rs.getInt("score"),
+                        rs.getString("timestamp")
+                );
+                sessions.add(session);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Errore durante il recupero delle sessioni: " + e.getMessage());
+        }
+        return sessions;
+    }
+
     /**
      * Resetta la sessione corrente.
      * Elimina l'istanza Singleton per azzerare la sessione.
@@ -245,39 +303,6 @@ public class GameSessionManagement {
     public int getMaxQuestions() {
         Levels.Difficulty level = Levels.Difficulty.valueOf(difficulty.toUpperCase());
         return Levels.getNumberOfQuestions(level);
-    }
-
-    /**
-     * Recupera tutte le sessioni di un utente dal database.
-     *
-     * @param username nome utente
-     * @return lista di oggetti GameSession relativi all'utente
-     */
-    public static List<GameSession> getSessionsByUsername(String username) {
-        List<GameSession> sessions = new ArrayList<>();
-
-        String query = "SELECT score, timestamp, difficulty, id_document FROM sessions WHERE username = ?";
-
-        try (Connection conn = DatabaseManagement.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                GameSession session = new GameSession(
-                        rs.getInt("id_document"),
-                        rs.getString("difficulty"),
-                        rs.getInt("score"),
-                        rs.getString("timestamp")
-                );
-                sessions.add(session);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Errore durante il recupero delle sessioni: " + e.getMessage());
-        }
-        return sessions;
     }
 
     /**

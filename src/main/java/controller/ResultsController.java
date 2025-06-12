@@ -143,14 +143,14 @@ public class ResultsController {
 
     /**
      * Gestisce l'azione di visualizzare la schermata dei punteggi personali.
-     * Carica la vista PersonalScoresView.fxml e la imposta come scena attiva.
+     * Carica la vista ScoresView.fxml e la imposta come scena attiva.
      *
      * @param event Evento scatenato dall'interazione con il pulsante "Punteggi Personali".
      */
     @FXML
-    private void onPersonalScores(ActionEvent event) {
+    private void onScores(ActionEvent event) {
         // Utilizza il metodo generico per caricare la vista
-        loadView(event, "/view/PersonalScoresView.fxml");
+        loadView(event, "/view/ScoresView.fxml");
     }
 
     /**

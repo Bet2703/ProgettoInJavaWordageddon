@@ -61,7 +61,7 @@
                 <Button fx:id="btnCancel" text="Annulla" onAction="#onCancel"
                         style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-background-radius: 5;"
                         prefWidth="100" prefHeight="35" />
-                <Button fx:id="btnExportCsv" text="Esporta CSV" onAction="#onExportCsv"
+                <Button fx:id="btnExportCsv" text="Esporta Sessioni in CSV" onAction="#onExportCsv"
                         style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 5;"
                         prefWidth="120" prefHeight="35" />
             </HBox>

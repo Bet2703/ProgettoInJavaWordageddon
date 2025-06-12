@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -32,10 +33,10 @@ import management.DocumentsManagement;
  * Chiama il metodo {@code changeWindow()} nella classe {@code ParentMenu}
  * per passare alla scena o finestra appropriata che rappresenta il menu principale.
  */
-public class PersonalScoresViewController implements Initializable {
+public class ScoresViewController implements Initializable {
 
     /**
-     * Rappresenta un pulsante nell'interfaccia PersonalScoresViewController che permette
+     * Rappresenta un pulsante nell'interfaccia ScoresViewController che permette
      * all'utente di tornare al menu principale. Questo pulsante è associato
      * al metodo {@code handleBackToMenu}, che viene attivato quando il pulsante viene cliccato.
      *
@@ -47,7 +48,7 @@ public class PersonalScoresViewController implements Initializable {
 
     /**
      * Un'enumerazione che rappresenta le modalità di ordinamento utilizzate all'interno del
-     * PersonalScoresViewController. L'ordinamento può essere basato sul punteggio
+     * ScoresViewController. L'ordinamento può essere basato sul punteggio
      * delle partite o sulla data.
      *
      * Questa enum è principalmente utilizzata per definire il comportamento
@@ -58,7 +59,7 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
-     * Rappresenta la modalità di ordinamento corrente utilizzata nel PersonalScoresViewController.
+     * Rappresenta la modalità di ordinamento corrente utilizzata nel ScoresViewController.
      * L'ordinamento può essere per punteggio o per data, come definito dall'enumerazione SortMode.
      *
      * Questa variabile determina come i dati delle sessioni di gioco sono organizzati e visualizzati
@@ -82,7 +83,7 @@ public class PersonalScoresViewController implements Initializable {
      * corrispondenti a diversi livelli di difficoltà (es. Facile, Medio, Difficile).
      * Ogni tab può contenere una TableView che mostra le sessioni di gioco e i punteggi
      * per il relativo livello di difficoltà. Questo elemento dell'interfaccia fa parte del
-     * PersonalScoresViewController, permettendo all'utente di navigare tra
+     * ScoresViewController, permettendo all'utente di navigare tra
      * le diverse tabelle dei punteggi specifiche per difficoltà.
      *
      * Il componente `difficultyTabs` è collegato al file FXML tramite l'annotazione `@FXML`
@@ -92,7 +93,7 @@ public class PersonalScoresViewController implements Initializable {
     private TabPane difficultyTabs;
 
     /**
-     * Rappresenta la tab "Facile" nell'interfaccia di selezione della difficoltà del PersonalScoresViewController.
+     * Rappresenta la tab "Facile" nell'interfaccia di selezione della difficoltà del ScoresViewController.
      * Questa tab permette all'utente di visualizzare e interagire con i dati delle sessioni di gioco filtrati per il livello di difficoltà "Facile".
      * Fa parte di un pannello a tab che organizza i punteggi di gioco per difficoltà.
      */
@@ -101,7 +102,7 @@ public class PersonalScoresViewController implements Initializable {
 
     /**
      * Rappresenta una tabella che mostra i dati delle sessioni di gioco per il livello di difficoltà "Facile".
-     * Questa tabella fa parte dell'interfaccia utente controllata dal {@code PersonalScoresViewController}.
+     * Questa tabella fa parte dell'interfaccia utente controllata dal {@code ScoresViewController}.
      *
      * La {@code easyTable} è popolata con istanze di {@code model.GameSession} che rappresentano
      * le sessioni di gioco completate con difficoltà facile. Ogni riga corrisponde a una singola sessione,
@@ -109,7 +110,7 @@ public class PersonalScoresViewController implements Initializable {
      * di ordinamento e interazione definite nel controller.
      *
      * L'iniezione FXML è utilizzata per questo campo per collegarlo al componente TableView corrispondente
-     * definito nel file FXML caricato dal {@code PersonalScoresViewController}.
+     * definito nel file FXML caricato dal {@code ScoresViewController}.
      */
     @FXML
     private TableView<GameSession> easyTable;
@@ -122,7 +123,7 @@ public class PersonalScoresViewController implements Initializable {
      * dall'oggetto {@link GameSession}, specificamente come valore String.
      * Il titolo corrisponde al documento associato alla sessione di gioco.
      *
-     * Fa parte dell'interfaccia utente gestita dalla classe {@code PersonalScoresViewController}
+     * Fa parte dell'interfaccia utente gestita dalla classe {@code ScoresViewController}
      * ed è utilizzata per presentare i dati in un formato tabellare strutturato per la difficoltà "Facile".
      */
     @FXML
@@ -136,7 +137,7 @@ public class PersonalScoresViewController implements Initializable {
      * oggetti {@link GameSession}.
      *
      * Questo campo è annotato con `@FXML` per indicare la sua associazione con il layout UI
-     * definito nel corrispondente file FXML per il PersonalScoresViewController.
+     * definito nel corrispondente file FXML per il ScoresViewController.
      */
     @FXML
     private TableColumn<GameSession, Integer> easyScoreColumn;
@@ -169,7 +170,7 @@ public class PersonalScoresViewController implements Initializable {
      * attraverso la logica dell'applicazione e supporta funzionalità come l'ordinamento e
      * l'interazione come configurato nel controller.
      *
-     * La tabella è principalmente gestita dalla classe {@code PersonalScoresViewController}
+     * La tabella è principalmente gestita dalla classe {@code ScoresViewController}
      * e interagisce con metodi focalizzati sul caricamento, ordinamento e visualizzazione delle sessioni di gioco
      * basate sulla difficoltà selezionata.
      */
@@ -195,7 +196,7 @@ public class PersonalScoresViewController implements Initializable {
     /**
      * Rappresenta la TableColumn per visualizzare il punteggio delle sessioni di gioco con difficoltà "Medio".
      * Questa colonna è configurata per mostrare i valori interi dei punteggi memorizzati negli oggetti {@link GameSession}.
-     * Fa parte della mediumTable nel PersonalScoresViewController, che mostra
+     * Fa parte della mediumTable nel ScoresViewController, che mostra
      * tutti i dati delle sessioni di gioco di difficoltà media.
      */
     @FXML
@@ -223,7 +224,7 @@ public class PersonalScoresViewController implements Initializable {
      * visualizzare informazioni sulle sessioni di gioco, come punteggi, titoli e timestamp, per
      * sessioni giocate al livello più difficile del gioco.
      *
-     * Questa Tab fa parte del difficultyTabs nel PersonalScoresViewController e,
+     * Questa Tab fa parte del difficultyTabs nel ScoresViewController e,
      * quando selezionata, interagisce con la hardTable per mostrare i dati corrispondenti.
      */
     @FXML
@@ -248,7 +249,7 @@ public class PersonalScoresViewController implements Initializable {
 
     /**
      * Rappresenta la colonna della tabella per visualizzare i punteggi di difficoltà 'Difficile' nell'interfaccia utente.
-     * Questa colonna fa parte della `hardTable` nel `PersonalScoresViewController` ed è legata alla
+     * Questa colonna fa parte della `hardTable` nel `ScoresViewController` ed è legata alla
      * proprietà `score` della classe `GameSession`. Mostra i punteggi interi ottenuti dai giocatori
      * durante sessioni impostate al livello di sfida "Difficile".
      *
@@ -272,7 +273,7 @@ public class PersonalScoresViewController implements Initializable {
      * Memorizza una lista di sessioni di gioco specificamente filtrate o categorizzate sotto il livello di difficoltà "Facile".
      * Ogni sessione nella lista è rappresentata da un'istanza di {@code model.GameSession}.
      * La lista è osservabile, permettendo all'interfaccia utente di riflettere automaticamente i cambiamenti alla lista.
-     * È utilizzata nel contesto della classe {@code PersonalScoresViewController} per gestire e visualizzare
+     * È utilizzata nel contesto della classe {@code ScoresViewController} per gestire e visualizzare
      * dati delle sessioni di gioco relativi alla difficoltà "Facile" nella relativa tabella dei punteggi.
      */
     private ObservableList<GameSession> easySessions = FXCollections.observableArrayList();
@@ -298,6 +299,72 @@ public class PersonalScoresViewController implements Initializable {
      */
     private ObservableList<GameSession> hardSessions = FXCollections.observableArrayList();
 
+
+    // Dati Classifica Globale
+
+    @FXML
+    private TabPane globalDifficultyTabs;
+
+    @FXML
+    private Tab globalEasySelector;
+
+    @FXML
+    private TableView<GameSession> globalEasyTable;
+
+    @FXML
+    private TableColumn<GameSession, String> globalEasyUsernameColumn;
+
+    @FXML
+    private TableColumn<GameSession, String> globalEasyTitleColumn;
+
+    @FXML
+    private TableColumn<GameSession, Integer> globalEasyScoreColumn;
+
+    @FXML
+    private TableColumn<GameSession, String> globalEasyDateColumn;
+
+    @FXML
+    private Tab globalMediumSelector;
+
+    @FXML
+    private TableView<GameSession> globalMediumTable;
+
+    @FXML
+    private TableColumn<GameSession, String> globalMediumUsernameColumn;
+
+    @FXML
+    private TableColumn<GameSession, String> globalMediumTitleColumn;
+
+    @FXML
+    private TableColumn<GameSession, Integer> globalMediumScoreColumn;
+
+    @FXML
+    private TableColumn<GameSession, String> globalMediumDateColumn;
+
+    @FXML
+    private Tab globalHardSelector;
+
+    @FXML
+    private TableView<GameSession> globalHardTable;
+
+    @FXML
+    private TableColumn<GameSession, String> globalHardUsernameColumn;
+
+    @FXML
+    private TableColumn<GameSession, String> globalHardTitleColumn;
+
+    @FXML
+    private TableColumn<GameSession, Integer> globalHardScoreColumn;
+
+    @FXML
+    private TableColumn<GameSession, String> globalHardDateColumn;
+
+    private ObservableList<GameSession> globalEasySessions = FXCollections.observableArrayList();
+
+    private ObservableList<GameSession> globalMediumSessions = FXCollections.observableArrayList();
+
+    private ObservableList<GameSession> globalHardSessions = FXCollections.observableArrayList();
+
     /**
      * Inizializza la classe controller e configura le impostazioni richieste per l'interfaccia utente,
      * come la configurazione delle colonne delle tabelle, il caricamento dei dati dal database,
@@ -308,18 +375,28 @@ public class PersonalScoresViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Configura le colonne per tutte le tabelle (facile, medio, difficile)
+        // Configura le colonne per tutte le tabelle della classifica personale (facile, medio, difficile)
         setupTableColumns(easyTitleColumn, easyScoreColumn, easyDateColumn);
         setupTableColumns(mediumTitleColumn, mediumScoreColumn, mediumDateColumn);
         setupTableColumns(hardTitleColumn, hardScoreColumn, hardDateColumn);
 
+        // Configura le colonne per tutte le tabelle della classifica globale (facile, medio, difficile)
+        setupGlobalTableColumns(globalEasyUsernameColumn, globalEasyTitleColumn, globalEasyScoreColumn, globalEasyDateColumn);
+        setupGlobalTableColumns(globalMediumUsernameColumn,globalMediumTitleColumn, globalMediumScoreColumn, globalMediumDateColumn);
+        setupGlobalTableColumns(globalHardUsernameColumn,globalHardTitleColumn, globalHardScoreColumn, globalHardDateColumn);
+
         // Carica i dati delle sessioni dal database
-        loadDataFromDatabase();
+        loadPersonalData();
+        loadGlobalData();
 
         // Mostra i dati nelle rispettive tabelle
         showEasyScore(null);
         showMediumScore(null);
         showHardScore(null);
+
+        showGlobalEasyScore(null);
+        showGlobalMediumScore(null);
+        showGlobalHardScore(null);
 
         // Applica l'ordinamento iniziale a tutte le tabelle
         applySortToAllTables();
@@ -340,7 +417,7 @@ public class PersonalScoresViewController implements Initializable {
     private void setupTableColumns(TableColumn<GameSession, String> titleCol,
                                    TableColumn<GameSession, Integer> scoreCol,
                                    TableColumn<GameSession, String> dateCol) {
-        
+
         // Configura la colonna del titolo per mostrare il titolo del documento basato sull'ID
         titleCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(DocumentsManagement.getTitleFromId(cellData.getValue().getDocumentID())));
@@ -354,44 +431,64 @@ public class PersonalScoresViewController implements Initializable {
                 new SimpleStringProperty(cellData.getValue().getTimestamp()));
     }
 
-    /**
-     * Carica i dati dal database eseguendo una query SQL predefinita che recupera
-     * i titoli dei documenti, i punteggi associati e i livelli di difficoltà delle sessioni di gioco.
-     * I dati sono recuperati unendo le tabelle "sessions" e "documents", e sono
-     * restituiti in ordine basato sui titoli dei documenti e sui livelli di difficoltà.
-     * Il metodo stabilisce una connessione al database usando il metodo {@code DatabaseManagement.getConnection()},
-     * esegue la query e itera sul result set per elaborare i dati recuperati.
-     * Qualsiasi eccezione incontrata durante l'operazione sul database, come errori SQL, è catturata,
-     * e i corrispondenti messaggi di errore sono stampati nell'output standard degli errori.
-     * Lancia:
-     * - {@link SQLException} indirettamente, se si verifica un problema di accesso al database durante l'operazione.
-     */
-    private void loadDataFromDatabase() {
-        // Ottiene l'username dell'utente corrente
-        String username = management.GameSessionManagement.getInstance().getUsername();
-        
-        // Recupera tutte le sessioni dell'utente
-        List<GameSession> userSessions = management.GameSessionManagement.getSessionsByUsername(username);
+    private void setupGlobalTableColumns(TableColumn<GameSession, String> usernameCol,
+                                    TableColumn<GameSession, String> titleCol,
+                                    TableColumn<GameSession, Integer> scoreCol,
+                                    TableColumn<GameSession, String> dateCol) {
 
-        if (userSessions.isEmpty()) {
-            System.err.println("Nessuna sessione trovata.");
-            return;
-        }
+        // Configura la colonna dell'username per mostrare il nome del giocatore di quella posizione in classifica
+        usernameCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getUsername()));
 
-        // Divide le sessioni per difficoltà e le aggiunge alle rispettive liste osservabili
-        userSessions.stream().forEach(session -> {
-            switch (session.getDifficulty()) {
-                case "EASY":
-                    easySessions.add(session);
-                    break;
-                case "MEDIUM":
-                    mediumSessions.add(session);
-                    break;
-                case "HARD":
-                    hardSessions.add(session);
-                    break;
+        // Configura la colonna del titolo per mostrare il titolo del documento basato sull'ID
+        titleCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(DocumentsManagement.getTitleFromId(cellData.getValue().getDocumentID())));
+
+        // Configura la colonna del punteggio per mostrare il punteggio come intero
+        scoreCol.setCellValueFactory(cellData ->
+                new SimpleIntegerProperty(cellData.getValue().getScore()).asObject());
+
+        // Configura la colonna della data per mostrare il timestamp come stringa
+        dateCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getTimestamp()));
+    }
+
+    private void loadPersonalData() {
+        List<GameSession> userSessions = management.GameSessionManagement.getSessionsByUsername(management.GameSessionManagement.getInstance().getUsername());
+
+        easySessions.clear();
+        mediumSessions.clear();
+        hardSessions.clear();
+
+        for (GameSession session : userSessions) {
+            String diff = session.getDifficulty();
+            if ("EASY".equals(diff)) {
+                easySessions.add(session);
+            } else if ("MEDIUM".equals(diff)) {
+                mediumSessions.add(session);
+            } else if ("HARD".equals(diff)) {
+                hardSessions.add(session);
             }
-        });
+        }
+    }
+
+    private void loadGlobalData() {
+        List<GameSession> allSessions = management.GameSessionManagement.getAllSessions();
+
+        globalEasySessions.clear();
+        globalMediumSessions.clear();
+        globalHardSessions.clear();
+
+        for (GameSession session : allSessions) {
+            String diff = session.getDifficulty();
+            if ("EASY".equals(diff)) {
+                globalEasySessions.add(session);
+            } else if ("MEDIUM".equals(diff)) {
+                globalMediumSessions.add(session);
+            } else if ("HARD".equals(diff)) {
+                globalHardSessions.add(session);
+            }
+        }
     }
 
     /**
@@ -429,10 +526,10 @@ public class PersonalScoresViewController implements Initializable {
                            TableColumn<GameSession, String> dateCol) {
         // Pulisce gli ordinamenti esistenti
         table.getSortOrder().clear();
-        
+
         // Aggiunge la colonna di ordinamento appropriata in base alla modalità corrente
         table.getSortOrder().add(currentSort == SortMode.BY_SCORE ? scoreCol : dateCol);
-        
+
         // Applica l'ordinamento
         table.sort();
     }
@@ -516,23 +613,79 @@ public class PersonalScoresViewController implements Initializable {
     }
 
     /**
+     * Mostra la tabella dei punteggi globali per il livello di difficoltà "Facile".
+     * Popola la globalEasyTable con i dati delle sessioni di gioco memorizzati in globalEasySessions,
+     * se la tabella non è null.
+     *
+     * @param event l'evento che attiva questa azione, tipicamente iniziato
+     *              dall'utente che interagisce con l'interfaccia.
+     */
+    @FXML
+    private void showGlobalEasyScore(Event event) {
+        if (globalEasyTable != null) {
+            // Imposta i dati nella tabella globale facile
+            globalEasyTable.setItems(globalEasySessions);
+        }
+    }
+
+    /**
+     * Mostra la tabella dei punteggi globali per il livello di difficoltà "Medio".
+     * Popola la globalMediumTable con i dati delle sessioni di gioco memorizzati in globalMediumSessions,
+     * se la tabella non è null.
+     *
+     * @param event l'evento che attiva questa azione, tipicamente iniziato
+     *              dall'utente che interagisce con l'interfaccia.
+     */
+    @FXML
+    private void showGlobalMediumScore(Event event) {
+        if (globalMediumTable != null) {
+            // Imposta i dati nella tabella globale medio
+            globalMediumTable.setItems(globalMediumSessions);
+        }
+    }
+
+    /**
+     * Mostra la tabella dei punteggi globali per il livello di difficoltà "Difficile".
+     * Popola la globalHardTable con i dati delle sessioni di gioco memorizzati in globalHardSessions,
+     * se la tabella non è null.
+     *
+     * @param event l'evento che attiva questa azione, tipicamente iniziato
+     *              dall'utente che interagisce con l'interfaccia.
+     */
+    @FXML
+    private void showGlobalHardScore(Event event) {
+        if (globalHardTable != null) {
+            // Imposta i dati nella tabella globale difficile
+            globalHardTable.setItems(globalHardSessions);
+        }
+    }
+
+    /**
      * Metodo helper per caricare una vista FXML e mostrarla nella finestra corrente
      * @param event L'evento che ha triggerato il cambio di vista
      * @param fxmlPath Il percorso del file FXML da caricare
      */
     private void loadView(ActionEvent event, String fxmlPath) {
         try {
-            // Carica il file FXML
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            
-            // Ottiene lo stage corrente
+            // Inizializza il loader con il percorso specificato
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+
+            // Carica la scena dal file FXML
+            Scene scene = new Scene(loader.load());
+
+            // Ottiene lo stage corrente a partire dal nodo che ha generato l'evento
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            
-            // Imposta la nuova scena e la mostra
-            stage.setScene(new Scene(root));
+
+            // Imposta la nuova scena nello stage corrente
+            stage.setScene(scene);
+
+            // Centra la finestra sullo schermo
+            stage.centerOnScreen();
+
+            // Visualizza la nuova scena
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            alert.Messages.showError("Errore", "Impossibile caricare la finestra");
         }
     }
 }

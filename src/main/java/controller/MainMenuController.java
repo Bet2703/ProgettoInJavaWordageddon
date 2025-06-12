@@ -40,7 +40,7 @@ public class MainMenuController {
         Map<String, String> tempMap = new HashMap<>();
         tempMap.put("/view/Level.fxml", "Seleziona Difficoltà");
         tempMap.put("/view/UserManagementView.fxml", "Profilo");
-        tempMap.put("/view/PersonalScoresView.fxml", "Classifica Personale");
+        tempMap.put("/view/ScoresView.fxml", "Classifica");
         views = Collections.unmodifiableMap(tempMap); // Rende la mappa costante dopo l'inizializzazione
     }
 
@@ -59,16 +59,21 @@ public class MainMenuController {
     private void loadView(ActionEvent event, String fxmlPath) throws IOException {
         // Inizializza il loader con il percorso specificato
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        
+
         // Carica la scena dal file FXML
         Scene scene = new Scene(loader.load());
 
         // Ottiene lo stage corrente a partire dal nodo che ha generato l'evento
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        
+
         // Imposta la nuova scena nello stage corrente
         stage.setScene(scene);
-        stage.show(); // Visualizza la nuova scena
+
+        // Centra la finestra sullo schermo
+        stage.centerOnScreen();
+
+        // Visualizza la nuova scena
+        stage.show();
     }
 
     /**
@@ -121,7 +126,7 @@ public class MainMenuController {
     public void onLeaderboardClicked(ActionEvent event) {
         try {
             // Carica la schermata della classifica personale
-            loadView(event, "/view/PersonalScoresView.fxml");
+            loadView(event, "/view/ScoresView.fxml");
         } catch (IOException e) {
             // Mostra l'errore a console se il file non viene caricato correttamente
             e.printStackTrace();

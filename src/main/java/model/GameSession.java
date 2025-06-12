@@ -10,6 +10,11 @@ package model;
 public class GameSession {
 
     /**
+     * Identificatore univoco per l'username associato alla sessione di gioco.
+     * Questo valore viene utilizzato per determinare le sessioni del singolo utente.
+     */
+    private String username;
+    /**
      * Identificatore univoco per il documento associato a una sessione di gioco.
      * Questo valore viene utilizzato per tracciare e distinguere le singole sessioni.
      */
@@ -39,17 +44,26 @@ public class GameSession {
     /**
      * Costruisce una nuova istanza di GameSession con i dettagli specificati.
      *
+     * @param username l'identificatore univoco dell'attuale utente della sessione di gioco
      * @param documentId l'identificatore univoco del documento associato alla sessione di gioco
      * @param difficulty il livello di difficoltà della sessione di gioco
      * @param score il punteggio ottenuto durante la sessione di gioco
      * @param timestamp il timestamp che indica quando si è svolta la sessione di gioco
      */
-    public GameSession(int documentId, String difficulty, int score, String timestamp) {
+    public GameSession(String username, int documentId, String difficulty, int score, String timestamp) {
+        this.username = username;
         this.documentId = documentId;
         this.difficulty = difficulty;
         this.score = score;
         this.timestamp = timestamp;
     }
+
+    /**
+     * Restituisce l'username del giocatore associato alla sessione di gioco.
+     *
+     * @return l'username univoco del giocatore
+     */
+    public String getUsername() { return username; }
 
     /**
      * Restituisce l'ID del documento associato alla sessione di gioco.

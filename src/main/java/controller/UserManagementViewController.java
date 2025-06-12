@@ -149,8 +149,8 @@ public class UserManagementViewController implements Initializable {
         pfPassword.clear();
         pfConfirm.clear();
         
-        // Notifica all'utente dell'avvenuto annullamento
-        lblStatus.setText("Modifiche annullate.");
+        // Notifica all'utente dell'avvenuto annullamento e dei campi svuotati
+        lblStatus.setText("Modifiche annullate e campi svuotati.");
     }
 
     /**
