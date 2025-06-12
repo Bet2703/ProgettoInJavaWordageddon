@@ -137,7 +137,7 @@ public class DocumentsManagement {
         }
         System.out.println("File selezionato: " + fileName.getAbsolutePath());
 
-        String insertDocSQL = "INSERT INTO documents (title, difficulty, content) VALUES (?, ?, ?)";
+        String insertDocSQL = "INSERT INTO documents (title, difficulty, text) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseManagement.getConnection();
              PreparedStatement ps = conn.prepareStatement(insertDocSQL)) {

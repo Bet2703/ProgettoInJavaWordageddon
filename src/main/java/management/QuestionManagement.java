@@ -67,7 +67,7 @@ public class QuestionManagement {
      */
     public static Question generateNextQuestion(List<Word> wordList, int questionIndex) {
         Random random = new Random();
-        int domanda = random.nextInt(4) + 1; // Seleziona casualmente un tipo di domanda da 1 a 4
+        int domanda = random.nextInt(7) + 1; // Seleziona casualmente un tipo di domanda da 1 a 7
 
         Question question = new Question();
         Set<String> options = new LinkedHashSet<>();
@@ -102,6 +102,29 @@ public class QuestionManagement {
                 question.setQuestionText("Qual è la lunghezza della parola \"" + correctWord.getText() + "\"?");
                 options.add(String.valueOf(correctWord.getText().length()));
                 question.setCorrectAnswer(String.valueOf(correctWord.getText().length()));
+                break;
+                
+            case 5: //Prima parola nel test
+                correctWord = wordList.get(0);
+                question.setQuestionText("Quale tra queste parole è apparsa per prima nel testo?");
+                options.add(correctWord.getText());
+                question.setCorrectAnswer(correctWord.getText());
+                break;
+                
+            case 6: //Parola che segue una iesima parola
+                int i = random.nextInt(wordList.size());
+                correctWord = wordList.get(i);
+                question.setQuestionText("Quale parola seguiva '" + wordList.get(i-1) + "'?");
+                options.add(correctWord.getText());
+                question.setCorrectAnswer(correctWord.getText());
+                break;
+                
+            case 7: 
+                wordList.sort(Comparator.comparingInt(Word::getFrequency).reversed());
+                correctWord = wordList.get(1);
+                question.setQuestionText("Quale tra queste è la seconda parola più frequente nel testo?");
+                options.add(correctWord.getText());
+                question.setCorrectAnswer(correctWord.getText());
                 break;
 
             default:
