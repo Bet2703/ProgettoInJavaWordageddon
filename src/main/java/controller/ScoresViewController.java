@@ -506,6 +506,9 @@ public class ScoresViewController implements Initializable {
         applySort(easyTable, easyScoreColumn, easyDateColumn);
         applySort(mediumTable, mediumScoreColumn, mediumDateColumn);
         applySort(hardTable, hardScoreColumn, hardDateColumn);
+        applySort(globalEasyTable, globalEasyScoreColumn, globalEasyDateColumn);
+        applySort(globalMediumTable, globalMediumScoreColumn, globalMediumDateColumn);
+        applySort(globalHardTable, globalHardScoreColumn, globalHardDateColumn);
     }
 
     /**

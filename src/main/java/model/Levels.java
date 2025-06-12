@@ -118,15 +118,23 @@ public class Levels {
         }
     }
 
-
+    /**
+     * Ritorna un valore intero per definire il numero di documenti da far leggere all'utente
+     * in base alla difficoltà scelta.
+     *
+     * @param difficulty stringa che rappresenta il livello di difficoltà.
+     *                   Deve corrispondere a uno dei valori validi.
+     *
+     * @return un intero che va' a definire quanti documenti devono essere caricati
+     */
     public static int getDocumentCountByDifficulty(String difficulty) {
         switch (difficulty.toUpperCase()) {
             case "EASY":
-            return 10;
+                return 1;
             case "MEDIUM":
-                return 20;
+                return 2;
             case "HARD":
-                return 30;
+                return 3;
             default:
                 return 0;
         }

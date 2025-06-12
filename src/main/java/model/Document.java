@@ -3,18 +3,14 @@ package model;
 public class Document {
     private int id;
     private String text;
-    private int wordCount;  // opzionale, utile per filtri
+    private String title;
+    private String difficulty;
 
-    public Document(int id, String text) {
+    public Document(int id, String text, String title, String difficulty) {
         this.id = id;
         this.text = text;
-        this.wordCount = countWords(text);
-    }
-
-    public Document(int id, String text, int wordCount) {
-        this.id = id;
-        this.text = text;
-        this.wordCount = wordCount;
+        this.title = title;
+        this.difficulty = difficulty;
     }
 
     public int getId() {
@@ -25,36 +21,40 @@ public class Document {
         return text;
     }
 
-    public int getWordCount() {
-        return wordCount;
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setText(String text) {
-        this.text = text;
-        this.wordCount = countWords(text);
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setWordCount(int wordCount) {
-        this.wordCount = wordCount;
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
     }
 
     private int countWords(String text) {
         if (text == null || text.isEmpty()) {
             return 0;
         }
-        String[] words = text.trim().split("\\s+");
+        String[] words = text.trim().split("\\P{L}+");
         return words.length;
     }
 
     @Override
     public String toString() {
-        return "Document{" +
+        return "Document {" +
                 "id=" + id +
-                ", wordCount=" + wordCount +
+                ", title=" + title +
+                ", difficulty='" + difficulty +
                 ", text='" + (text.length() > 30 ? text.substring(0, 30) + "..." : text) + '\'' +
                 '}';
     }
