@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="ProgettoInJavaWordageddon">
+  <ClassDiagramComponents>
+    <Class name="Messages" package="alert" visibility="public" xPosition="20.0" yPosition="20.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="showError" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="title"/>
+          <Argument type="String" name="content"/>
+        </Method>
+        <Method name="showConfirmation" returnType="boolean" visibility="public" isStatic="true">
+          <Argument type="String" name="title"/>
+          <Argument type="String" name="content"/>
+        </Method>
+        <Method name="showInfo" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="title"/>
+          <Argument type="String" name="content"/>
+        </Method>
+        <Method name="showWarning" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="title"/>
+          <Argument type="String" name="content"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="AdminController" package="controller" visibility="public" xPosition="320.0" yPosition="20.0">
+      <Fields>
+        <Field name="documentsList" type="ListView&lt;String&gt;" visibility="private"/>
+        <Field name="messageLabel" type="Label" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public"/>
+        <Method name="onLoadDocuments" returnType="void" visibility="private"/>
+        <Method name="onDeleteDocument" returnType="void" visibility="private"/>
+        <Method name="onBackToLogin" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="loadDocumentTitles" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="DocumentReadController" package="controller" visibility="public" xPosition="620.0" yPosition="20.0">
+      <Fields>
+        <Field name="documentTextArea" type="TextArea" visibility="private"/>
+        <Field name="timerLabel" type="Label" visibility="private"/>
+        <Field name="documentId" type="int" visibility="private"/>
+        <Field name="timeline" type="Timeline" visibility="private"/>
+        <Field name="secondsLeft" type="int" visibility="private"/>
+        <Field name="difficulty" type="String" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public"/>
+        <Method name="startTimer" returnType="void" visibility="private"/>
+        <Method name="goToQuestionsView" returnType="void" visibility="private"/>
+        <Method name="fetchRandomDocumentByDifficulty" returnType="String" visibility="private"/>
+      </Methods>
+    </Class>
+    <Class name="LevelsController" package="controller" visibility="public" xPosition="920.0" yPosition="20.0">
+      <Fields>
+        <Field name="rbEasy" type="RadioButton" visibility="private"/>
+        <Field name="rbMedium" type="RadioButton" visibility="private"/>
+        <Field name="rbHard" type="RadioButton" visibility="private"/>
+        <Field name="messageLabel" type="Label" visibility="private"/>
+        <Field name="difficultyGroup" type="ToggleGroup" visibility="private"/>
+        <Field name="selectedDifficulty" type="String" visibility="private" isStatic="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public"/>
+        <Method name="onStartGame" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onBack" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="loadScene" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+          <Argument type="String" name="fxmlPath"/>
+          <Argument type="Runnable" name="onError"/>
+        </Method>
+        <Method name="mapDifficulty" returnType="String" visibility="private">
+          <Argument type="String" name="text"/>
+        </Method>
+        <Method name="getDifficulty" returnType="String" visibility="public" isStatic="true"/>
+      </Methods>
+    </Class>
+    <Class name="LoadDocumentDialogController" package="controller" visibility="public" xPosition="1820.0" yPosition="348.0">
+      <Fields>
+        <Field name="fileNameLabel" type="Label" visibility="private"/>
+        <Field name="easyRadio" type="RadioButton" visibility="private"/>
+        <Field name="selectedFile" type="File" visibility="private"/>
+        <Field name="dialogStage" type="Stage" visibility="private"/>
+        <Field name="group" type="ToggleGroup" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public"/>
+        <Method name="setDialogStage" returnType="void" visibility="public">
+          <Argument type="Stage" name="stage"/>
+        </Method>
+        <Method name="onChooseFile" returnType="void" visibility="private"/>
+        <Method name="onConfirm" returnType="void" visibility="private"/>
+        <Method name="onCancel" returnType="void" visibility="private"/>
+        <Method name="getSelectedDifficulty" returnType="Levels.Difficulty" visibility="private"/>
+      </Methods>
+    </Class>
+    <Class name="LoginController" package="controller" visibility="public" xPosition="1629.0" yPosition="2353.0">
+      <Fields>
+        <Field name="usernameField" type="TextField" visibility="private"/>
+        <Field name="passwordField" type="PasswordField" visibility="private"/>
+        <Field name="loginButton" type="Button" visibility="private"/>
+        <Field name="messageLabel" type="Label" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="onLogin" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="loadViewForRole" returnType="void" visibility="private">
+          <Argument type="Role" name="role"/>
+        </Method>
+        <Method name="onRegister" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="MainMenuController" package="controller" visibility="public" xPosition="1820.0" yPosition="20.0">
+      <Fields>
+        <Field name="views" type="Map&lt;String, String&gt;" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="loadView" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+          <Argument type="String" name="fxmlPath"/>
+        </Method>
+        <Method name="onPlayClicked" returnType="void" visibility="public">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onProfileClicked" returnType="void" visibility="public">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onLeaderboardClicked" returnType="void" visibility="public">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onExitClicked" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="QuestionsController" package="controller" visibility="public" xPosition="2198.0" yPosition="20.0">
+      <Fields>
+        <Field name="questionLabel" type="Label" visibility="private"/>
+        <Field name="submitButton" type="Button" visibility="private"/>
+        <Field name="skipButton" type="Button" visibility="private"/>
+        <Field name="feedbackLabel" type="Label" visibility="private"/>
+        <Field name="timerLabel" type="Label" visibility="private"/>
+        <Field name="optionA" type="RadioButton" visibility="private"/>
+        <Field name="optionB" type="RadioButton" visibility="private"/>
+        <Field name="optionC" type="RadioButton" visibility="private"/>
+        <Field name="optionD" type="RadioButton" visibility="private"/>
+        <Field name="answerGroup" type="ToggleGroup" visibility="private"/>
+        <Field name="wordList" type="List&lt;Word&gt;" visibility="private"/>
+        <Field name="correctAnswerText" type="String" visibility="private"/>
+        <Field name="documentId" type="int" visibility="private"/>
+        <Field name="session" type="management.GameSessionManagement" visibility="private" isFinal="true"/>
+        <Field name="maxQuestions" type="int" visibility="private"/>
+        <Field name="questionTimer" type="PauseTransition" visibility="private"/>
+        <Field name="questionTimeout" type="Duration" visibility="private"/>
+        <Field name="countdownTimeline" type="Timeline" visibility="private"/>
+        <Field name="remainingTimeSeconds" type="int" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public"/>
+        <Method name="startGame" returnType="void" visibility="public">
+          <Argument type="int" name="documentId"/>
+        </Method>
+        <Method name="loadNextQuestion" returnType="void" visibility="private">
+          <Argument type="int" name="maxQuestions"/>
+        </Method>
+        <Method name="setOptions" returnType="void" visibility="private">
+          <Argument type="List&lt;String&gt;" name="options"/>
+        </Method>
+        <Method name="onSubmitAnswer" returnType="void" visibility="private"/>
+        <Method name="setInteractionEnabled" returnType="void" visibility="private">
+          <Argument type="boolean" name="enabled"/>
+        </Method>
+        <Method name="onSkipQuestion" returnType="void" visibility="public"/>
+        <Method name="concludeQuiz" returnType="void" visibility="private"/>
+        <Method name="getDocumentId" returnType="int" visibility="public"/>
+        <Method name="setDocumentId" returnType="void" visibility="public">
+          <Argument type="int" name="id"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="ResultsController" package="controller" visibility="public" xPosition="20.0" yPosition="420.0">
+      <Fields>
+        <Field name="correctCountLabel" type="Label" visibility="private"/>
+        <Field name="feedbackMessage" type="Label" visibility="private"/>
+        <Field name="correctAnswers" type="int" visibility="private"/>
+        <Field name="totalAnswers" type="int" visibility="private"/>
+        <Field name="btnHomeTop" type="Button" visibility="private"/>
+        <Field name="btnHome" type="Button" visibility="private"/>
+        <Field name="btnRetry" type="Button" visibility="private"/>
+        <Field name="btnPersonalScores" type="Button" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="private"/>
+        <Method name="setCorrectAnswers" returnType="void" visibility="public">
+          <Argument type="int" name="correctAnswers"/>
+        </Method>
+        <Method name="setTotalAnswers" returnType="void" visibility="public">
+          <Argument type="int" name="totalAnswers"/>
+        </Method>
+        <Method name="onRetryQuiz" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onScores" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onBackToMenu" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="loadView" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+          <Argument type="String" name="fxmlPath"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="ScoresViewController" package="controller" visibility="public" xPosition="320.0" yPosition="420.0">
+      <Fields>
+        <Field name="backToMenuButton" type="Button" visibility="private"/>
+        <Field name="currentSort" type="SortMode" visibility="private"/>
+        <Field name="sortButton" type="Button" visibility="private"/>
+        <Field name="difficultyTabs" type="TabPane" visibility="private"/>
+        <Field name="easySelector" type="Tab" visibility="private"/>
+        <Field name="easyTable" type="TableView&lt;GameSession&gt;" visibility="private"/>
+        <Field name="easyTitleColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="easyScoreColumn" type="TableColumn&lt;GameSession, Integer&gt;" visibility="private"/>
+        <Field name="easyDateColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="mediumSelector" type="Tab" visibility="private"/>
+        <Field name="mediumTable" type="TableView&lt;GameSession&gt;" visibility="private"/>
+        <Field name="mediumTitleColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="mediumScoreColumn" type="TableColumn&lt;GameSession, Integer&gt;" visibility="private"/>
+        <Field name="mediumDateColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="hardSelector" type="Tab" visibility="private"/>
+        <Field name="hardTable" type="TableView&lt;GameSession&gt;" visibility="private"/>
+        <Field name="hardTitleColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="hardScoreColumn" type="TableColumn&lt;GameSession, Integer&gt;" visibility="private"/>
+        <Field name="hardDateColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="easySessions" type="ObservableList&lt;GameSession&gt;" visibility="private"/>
+        <Field name="mediumSessions" type="ObservableList&lt;GameSession&gt;" visibility="private"/>
+        <Field name="hardSessions" type="ObservableList&lt;GameSession&gt;" visibility="private"/>
+        <Field name="globalDifficultyTabs" type="TabPane" visibility="private"/>
+        <Field name="globalEasySelector" type="Tab" visibility="private"/>
+        <Field name="globalEasyTable" type="TableView&lt;GameSession&gt;" visibility="private"/>
+        <Field name="globalEasyUsernameColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalEasyTitleColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalEasyScoreColumn" type="TableColumn&lt;GameSession, Integer&gt;" visibility="private"/>
+        <Field name="globalEasyDateColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalMediumSelector" type="Tab" visibility="private"/>
+        <Field name="globalMediumTable" type="TableView&lt;GameSession&gt;" visibility="private"/>
+        <Field name="globalMediumUsernameColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalMediumTitleColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalMediumScoreColumn" type="TableColumn&lt;GameSession, Integer&gt;" visibility="private"/>
+        <Field name="globalMediumDateColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalHardSelector" type="Tab" visibility="private"/>
+        <Field name="globalHardTable" type="TableView&lt;GameSession&gt;" visibility="private"/>
+        <Field name="globalHardUsernameColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalHardTitleColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalHardScoreColumn" type="TableColumn&lt;GameSession, Integer&gt;" visibility="private"/>
+        <Field name="globalHardDateColumn" type="TableColumn&lt;GameSession, String&gt;" visibility="private"/>
+        <Field name="globalEasySessions" type="ObservableList&lt;GameSession&gt;" visibility="private"/>
+        <Field name="globalMediumSessions" type="ObservableList&lt;GameSession&gt;" visibility="private"/>
+        <Field name="globalHardSessions" type="ObservableList&lt;GameSession&gt;" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public">
+          <Argument type="URL" name="url"/>
+          <Argument type="ResourceBundle" name="rb"/>
+        </Method>
+        <Method name="setupTableColumns" returnType="void" visibility="private">
+          <Argument type="TableColumn&lt;GameSession, String&gt;" name="titleCol"/>
+          <Argument type="TableColumn&lt;GameSession, Integer&gt;" name="scoreCol"/>
+          <Argument type="TableColumn&lt;GameSession, String&gt;" name="dateCol"/>
+        </Method>
+        <Method name="setupGlobalTableColumns" returnType="void" visibility="private">
+          <Argument type="TableColumn&lt;GameSession, String&gt;" name="usernameCol"/>
+          <Argument type="TableColumn&lt;GameSession, String&gt;" name="titleCol"/>
+          <Argument type="TableColumn&lt;GameSession, Integer&gt;" name="scoreCol"/>
+          <Argument type="TableColumn&lt;GameSession, String&gt;" name="dateCol"/>
+        </Method>
+        <Method name="loadPersonalData" returnType="void" visibility="private"/>
+        <Method name="loadGlobalData" returnType="void" visibility="private"/>
+        <Method name="applySortToAllTables" returnType="void" visibility="private"/>
+        <Method name="applySort" returnType="void" visibility="private">
+          <Argument type="TableView&lt;GameSession&gt;" name="table"/>
+          <Argument type="TableColumn&lt;GameSession, Integer&gt;" name="scoreCol"/>
+          <Argument type="TableColumn&lt;GameSession, String&gt;" name="dateCol"/>
+        </Method>
+        <Method name="handleChangeSort" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="handleBackToMenu" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="showEasyScore" returnType="void" visibility="private">
+          <Argument type="Event" name="event"/>
+        </Method>
+        <Method name="showMediumScore" returnType="void" visibility="private">
+          <Argument type="Event" name="event"/>
+        </Method>
+        <Method name="showHardScore" returnType="void" visibility="private">
+          <Argument type="Event" name="event"/>
+        </Method>
+        <Method name="showGlobalEasyScore" returnType="void" visibility="private">
+          <Argument type="Event" name="event"/>
+        </Method>
+        <Method name="showGlobalMediumScore" returnType="void" visibility="private">
+          <Argument type="Event" name="event"/>
+        </Method>
+        <Method name="showGlobalHardScore" returnType="void" visibility="private">
+          <Argument type="Event" name="event"/>
+        </Method>
+        <Method name="loadView" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+          <Argument type="String" name="fxmlPath"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="SplashController" package="controller" visibility="public" xPosition="2913.0" yPosition="31.0">
+      <Fields>
+        <Field name="splashImage" type="ImageView" visibility="private"/>
+        <Field name="rootPane" type="StackPane" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public">
+          <Argument type="URL" name="location"/>
+          <Argument type="ResourceBundle" name="resources"/>
+        </Method>
+        <Method name="playFadeOut" returnType="void" visibility="private"/>
+        <Method name="launchLoginView" returnType="void" visibility="private"/>
+      </Methods>
+    </Class>
+    <Class name="UserManagementViewController" package="controller" visibility="public" xPosition="75.0" yPosition="2010.0">
+      <Fields>
+        <Field name="tfUsername" type="TextField" visibility="private"/>
+        <Field name="pfPassword" type="PasswordField" visibility="private"/>
+        <Field name="pfConfirm" type="PasswordField" visibility="private"/>
+        <Field name="lblStatus" type="Label" visibility="private"/>
+        <Field name="usersManagement" type="UsersManagement" visibility="private"/>
+        <Field name="userId" type="int" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public">
+          <Argument type="URL" name="url"/>
+          <Argument type="ResourceBundle" name="rb"/>
+        </Method>
+        <Method name="onSaveProfile" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onCancel" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onExportCsv" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+        <Method name="onGoBack" returnType="void" visibility="private">
+          <Argument type="ActionEvent" name="event"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="MainApp" package="main" visibility="public" xPosition="1202.0" yPosition="2291.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="start" returnType="void" visibility="public">
+          <Argument type="Stage" name="primaryStage"/>
+        </Method>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="DatabaseManagement" package="management" visibility="public" xPosition="2623.0" yPosition="41.0">
+      <Fields>
+        <Field name="URL" type="String" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="connection" type="Connection" visibility="private" isStatic="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="getConnection" returnType="Connection" visibility="public" isStatic="true"/>
+        <Method name="closeConnection" returnType="void" visibility="public" isStatic="true"/>
+      </Methods>
+    </Class>
+    <Class name="DocumentsManagement" package="management" visibility="public" xPosition="2775.0" yPosition="941.0">
+      <Fields>
+        <Field name="stopWords_IT" type="List&lt;String&gt;" visibility="private" isStatic="true"/>
+        <Field name="stopWords_EN" type="List&lt;String&gt;" visibility="private" isStatic="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="textFiltering" returnType="Map&lt;String, Integer&gt;" visibility="public" isStatic="true">
+          <Argument type="String" name="line"/>
+        </Method>
+        <Method name="insertWordsIntoDatabase" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="fileName"/>
+          <Argument type="String" name="line"/>
+        </Method>
+        <Method name="loadToDB" returnType="void" visibility="public" isStatic="true">
+          <Argument type="File" name="fileName"/>
+          <Argument type="Levels.Difficulty" name="difficulty"/>
+        </Method>
+        <Method name="deleteFromDB" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="title"/>
+        </Method>
+        <Method name="getBaseName" returnType="String" visibility="public" isStatic="true">
+          <Argument type="String" name="filename"/>
+        </Method>
+        <Method name="getAllDocumentTitles" returnType="List&lt;String&gt;" visibility="public" isStatic="true"/>
+        <Method name="getTitleFromId" returnType="String" visibility="public" isStatic="true">
+          <Argument type="int" name="id_document"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="GameSessionManagement" package="management" visibility="public" xPosition="2809.0" yPosition="1600.0">
+      <Fields>
+        <Field name="instance" type="GameSessionManagement" visibility="private" isStatic="true"/>
+        <Field name="currentPlayer" type="Player" visibility="private"/>
+        <Field name="documentId" type="int" visibility="private"/>
+        <Field name="score" type="int" visibility="private"/>
+        <Field name="questionsAnswered" type="int" visibility="private"/>
+        <Field name="correctAnswers" type="int" visibility="private"/>
+        <Field name="timestamp" type="LocalDateTime" visibility="private"/>
+        <Field name="difficulty" type="String" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="private"/>
+      </Constructors>
+      <Methods>
+        <Method name="getInstance" returnType="GameSessionManagement" visibility="public" isStatic="true"/>
+        <Method name="startSession" returnType="void" visibility="public">
+          <Argument type="Player" name="player"/>
+          <Argument type="int" name="documentId"/>
+          <Argument type="String" name="difficulty"/>
+        </Method>
+        <Method name="recordAnswer" returnType="void" visibility="public">
+          <Argument type="boolean" name="correct"/>
+        </Method>
+        <Method name="saveSession" returnType="void" visibility="public"/>
+        <Method name="getSession" returnType="void" visibility="public">
+          <Argument type="String" name="username"/>
+        </Method>
+        <Method name="getAllSessions" returnType="List&lt;GameSession&gt;" visibility="public" isStatic="true"/>
+        <Method name="getSessionsByUsername" returnType="List&lt;GameSession&gt;" visibility="public" isStatic="true">
+          <Argument type="String" name="username"/>
+        </Method>
+        <Method name="resetSession" returnType="void" visibility="public"/>
+        <Method name="getCurrentPlayer" returnType="Player" visibility="public"/>
+        <Method name="getDocumentId" returnType="int" visibility="public"/>
+        <Method name="getScore" returnType="int" visibility="public"/>
+        <Method name="getQuestionsAnswered" returnType="int" visibility="public"/>
+        <Method name="getCorrectAnswers" returnType="int" visibility="public"/>
+        <Method name="getCorrectPercentage" returnType="double" visibility="public"/>
+        <Method name="getTimestamp" returnType="LocalDateTime" visibility="public"/>
+        <Method name="getUsername" returnType="String" visibility="public"/>
+        <Method name="getDifficulty" returnType="String" visibility="public"/>
+        <Method name="getMaxQuestions" returnType="int" visibility="public"/>
+        <Method name="getRemainingQuestions" returnType="int" visibility="public"/>
+        <Method name="setCurrentPlayer" returnType="void" visibility="public">
+          <Argument type="Player" name="player"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="QuestionManagement" package="management" visibility="public" xPosition="2523.0" yPosition="640.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="getWords" returnType="List&lt;Word&gt;" visibility="public" isStatic="true">
+          <Argument type="int" name="id_document"/>
+        </Method>
+        <Method name="generateNextQuestion" returnType="Question" visibility="public" isStatic="true">
+          <Argument type="List&lt;Word&gt;" name="wordList"/>
+          <Argument type="int" name="questionIndex"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="UsersManagement" package="management" visibility="public" xPosition="4.0" yPosition="1712.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="updateUser" returnType="boolean" visibility="public">
+          <Argument type="int" name="userId"/>
+          <Argument type="String" name="newUsername"/>
+          <Argument type="String" name="newPassword"/>
+        </Method>
+        <Method name="deleteUser" returnType="boolean" visibility="public">
+          <Argument type="String" name="username"/>
+        </Method>
+        <Method name="getUser" returnType="void" visibility="public">
+          <Argument type="String" name="username"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Document" package="model" visibility="public" xPosition="32.0" yPosition="2333.0">
+      <Fields>
+        <Field name="id" type="int" visibility="private"/>
+        <Field name="text" type="String" visibility="private"/>
+        <Field name="title" type="String" visibility="private"/>
+        <Field name="difficulty" type="String" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="int" name="id"/>
+          <Argument type="String" name="text"/>
+          <Argument type="String" name="title"/>
+          <Argument type="String" name="difficulty"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getId" returnType="int" visibility="public"/>
+        <Method name="getText" returnType="String" visibility="public"/>
+        <Method name="getTitle" returnType="String" visibility="public"/>
+        <Method name="getDifficulty" returnType="String" visibility="public"/>
+        <Method name="setId" returnType="void" visibility="public">
+          <Argument type="int" name="id"/>
+        </Method>
+        <Method name="setTitle" returnType="void" visibility="public">
+          <Argument type="String" name="title"/>
+        </Method>
+        <Method name="setDifficulty" returnType="void" visibility="public">
+          <Argument type="String" name="difficulty"/>
+        </Method>
+        <Method name="countWords" returnType="int" visibility="private">
+          <Argument type="String" name="text"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="GameSession" package="model" visibility="public" xPosition="1888.0" yPosition="1029.0">
+      <Fields>
+        <Field name="username" type="String" visibility="private"/>
+        <Field name="documentId" type="int" visibility="private"/>
+        <Field name="difficulty" type="String" visibility="private"/>
+        <Field name="score" type="int" visibility="private"/>
+        <Field name="timestamp" type="String" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="username"/>
+          <Argument type="int" name="documentId"/>
+          <Argument type="String" name="difficulty"/>
+          <Argument type="int" name="score"/>
+          <Argument type="String" name="timestamp"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getUsername" returnType="String" visibility="public"/>
+        <Method name="getDocumentId" returnType="int" visibility="public"/>
+        <Method name="getDifficulty" returnType="String" visibility="public"/>
+        <Method name="getScore" returnType="int" visibility="public"/>
+        <Method name="getTimestamp" returnType="String" visibility="public"/>
+        <Method name="getDocumentID" returnType="int" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Levels" package="model" visibility="public" xPosition="2020.0" yPosition="744.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="getNumberOfQuestions" returnType="int" visibility="public" isStatic="true">
+          <Argument type="Difficulty" name="difficulty"/>
+        </Method>
+        <Method name="getSecondsByDifficulty" returnType="int" visibility="public" isStatic="true">
+          <Argument type="String" name="difficulty"/>
+        </Method>
+        <Method name="getMaxScorePerQuestion" returnType="int" visibility="public" isStatic="true">
+          <Argument type="Difficulty" name="difficulty"/>
+        </Method>
+        <Method name="getQuestionTypesByDifficulty" returnType="List&lt;String&gt;" visibility="public" isStatic="true">
+          <Argument type="Difficulty" name="difficulty"/>
+        </Method>
+        <Method name="isValidDifficulty" returnType="boolean" visibility="public" isStatic="true">
+          <Argument type="String" name="difficulty"/>
+        </Method>
+        <Method name="getDocumentCountByDifficulty" returnType="int" visibility="public" isStatic="true">
+          <Argument type="String" name="difficulty"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Login" package="model" visibility="public" xPosition="1875.0" yPosition="2129.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="login" returnType="Player" visibility="public" isStatic="true">
+          <Argument type="String" name="inputUsername"/>
+          <Argument type="String" name="inputPassword"/>
+        </Method>
+        <Method name="isUsernameTaken" returnType="boolean" visibility="public" isStatic="true">
+          <Argument type="String" name="inputUsername"/>
+        </Method>
+        <Method name="userRegister" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="inputUsername"/>
+          <Argument type="String" name="inputPassword"/>
+          <Argument type="Role" name="role"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Question" package="model" visibility="public" xPosition="2966.0" yPosition="283.0">
+      <Fields>
+        <Field name="questionText" type="String" visibility="private"/>
+        <Field name="correctAnswer" type="String" visibility="private"/>
+        <Field name="options" type="List&lt;String&gt;" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="getQuestionText" returnType="String" visibility="public"/>
+        <Method name="setQuestionText" returnType="void" visibility="public">
+          <Argument type="String" name="questionText"/>
+        </Method>
+        <Method name="getCorrectAnswer" returnType="String" visibility="public"/>
+        <Method name="setCorrectAnswer" returnType="void" visibility="public">
+          <Argument type="String" name="correctAnswer"/>
+        </Method>
+        <Method name="getOptions" returnType="List&lt;String&gt;" visibility="public"/>
+        <Method name="setOptions" returnType="void" visibility="public">
+          <Argument type="List&lt;String&gt;" name="options"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Word" package="model" visibility="public" xPosition="2631.0" yPosition="236.0">
+      <Fields>
+        <Field name="text" type="String" visibility="private" isFinal="true"/>
+        <Field name="frequency" type="int" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="text"/>
+          <Argument type="int" name="frequency"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getText" returnType="String" visibility="public"/>
+        <Method name="getFrequency" returnType="int" visibility="public"/>
+        <Method name="getFrequencyString" returnType="String" visibility="public"/>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Admin" package="users" visibility="public" xPosition="517.0" yPosition="1783.0">
+      <Fields>
+        <Field name="isAdmin" type="boolean" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="username"/>
+          <Argument type="String" name="password"/>
+          <Argument type="boolean" name="isAdmin"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="isIsAdmin" returnType="boolean" visibility="public"/>
+        <Method name="setIsAdmin" returnType="void" visibility="public">
+          <Argument type="boolean" name="isAdmin"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="Player" package="users" visibility="public" xPosition="1946.0" yPosition="1628.0">
+      <Fields>
+        <Field name="role" type="Role" visibility="private"/>
+        <Field name="personalScore" type="List&lt;Integer&gt;" visibility="private"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="username"/>
+          <Argument type="String" name="password"/>
+          <Argument type="Role" name="role"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getRole" returnType="Role" visibility="public"/>
+        <Method name="getPersonalScore" returnType="List&lt;Integer&gt;" visibility="public"/>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="obj"/>
+        </Method>
+        <Method name="toString" returnType="String" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="User" package="users" visibility="public" isAbstract="true" xPosition="996.0" yPosition="1736.0">
+      <Fields>
+        <Field name="username" type="String" visibility="private" isFinal="true"/>
+        <Field name="password" type="String" visibility="private" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="username"/>
+          <Argument type="String" name="password"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="getUsername" returnType="String" visibility="public"/>
+        <Method name="getPassword" returnType="String" visibility="public"/>
+        <Method name="checkPassword" returnType="boolean" visibility="public">
+          <Argument type="String" name="input"/>
+        </Method>
+        <Method name="hashCode" returnType="int" visibility="public"/>
+        <Method name="equals" returnType="boolean" visibility="public">
+          <Argument type="Object" name="obj"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Enum name="Role" package="users" visibility="public" xPosition="1220.0" yPosition="2101.0">
+      <Literals>
+        <Literal name="ADMIN"/>
+        <Literal name="BASE"/>
+      </Literals>
+    </Enum>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="wordList" source="controller.QuestionsController" target="model.Word" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List&lt;Word&gt;"/>
+    <HasRelation name="hardScoreColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="management.GameSessionManagement" target="users.Player" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalEasyTitleColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="currentPlayer" source="management.GameSessionManagement" target="users.Player" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="model.Login" target="users.Player" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalMediumDateColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="users.Player" target="users.Role" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalMediumSessions" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;GameSession&gt;"/>
+    <HasRelation name="instance" source="management.GameSessionManagement" target="management.GameSessionManagement" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="management.GameSessionManagement" target="model.GameSession" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="mediumScoreColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="usersManagement" source="controller.UserManagementViewController" target="management.UsersManagement" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="controller.LoginController" target="users.Role" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalEasySessions" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;GameSession&gt;"/>
+    <UseRelation source="management.DocumentsManagement" target="model.Levels" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="easyTitleColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalHardSessions" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;GameSession&gt;"/>
+    <HasRelation name="globalEasyScoreColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="hardTitleColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalMediumScoreColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalMediumTable" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalMediumUsernameColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalHardTable" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="hardSessions" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;GameSession&gt;"/>
+    <HasRelation name="role" source="users.Player" target="users.Role" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="hardDateColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="controller.LoadDocumentDialogController" target="model.Levels" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="easyScoreColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="mediumDateColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="users.Admin" target="users.User"/>
+    <HasRelation name="globalMediumTitleColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="model.Login" target="users.Role" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="management.QuestionManagement" target="model.Word" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalHardDateColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalHardUsernameColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="easyTable" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="easySessions" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;GameSession&gt;"/>
+    <HasRelation name="globalEasyUsernameColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalEasyDateColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="users.Player" target="users.User"/>
+    <HasRelation name="globalHardScoreColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="mediumTable" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="mediumTitleColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="mediumSessions" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ObservableList&lt;GameSession&gt;"/>
+    <UseRelation source="controller.ScoresViewController" target="model.GameSession" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="hardTable" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="easyDateColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalHardTitleColumn" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="globalEasyTable" source="controller.ScoresViewController" target="model.GameSession" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
