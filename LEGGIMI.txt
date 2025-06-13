@@ -1,0 +1,8 @@
+Per aprire il database: 
+DatabaseBrowser/DBBrowserforSQLite.exe -> Apri database -> wordageddon.db
+
+Per lanciare il progetto da terminale: 
+Dalla cartella root del progetto, si scrive il comando mvn clean javafx:run
+
+
+
